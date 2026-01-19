@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import './ClearMonthBtn.css'
+import './Styles/ClearMonthBtn.css'
 
 const ClearMonthBtn = () => {
   const [isOpen, setIsOpen] = useState(false)
