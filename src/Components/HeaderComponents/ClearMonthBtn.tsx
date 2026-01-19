@@ -18,35 +18,35 @@ const ClearMonthBtn = () => {
     <div className="clear-month">
       <button
         type="button"
-        className="clear-month__trigger"
+        className="clear-month-trigger"
         onClick={() => setIsOpen(true)}
       >
         {t('clearMonth')}
       </button>
 
       {isOpen ? (
-        <div className="clear-month__overlay" role="presentation">
+        <div className="clear-month-overlay" role="presentation">
           <div
-            className="clear-month__dialog"
+            className="clear-month-dialog"
             role="dialog"
             aria-modal="true"
             aria-labelledby="clear-month-title"
           >
-            <h2 id="clear-month-title" className="clear-month__title">
+            <h2 id="clear-month-title" className="clear-month-title">
               {t('clearMonth')}
             </h2>
-            <p>{t('clearMonthPrompt')}</p>
-            <div className="clear-month__actions">
+            <p className="clear-month-body">{t('clearMonthPrompt')}</p>
+            <div className="clear-month-actions">
               <button
                 type="button"
-                className="clear-month__action-button"
+                className="clear-month-action-button"
                 onClick={handleCancel}
               >
                 {t('cancel')}
               </button>
               <button
                 type="button"
-                className="clear-month__action-button clear-month__action-button--primary"
+                className="clear-month-action-button clear-month-action-button-primary"
                 onClick={handleConfirm}
               >
                 {t('confirm')}
