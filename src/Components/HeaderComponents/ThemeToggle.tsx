@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { MoonIcon, SunIcon } from '@radix-ui/react-icons'
+import { useTranslation } from 'react-i18next'
 
 const ThemeToggle = () => {
+  const { t } = useTranslation()
   const [isDark, setIsDark] = useState(() => {
     if (typeof window === 'undefined') return false
     const stored = localStorage.getItem('theme')
@@ -28,7 +30,7 @@ const ThemeToggle = () => {
           type="checkbox"
           checked={isDark}
           onChange={(event) => setIsDark(event.target.checked)}
-          aria-label="Toggle dark mode"
+          aria-label={t('toggleDarkMode')}
         />
         <span className="slider" />
       </label>
