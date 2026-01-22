@@ -1,0 +1,74 @@
+.clear-month-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(15, 23, 42, 0.5);
+  z-index: 50;
+}
+
+.clear-month-dialog {
+  width: min(420px, 90vw);
+  background-color: rgb(var(--surface));
+  color: rgb(var(--text));
+  border: 1px solid rgb(var(--border));
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+}
+
+.clear-month-title {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+
+.clear-month-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.clear-month-action-button {
+  border-radius: 999px;
+  border: 1px solid rgb(var(--border));
+  padding: 8px 14px;
+  background-color: rgb(var(--surface));
+  color: rgb(var(--text));
+  cursor: pointer;
+}
+
+.clear-month-action-button-primary {
+  background-color: rgb(var(--primary));
+  border-color: rgb(var(--primary));
+  color: rgb(255 255 255);
+}
+
+.clear-month-action-button:focus-visible {
+  outline: 2px solid rgb(var(--info));
+  outline-offset: 2px;
+}
+
+.clear-month-body {
+  margin: 0;
+}
+
+.clear-month-trigger {
+  border-radius: 999px;
+  border: 1px solid rgb(var(--border));
+  padding: 8px 14px;
+  background-color: rgb(var(--surface));
+  color: rgb(var(--text));
+  margin-right: 12px;
+  cursor: pointer;
+}
+
+.clear-month-trigger:hover {
+  background-color: rgb(var(--surface-2));
+}
+
+.clear-month-trigger:focus-visible {
+  outline: 2px solid rgb(var(--info));
+  outline-offset: 2px;
+}
