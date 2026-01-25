@@ -1,44 +1,44 @@
-import { useTranslation } from 'react-i18next'
+import { useT } from '../../hooks/useT'
 
 type WelcomeHeroProps = {
   onCreatePick: () => void
 }
 
 const WelcomeHero = ({ onCreatePick }: WelcomeHeroProps) => {
-  const { t } = useTranslation()
+  const _T = useT()
 
   return (
     <section className="welcome-page-hero">
       <div className="welcome-page-hero-text">
-        <p className="welcome-page-eyebrow">
-          {t('welcomeDesk', { name: 'Geo' })}
+        <p className="welcome-page-eyebrow">{_T("Geo's sportsbook desk")}</p>
+        <h1>{_T('Welcome back, Geo')}</h1>
+        <p className="welcome-page-subhead">
+          {_T('Track lines, lock picks, and keep your bankroll disciplined.')}
         </p>
-        <h1>{t('welcomeBack', { name: 'Geo' })}</h1>
-        <p className="welcome-page-subhead">{t('welcomeSubhead')}</p>
         <div className="welcome-page-cta-row">
           <button className="welcome-page-cta" type="button" onClick={onCreatePick}>
-            {t('createPick')}
+            {_T('Create pick')}
           </button>
           <button className="welcome-page-ghost" type="button">
-            {t('viewHistory')}
+            {_T('View history')}
           </button>
         </div>
       </div>
       <div className="welcome-page-hero-card">
         <div className="welcome-page-stat">
-          <span className="welcome-page-stat-label">{t('bankroll')}</span>
-          <span className="welcome-page-stat-value">{t('emptyValue')}</span>
-          <span className="welcome-page-stat-trend">{t('cleanMonth')}</span>
+          <span className="welcome-page-stat-label">{_T('Bankroll')}</span>
+          <span className="welcome-page-stat-value">{_T('--')}</span>
+          <span className="welcome-page-stat-trend">{_T('Clean month')}</span>
         </div>
         <div className="welcome-page-stat">
-          <span className="welcome-page-stat-label">{t('roi')}</span>
-          <span className="welcome-page-stat-value">{t('emptyValue')}</span>
-          <span className="welcome-page-stat-trend">{t('awaitingResults')}</span>
+          <span className="welcome-page-stat-label">{_T('ROI')}</span>
+          <span className="welcome-page-stat-value">{_T('--')}</span>
+          <span className="welcome-page-stat-trend">{_T('Awaiting results')}</span>
         </div>
         <div className="welcome-page-stat">
-          <span className="welcome-page-stat-label">{t('riskMeter')}</span>
-          <span className="welcome-page-stat-value">{t('emptyValue')}</span>
-          <span className="welcome-page-stat-trend">{t('setFirstPick')}</span>
+          <span className="welcome-page-stat-label">{_T('Risk meter')}</span>
+          <span className="welcome-page-stat-value">{_T('--')}</span>
+          <span className="welcome-page-stat-trend">{_T('Set your first pick')}</span>
         </div>
       </div>
     </section>

@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useT } from '../../hooks/useT'
 import './Styles/ClearMonthBtn.css'
 
 const ClearMonthBtn = () => {
   const [isOpen, setIsOpen] = useState(false)
-  const { t } = useTranslation()
+  const _T = useT()
 
   const handleConfirm = () => {
     setIsOpen(false)
@@ -21,7 +21,7 @@ const ClearMonthBtn = () => {
         className="clear-month-trigger"
         onClick={() => setIsOpen(true)}
       >
-        {t('clearMonth')}
+        {_T('Clear month')}
       </button>
 
       {isOpen ? (
@@ -33,23 +33,25 @@ const ClearMonthBtn = () => {
             aria-labelledby="clear-month-title"
           >
             <h2 id="clear-month-title" className="clear-month-title">
-              {t('clearMonth')}
+              {_T('Clear month')}
             </h2>
-            <p className="clear-month-body">{t('clearMonthPrompt')}</p>
+            <p className="clear-month-body">
+              {_T('Are you sure you want to delete this months bets?')}
+            </p>
             <div className="clear-month-actions">
               <button
                 type="button"
                 className="clear-month-action-button"
                 onClick={handleCancel}
               >
-                {t('cancel')}
+                {_T('Cancel')}
               </button>
               <button
                 type="button"
                 className="clear-month-action-button clear-month-action-button-primary"
                 onClick={handleConfirm}
               >
-                {t('confirm')}
+                {_T('Confirm')}
               </button>
             </div>
           </div>

@@ -1,8 +1,10 @@
 import { useTranslation } from 'react-i18next'
+import { useT } from '../../hooks/useT'
 import './Styles/SwitchLanguageBtn.css'
 
 const SwitchLanguageBtn = () => {
-  const { t, i18n } = useTranslation()
+  const { i18n } = useTranslation()
+  const _T = useT()
   const currentLanguage = i18n.language.startsWith('es') ? 'es' : 'en'
 
   return (
@@ -13,7 +15,7 @@ const SwitchLanguageBtn = () => {
         onClick={() => i18n.changeLanguage('en')}
         aria-pressed={currentLanguage === 'en'}
       >
-        {t('english')}
+        {_T('English')}
       </button>
       <button
         type="button"
@@ -21,7 +23,7 @@ const SwitchLanguageBtn = () => {
         onClick={() => i18n.changeLanguage('es')}
         aria-pressed={currentLanguage === 'es'}
       >
-        {t('spanish')}
+        {_T('Spanish')}
       </button>
     </div>
   )
