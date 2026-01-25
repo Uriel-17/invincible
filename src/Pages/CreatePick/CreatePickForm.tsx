@@ -1,24 +1,9 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useFieldArray, useForm } from 'react-hook-form'
+import type { CreatePickFormProps, CreatePickFormValues } from '../types'
 
-type CreatePickFormValues = {
-  betType: 'single' | 'parlay'
-  betAmount: string
-  quota: string
-  outcome: 'win' | 'loss' | 'pending'
-  placedAt: string
-  legs: Array<{
-    description: string
-    quota: string
-  }>
-}
-
-type CreatePickFormProps = {
-  onSubmit: (values: CreatePickFormValues) => void
-}
-
-const CreatePickForm = ({ onSubmit }: CreatePickFormProps) => {
+const CreatePickForm = ({ onSubmit, actions }: CreatePickFormProps) => {
   const { t } = useTranslation()
   const {
     register,
@@ -143,11 +128,15 @@ const CreatePickForm = ({ onSubmit }: CreatePickFormProps) => {
           ))}
         </div>
       ) : null}
-      <div className="create-pick-actions">
-        <button type="submit" className="create-pick-button create-pick-button-primary">
-          {t('savePick')}
-        </button>
-      </div>
+      {actions ? (
+        actions
+      ) : (
+        <div className="create-pick-actions">
+          <button type="submit" className="create-pick-button create-pick-button-primary">
+            {t('savePick')}
+          </button>
+        </div>
+      )}
     </form>
   )
 }
