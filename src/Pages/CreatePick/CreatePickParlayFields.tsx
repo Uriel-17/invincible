@@ -1,9 +1,9 @@
-import { useTranslation } from 'react-i18next'
+import { useT } from '../../hooks/useT'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import type { CreatePickFormValues } from '../types'
 
 const CreatePickParlayFields = () => {
-  const { t } = useTranslation()
+  const _T = useT()
   const {
     control,
     register,
@@ -18,37 +18,39 @@ const CreatePickParlayFields = () => {
   return (
     <div className="create-pick-legs">
       <div className="create-pick-legs-header">
-        <span>{t('parlayLegs')}</span>
+        <span>{_T('Parlay legs')}</span>
         <button
           type="button"
           className="create-pick-button create-pick-button-ghost"
           onClick={() => append({ description: '', quota: '' })}
         >
-          {t('addLeg')}
+          {_T('Add leg')}
         </button>
       </div>
       {fields.map((field, index) => (
         <div className="create-pick-leg" key={field.id}>
           <label className="create-pick-field">
-            <span>{t('legLabel', { index: index + 1 })}</span>
+            <span>
+              {_T('Leg')} {index + 1}
+            </span>
             <input
               type="text"
-              placeholder={t('legPlaceholder')}
+              placeholder={_T('Team vs Team')}
               {...register(`legs.${index}.description`, { required: true })}
             />
             {errors.legs?.[index]?.description ? (
-              <span className="create-pick-error">{t('requiredField')}</span>
+              <span className="create-pick-error">{_T('This field is required.')}</span>
             ) : null}
           </label>
           <label className="create-pick-field">
-            <span>{t('legQuota')}</span>
+            <span>{_T('Leg quota')}</span>
             <input
               type="text"
-              placeholder={t('quotaPlaceholder')}
+              placeholder={_T('e.g. -110')}
               {...register(`legs.${index}.quota`, { required: true })}
             />
             {errors.legs?.[index]?.quota ? (
-              <span className="create-pick-error">{t('requiredField')}</span>
+              <span className="create-pick-error">{_T('This field is required.')}</span>
             ) : null}
           </label>
           {fields.length > 1 ? (
@@ -57,7 +59,7 @@ const CreatePickParlayFields = () => {
               className="create-pick-button create-pick-button-link"
               onClick={() => remove(index)}
             >
-              {t('remove')}
+              {_T('Remove')}
             </button>
           ) : null}
         </div>

@@ -34,7 +34,7 @@ describe('CreatePickFields', () => {
   it('renders the single bet fields by default', () => {
     renderWithForm()
 
-    expect(screen.getByLabelText('Bet type')).toBeInTheDocument()
+    expect(screen.getByLabelText('Bet Type')).toBeInTheDocument()
     expect(screen.getByLabelText('Bet amount')).toBeInTheDocument()
     expect(screen.getByLabelText('Quota')).toBeInTheDocument()
     expect(screen.getByLabelText('Outcome')).toBeInTheDocument()
@@ -46,7 +46,7 @@ describe('CreatePickFields', () => {
     const user = userEvent.setup()
     renderWithForm()
 
-    await user.selectOptions(screen.getByLabelText('Bet type'), 'parlay')
+    await user.selectOptions(screen.getByLabelText('Bet Type'), 'parlay')
 
     expect(screen.getByText('Parlay legs')).toBeInTheDocument()
     expect(screen.getByPlaceholderText('Team vs Team')).toBeInTheDocument()

@@ -1,67 +1,67 @@
-import { useTranslation } from 'react-i18next'
+import { useT } from '../../hooks/useT'
 
 const WelcomePanels = () => {
-  const { t } = useTranslation()
+  const _T = useT()
   return (
     <section className="welcome-page-grid">
       <div className="welcome-page-panel">
         <div className="welcome-page-panel-header">
-          <h2>{t('todaysSlate')}</h2>
-          <span className="welcome-page-chip">{t('boardReady')}</span>
+          <h2>{_T("Today's slate")}</h2>
+          <span className="welcome-page-chip">{_T('Board ready')}</span>
         </div>
         <ul className="welcome-page-list">
           <li>
-            <span>{t('leagueSync')}</span>
-            <span className="welcome-page-odd">{t('pending')}</span>
+            <span>{_T('League sync')}</span>
+            <span className="welcome-page-odd">{_T('Pending')}</span>
           </li>
           <li>
-            <span>{t('linesFeed')}</span>
-            <span className="welcome-page-odd">{t('waiting')}</span>
+            <span>{_T('Lines feed')}</span>
+            <span className="welcome-page-odd">{_T('Waiting')}</span>
           </li>
           <li>
-            <span>{t('alerts')}</span>
-            <span className="welcome-page-odd">{t('standby')}</span>
+            <span>{_T('Alerts')}</span>
+            <span className="welcome-page-odd">{_T('Standby')}</span>
           </li>
         </ul>
         <button className="welcome-page-panel-link" type="button">
-          {t('openBoard')}
+          {_T('Open board')}
         </button>
       </div>
 
       <div className="welcome-page-panel welcome-page-panel--accent">
         <div className="welcome-page-panel-header">
-          <h2>{t('momentumPicks')}</h2>
-          <span className="welcome-page-chip">{t('geoPicks')}</span>
+          <h2>{_T('Momentum picks')}</h2>
+          <span className="welcome-page-chip">{_T('Geo picks')}</span>
         </div>
         <div className="welcome-page-ticket">
           <div>
-            <p className="welcome-page-ticket-title">{t('cleanMonth')}</p>
-            <p className="welcome-page-ticket-meta">{t('readyForFirstPick')}</p>
+            <p className="welcome-page-ticket-title">{_T('Clean month')}</p>
+            <p className="welcome-page-ticket-meta">{_T('Ready for first pick')}</p>
           </div>
-          <span className="welcome-page-pill">{t('open')}</span>
+          <span className="welcome-page-pill">{_T('Open')}</span>
         </div>
         <button className="welcome-page-panel-link" type="button">
-          {t('managePicks')}
+          {_T('Manage picks')}
         </button>
       </div>
 
       <div className="welcome-page-panel">
         <div className="welcome-page-panel-header">
-          <h2>{t('marketPulse')}</h2>
-          <span className="welcome-page-chip">{t('last15Min')}</span>
+          <h2>{_T('Market pulse')}</h2>
+          <span className="welcome-page-chip">{_T('Last 15 min')}</span>
         </div>
         <div className="welcome-page-pulse">
           <div>
-            <p className="welcome-page-pulse-label">{t('sharpMoney')}</p>
-            <p className="welcome-page-pulse-value">{t('quietMarket')}</p>
+            <p className="welcome-page-pulse-label">{_T('Sharp money')}</p>
+            <p className="welcome-page-pulse-value">{_T('Quiet market')}</p>
           </div>
           <div>
-            <p className="welcome-page-pulse-label">{t('lineMovement')}</p>
-            <p className="welcome-page-pulse-value">{t('stableLines')}</p>
+            <p className="welcome-page-pulse-label">{_T('Line movement')}</p>
+            <p className="welcome-page-pulse-value">{_T('Stable lines')}</p>
           </div>
           <div>
-            <p className="welcome-page-pulse-label">{t('alerts')}</p>
-            <p className="welcome-page-pulse-value">{t('watchingSignals')}</p>
+            <p className="welcome-page-pulse-label">{_T('Alerts')}</p>
+            <p className="welcome-page-pulse-value">{_T('Watching for signals')}</p>
           </div>
         </div>
       </div>

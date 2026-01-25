@@ -1,11 +1,11 @@
-import { useTranslation } from 'react-i18next'
+import { useT } from '../../hooks/useT'
 import { useFormContext } from 'react-hook-form'
 import type { CreatePickFormValues } from '../types'
 import CreatePickSingleFields from './CreatePickSingleFields'
 import CreatePickParlayFields from './CreatePickParlayFields'
 
 const CreatePickFields = () => {
-  const { t } = useTranslation()
+  const _T = useT()
   const {
     register,
     watch,
@@ -17,25 +17,25 @@ const CreatePickFields = () => {
   return (
     <>
       <label className="create-pick-field">
-        <span>{t('betType')}</span>
+        <span>{_T('Bet Type')}</span>
         <select {...register('betType')} required>
-          <option value="single">{t('single')}</option>
-          <option value="parlay">{t('parlay')}</option>
+          <option value="single">{_T('Single')}</option>
+          <option value="parlay">{_T('Parlay')}</option>
         </select>
       </label>
       <label className="create-pick-field">
-        <span>{t('outcome')}</span>
+        <span>{_T('Outcome')}</span>
         <select {...register('outcome')} required>
-          <option value="win">{t('win')}</option>
-          <option value="loss">{t('loss')}</option>
-          <option value="pending">{t('pending')}</option>
+          <option value="win">{_T('Win')}</option>
+          <option value="loss">{_T('Loss')}</option>
+          <option value="pending">{_T('Pending')}</option>
         </select>
       </label>
       <label className="create-pick-field">
-        <span>{t('placedAt')}</span>
+        <span>{_T('Placed at')}</span>
         <input type="date" {...register('placedAt', { required: true })} />
         {errors.placedAt ? (
-          <span className="create-pick-error">{t('requiredField')}</span>
+          <span className="create-pick-error">{_T('This field is required.')}</span>
         ) : null}
       </label>
       {betType === 'parlay' ? <CreatePickParlayFields /> : <CreatePickSingleFields />}
