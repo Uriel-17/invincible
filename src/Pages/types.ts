@@ -1,7 +1,7 @@
 import type { ReactNode } from "react"
 
 export type BetType = 'single' | 'parlay'
-export type OutComeType = 'win' | 'loss' | 'pending'
+export type OutComeType = 'win' | 'loss' | 'push' | 'cashout' | 'pending'
 
 export interface CreatePickModalProps {
   isOpen: boolean
@@ -14,9 +14,16 @@ export interface CreatePickFormValues {
   quota: string
   outcome: OutComeType
   placedAt: string
+  market: string
+  selection: string
+  potentialGains: string
+  notes: string
+  cashout?: string
+  netGain: string
   legs: Array<{
     description: string
     quota: string
+    market: string
   }>
 }
 
