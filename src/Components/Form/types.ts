@@ -16,6 +16,8 @@ export type DateFieldProps = {
   name: string
   label: string
   requiredMessage?: string
+  maxDate?: string
+  maxDateMessage?: string
   fieldClassName?: string
   errorClassName?: string
 }
@@ -27,6 +29,16 @@ export type TextFieldProps = {
   step?: string
   placeholder?: string
   requiredMessage?: string
+  min?: number
+  minMessage?: string
+  max?: number
+  maxMessage?: string
+  minLength?: number
+  minLengthMessage?: string
+  maxLength?: number
+  maxLengthMessage?: string
+  pattern?: RegExp
+  patternMessage?: string
   fieldClassName?: string
   errorClassName?: string
 }
