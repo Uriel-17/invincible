@@ -1,9 +1,9 @@
 import './Styles/Header.css'
-import { useT } from '../hooks/useT'
+import { useT } from 'src/hooks/useT'
 import { Link } from '@tanstack/react-router'
-import ThemeToggle from './HeaderComponents/ThemeToggle'
-import ClearMonthBtn from './HeaderComponents/ClearMonthBtn'
-import SwitchLanguageBtn from './HeaderComponents/SwitchLanguageBtn'
+import ThemeToggle from 'src/Components/HeaderComponents/ThemeToggle'
+import ClearMonthBtn from 'src/Components/HeaderComponents/ClearMonthBtn'
+import SwitchLanguageBtn from 'src/Components/HeaderComponents/SwitchLanguageBtn'
 
 const Header = () => {
   const _T = useT()
