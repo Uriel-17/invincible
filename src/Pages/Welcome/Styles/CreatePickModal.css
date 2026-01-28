@@ -90,6 +90,13 @@
   color: rgb(255 255 255);
 }
 
+.create-pick-button-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: rgb(var(--muted));
+  border-color: rgb(var(--muted));
+}
+
 .create-pick-button:focus-visible,
 .create-pick-field input:focus-visible,
 .create-pick-field select:focus-visible {

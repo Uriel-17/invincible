@@ -1,10 +1,10 @@
-import { useT } from '../../hooks/useT'
+import { useT } from 'src/hooks/useT'
 import { useFormContext } from 'react-hook-form'
-import type { CreatePickFormValues } from '../types'
-import CreatePickSingleFields from './CreatePickSingleFields'
-import CreatePickParlayFields from './CreatePickParlayFields'
-import SelectField from '../../Components/Form/SelectField'
-import DateField from '../../Components/Form/DateField'
+import type { CreatePickFormValues } from 'src/Pages/types'
+import CreatePickSingleFields from 'src/Pages/CreatePick/CreatePickSingleFields'
+import CreatePickParlayFields from 'src/Pages/CreatePick/CreatePickParlayFields'
+import SelectField from 'src/Components/Form/SelectField'
+import DateField from 'src/Components/Form/DateField'
 
 const CreatePickFields = () => {
   const _T = useT()
