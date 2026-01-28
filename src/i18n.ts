@@ -12,10 +12,16 @@ const resources = {
       'Awaiting results': 'Awaiting results',
       Bankroll: 'Bankroll',
       'Bet amount': 'Bet amount',
+      'Bet amount must be a positive number greater than 0':
+        'Bet amount must be a positive number greater than 0',
+      'Bet amount must be a valid number': 'Bet amount must be a valid number',
       'Bet Type': 'Bet Type',
       'Board ready': 'Board ready',
       Cancel: 'Cancel',
       Cashout: 'Cashout',
+      'Cashout amount must be a positive number':
+        'Cashout amount must be a positive number',
+      'Cashout amount must be a valid number': 'Cashout amount must be a valid number',
       'Clean month': 'Clean month',
       'Clear month': 'Clear month',
       'Click on the Vite and React logos to learn more':
@@ -51,6 +57,7 @@ const resources = {
       'Minimum value is {{value}}': 'Minimum value is {{value}}',
       'Momentum picks': 'Momentum picks',
       'Net Gain': 'Net Gain',
+      'Net gain must be a valid number': 'Net gain must be a valid number',
       Notes: 'Notes',
       Open: 'Open',
       'Open board': 'Open board',
@@ -63,9 +70,13 @@ const resources = {
       'Please enter a valid number': 'Please enter a valid number',
       'Please select a valid option': 'Please select a valid option',
       'Potential Gains': 'Potential Gains',
+      'Potential gains must be a valid number':
+        'Potential gains must be a valid number',
       Push: 'Push',
       'Quiet market': 'Quiet market',
       Quota: 'Quota',
+      'Quota must be a valid number (e.g., -110 or +150)':
+        'Quota must be a valid number (e.g., -110 or +150)',
       'Ready for first pick': 'Ready for first pick',
       Remove: 'Remove',
       'Risk meter': 'Risk meter',
@@ -102,10 +113,16 @@ const resources = {
       'Awaiting results': 'Esperando resultados',
       Bankroll: 'Bankroll',
       'Bet amount': 'Monto apostado',
+      'Bet amount must be a positive number greater than 0':
+        'El monto de la apuesta debe ser un número positivo mayor que 0',
+      'Bet amount must be a valid number': 'El monto de la apuesta debe ser un número válido',
       'Bet Type': 'Tipo de apuesta',
       'Board ready': 'Tablero listo',
       Cancel: 'Cancelar',
       Cashout: 'Cashout',
+      'Cashout amount must be a positive number':
+        'El monto del cashout debe ser un número positivo',
+      'Cashout amount must be a valid number': 'El monto del cashout debe ser un número válido',
       'Clean month': 'Mes limpio',
       'Clear month': 'Borrar mes',
       'Click on the Vite and React logos to learn more':
@@ -141,6 +158,7 @@ const resources = {
       'Minimum value is {{value}}': 'El valor mínimo es {{value}}',
       'Momentum picks': 'Picks con impulso',
       'Net Gain': 'Ganancia Neta',
+      'Net gain must be a valid number': 'La ganancia neta debe ser un número válido',
       Notes: 'Notas',
       Open: 'Abierto',
       'Open board': 'Abrir tablero',
@@ -153,9 +171,13 @@ const resources = {
       'Please enter a valid number': 'Por favor ingresa un número válido',
       'Please select a valid option': 'Por favor selecciona una opción válida',
       'Potential Gains': 'Ganancias Potenciales',
+      'Potential gains must be a valid number':
+        'Las ganancias potenciales deben ser un número válido',
       Push: 'Push',
       'Quiet market': 'Mercado tranquilo',
       Quota: 'Cuota',
+      'Quota must be a valid number (e.g., -110 or +150)':
+        'La cuota debe ser un número válido (ej. -110 o +150)',
       'Ready for first pick': 'Listo para el primer pick',
       Remove: 'Quitar',
       'Risk meter': 'Medidor de riesgo',
@@ -197,5 +219,11 @@ void i18n.use(initReactI18next).init({
     escapeValue: false,
   },
 })
+
+/**
+ * Translation function that can be imported directly without using hooks
+ * Useful for utility files and non-component code
+ */
+export const t = (key: string): string => i18n.t(key)
 
 export default i18n

@@ -1,34 +1,68 @@
 import { useT } from '../../hooks/useT'
 import { useFormContext } from 'react-hook-form'
 import type { CreatePickFormValues } from '../types'
+import TextField from '../../Components/Form/TextField'
 
 const CreatePickSingleFields = () => {
   const _T = useT()
-  const {
-    register,
-    formState: { errors },
-  } = useFormContext<CreatePickFormValues>()
+  const { watch } = useFormContext<CreatePickFormValues>()
+  const outcome = watch('outcome')
 
   return (
     <>
-      <label className="create-pick-field">
-        <span>{_T('Bet amount')}</span>
-        <input type="number" step="0.01" {...register('betAmount', { required: true })} />
-        {errors.betAmount ? (
-          <span className="create-pick-error">{_T('This field is required.')}</span>
-        ) : null}
-      </label>
-      <label className="create-pick-field">
-        <span>{_T('Quota')}</span>
-        <input
-          type="text"
-          placeholder={_T('e.g. -110')}
-          {...register('quota', { required: true })}
+      <TextField
+        name="betAmount"
+        label={_T('Bet amount')}
+        type="number"
+        step="0.01"
+        requiredMessage={_T('This field is required.')}
+      />
+      <TextField
+        name="market"
+        label={_T('Market')}
+        type="text"
+        requiredMessage={_T('This field is required.')}
+      />
+      <TextField
+        name="selection"
+        label={_T('Selection')}
+        type="text"
+        requiredMessage={_T('This field is required.')}
+      />
+      <TextField
+        name="quota"
+        label={_T('Quota')}
+        placeholder={_T('e.g. -110')}
+        requiredMessage={_T('This field is required.')}
+      />
+      <TextField
+        name="potentialGains"
+        label={_T('Potential Gains')}
+        type="number"
+        step="0.01"
+        requiredMessage={_T('This field is required.')}
+      />
+      <TextField
+        name="notes"
+        label={_T('Notes')}
+        type="text"
+      />
+      {outcome === 'cashout' && (
+        <TextField
+          name="cashout"
+          label={_T('Cashout')}
+          type="number"
+          step="0.01"
+          requiredMessage={_T('This field is required.')}
         />
-        {errors.quota ? (
-          <span className="create-pick-error">{_T('This field is required.')}</span>
-        ) : null}
-      </label>
+      )}
+      <TextField
+        name="netGain"
+        label={_T('Net Gain')}
+        type="number"
+        step="0.01"
+        requiredMessage={_T('This field is required.')}
+      />
     </>
   )
 }

@@ -3,41 +3,40 @@ import { useFormContext } from 'react-hook-form'
 import type { CreatePickFormValues } from '../types'
 import CreatePickSingleFields from './CreatePickSingleFields'
 import CreatePickParlayFields from './CreatePickParlayFields'
+import SelectField from '../../Components/Form/SelectField'
+import DateField from '../../Components/Form/DateField'
 
 const CreatePickFields = () => {
   const _T = useT()
-  const {
-    register,
-    watch,
-    formState: { errors },
-  } = useFormContext<CreatePickFormValues>()
-
+  const { watch } = useFormContext<CreatePickFormValues>()
   const betType = watch('betType')
 
   return (
     <>
-      <label className="create-pick-field">
-        <span>{_T('Bet Type')}</span>
-        <select {...register('betType')} required>
-          <option value="single">{_T('Single')}</option>
-          <option value="parlay">{_T('Parlay')}</option>
-        </select>
-      </label>
-      <label className="create-pick-field">
-        <span>{_T('Outcome')}</span>
-        <select {...register('outcome')} required>
-          <option value="win">{_T('Win')}</option>
-          <option value="loss">{_T('Loss')}</option>
-          <option value="pending">{_T('Pending')}</option>
-        </select>
-      </label>
-      <label className="create-pick-field">
-        <span>{_T('Placed at')}</span>
-        <input type="date" {...register('placedAt', { required: true })} />
-        {errors.placedAt ? (
-          <span className="create-pick-error">{_T('This field is required.')}</span>
-        ) : null}
-      </label>
+      <SelectField
+        name="betType"
+        label={_T('Bet Type')}
+        options={[
+          { label: _T('Single'), value: 'single' },
+          { label: _T('Parlay'), value: 'parlay' },
+        ]}
+      />
+      <SelectField
+        name="outcome"
+        label={_T('Outcome')}
+        options={[
+          { label: _T('Win'), value: 'win' },
+          { label: _T('Loss'), value: 'loss' },
+          { label: _T('Push'), value: 'push' },
+          { label: _T('Cashout'), value: 'cashout' },
+          { label: _T('Pending'), value: 'pending' },
+        ]}
+      />
+      <DateField
+        name="placedAt"
+        label={_T('Placed at')}
+        requiredMessage={_T('This field is required.')}
+      />
       {betType === 'parlay' ? <CreatePickParlayFields /> : <CreatePickSingleFields />}
     </>
   )

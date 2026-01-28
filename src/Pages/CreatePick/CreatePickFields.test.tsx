@@ -15,7 +15,13 @@ const renderWithForm = (defaultValues?: Partial<CreatePickFormValues>) => {
         quota: '',
         outcome: 'pending',
         placedAt: '',
-        legs: [{ description: '', quota: '' }],
+        market: '',
+        selection: '',
+        potentialGains: '',
+        notes: '',
+        cashout: '',
+        netGain: '',
+        legs: [{ description: '', quota: '', market: '' }],
         ...defaultValues,
       },
     })
@@ -50,6 +56,7 @@ describe('CreatePickFields', () => {
 
     expect(screen.getByText('Parlay legs')).toBeInTheDocument()
     expect(screen.getByPlaceholderText('Team vs Team')).toBeInTheDocument()
-    expect(screen.getByPlaceholderText('e.g. -110')).toBeInTheDocument()
+    expect(screen.getAllByPlaceholderText('e.g. -110').length).toBeGreaterThan(0)
+    expect(screen.getByLabelText('Leg market')).toBeInTheDocument()
   })
 })
