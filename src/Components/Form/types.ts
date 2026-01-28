@@ -39,6 +39,7 @@ export type TextFieldProps = {
   maxLengthMessage?: string
   pattern?: RegExp
   patternMessage?: string
+  inputMode?: 'text' | 'decimal' | 'numeric' | 'tel' | 'search' | 'email' | 'url'
   fieldClassName?: string
   errorClassName?: string
 }

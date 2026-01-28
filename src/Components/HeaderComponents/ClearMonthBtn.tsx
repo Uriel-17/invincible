@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useT } from '../../hooks/useT'
+import { useT } from 'src/hooks/useT'
 import './Styles/ClearMonthBtn.css'
 
 const ClearMonthBtn = () => {

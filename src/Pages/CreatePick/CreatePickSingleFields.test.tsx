@@ -1,9 +1,9 @@
 import { render, screen } from '@testing-library/react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { I18nextProvider } from 'react-i18next'
-import CreatePickSingleFields from './CreatePickSingleFields'
-import type { CreatePickFormValues } from '../types'
-import i18n from '../../i18n'
+import CreatePickSingleFields from 'src/Pages/CreatePick/CreatePickSingleFields'
+import type { CreatePickFormValues } from 'src/Pages/types'
+import i18n from 'src/i18n'
 
 const renderWithForm = (defaultValues?: Partial<CreatePickFormValues>) => {
   const Wrapper = ({ children }: { children: React.ReactNode }) => {

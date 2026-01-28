@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useT } from '../../hooks/useT'
+import { useT } from 'src/hooks/useT'
 import './Styles/SwitchLanguageBtn.css'
 
 const SwitchLanguageBtn = () => {

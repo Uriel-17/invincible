@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { MoonIcon, SunIcon } from '@radix-ui/react-icons'
-import { useT } from '../../hooks/useT'
+import { useT } from 'src/hooks/useT'
 
 const ThemeToggle = () => {
   const _T = useT()
