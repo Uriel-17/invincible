@@ -1,7 +1,19 @@
-import { useT } from '../../hooks/useT'
+import { useT } from 'src/hooks/useT'
 import { useFieldArray, useFormContext } from 'react-hook-form'
-import type { CreatePickFormValues } from '../types'
-import TextField from '../../Components/Form/TextField'
+import type { CreatePickFormValues } from 'src/Pages/types'
+import TextField from 'src/Components/Form/TextField'
+import {
+  getBetAmountValidation,
+  getSelectionValidation,
+  getQuotaValidation,
+  getPotentialGainsValidation,
+  getNotesValidation,
+  getCashoutValidation,
+  getNetGainValidation,
+  getLegDescriptionValidation,
+  getLegMarketValidation,
+  getLegQuotaValidation,
+} from './fieldValidations'
 
 const CreatePickParlayFields = () => {
   const _T = useT()
@@ -15,6 +27,43 @@ const CreatePickParlayFields = () => {
 
   return (
     <>
+      <TextField
+        name="betAmount"
+        label={_T('Bet amount')}
+        {...getBetAmountValidation()}
+      />
+      <TextField
+        name="selection"
+        label={_T('Selection')}
+        {...getSelectionValidation()}
+      />
+      <TextField
+        name="quota"
+        label={_T('Quota')}
+        {...getQuotaValidation()}
+      />
+      <TextField
+        name="potentialGains"
+        label={_T('Potential Gains')}
+        {...getPotentialGainsValidation()}
+      />
+      <TextField
+        name="notes"
+        label={_T('Notes')}
+        {...getNotesValidation()}
+      />
+      {outcome === 'cashout' && (
+        <TextField
+          name="cashout"
+          label={_T('Cashout')}
+          {...getCashoutValidation()}
+        />
+      )}
+      <TextField
+        name="netGain"
+        label={_T('Net Gain')}
+        {...getNetGainValidation()}
+      />
       <div className="create-pick-legs">
         <div className="create-pick-legs-header">
           <span>{_T('Parlay legs')}</span>
@@ -31,20 +80,17 @@ const CreatePickParlayFields = () => {
             <TextField
               name={`legs.${index}.description`}
               label={`${_T('Leg')} ${index + 1}`}
-              placeholder={_T('Team vs Team')}
-              requiredMessage={_T('This field is required.')}
+              {...getLegDescriptionValidation()}
             />
             <TextField
               name={`legs.${index}.market`}
               label={_T('Leg market')}
-              type="text"
-              requiredMessage={_T('This field is required.')}
+              {...getLegMarketValidation()}
             />
             <TextField
               name={`legs.${index}.quota`}
               label={_T('Leg quota')}
-              placeholder={_T('e.g. -110')}
-              requiredMessage={_T('This field is required.')}
+              {...getLegQuotaValidation()}
             />
             {fields.length > 1 ? (
               <button
@@ -58,53 +104,6 @@ const CreatePickParlayFields = () => {
           </div>
         ))}
       </div>
-      <TextField
-        name="betAmount"
-        label={_T('Bet amount')}
-        type="number"
-        step="0.01"
-        requiredMessage={_T('This field is required.')}
-      />
-      <TextField
-        name="selection"
-        label={_T('Selection')}
-        type="text"
-        requiredMessage={_T('This field is required.')}
-      />
-      <TextField
-        name="quota"
-        label={_T('Quota')}
-        placeholder={_T('e.g. -110')}
-        requiredMessage={_T('This field is required.')}
-      />
-      <TextField
-        name="potentialGains"
-        label={_T('Potential Gains')}
-        type="number"
-        step="0.01"
-        requiredMessage={_T('This field is required.')}
-      />
-      <TextField
-        name="notes"
-        label={_T('Notes')}
-        type="text"
-      />
-      {outcome === 'cashout' && (
-        <TextField
-          name="cashout"
-          label={_T('Cashout')}
-          type="number"
-          step="0.01"
-          requiredMessage={_T('This field is required.')}
-        />
-      )}
-      <TextField
-        name="netGain"
-        label={_T('Net Gain')}
-        type="number"
-        step="0.01"
-        requiredMessage={_T('This field is required.')}
-      />
     </>
   )
 }

@@ -1,7 +1,8 @@
-import { useT } from '../../../hooks/useT'
-import CreatePickForm from '../../CreatePick/CreatePickForm'
-import '../Styles/CreatePickModal.css'
-import type { CreatePickModalProps } from '../../types'
+import { useT } from 'src/hooks/useT'
+import CreatePickForm from 'src/Pages/CreatePick/CreatePickForm'
+import FormActions from 'src/Pages/Welcome/Components/FormActions'
+import 'src/Pages/Welcome/Styles/CreatePickModal.css'
+import type { CreatePickModalProps } from 'src/Pages/types'
 
 const CreatePickModal = ({ isOpen, onClose }: CreatePickModalProps) => {
   const _T = useT()
@@ -24,16 +25,7 @@ const CreatePickModal = ({ isOpen, onClose }: CreatePickModalProps) => {
         </div>
         <CreatePickForm
           onSubmit={onClose}
-          actions={
-            <div className="create-pick-actions">
-              <button type="button" className="create-pick-button" onClick={onClose}>
-                {_T('Cancel')}
-              </button>
-              <button type="submit" className="create-pick-button create-pick-button-primary">
-                {_T('Save pick')}
-              </button>
-            </div>
-          }
+          actions={<FormActions onClose={onClose} />}
         />
       </div>
     </div>
