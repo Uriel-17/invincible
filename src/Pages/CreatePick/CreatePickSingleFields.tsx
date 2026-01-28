@@ -1,7 +1,17 @@
-import { useT } from '../../hooks/useT'
+import { useT } from 'src/hooks/useT'
 import { useFormContext } from 'react-hook-form'
-import type { CreatePickFormValues } from '../types'
-import TextField from '../../Components/Form/TextField'
+import type { CreatePickFormValues } from 'src/Pages/types'
+import TextField from 'src/Components/Form/TextField'
+import {
+  getBetAmountValidation,
+  getMarketValidation,
+  getSelectionValidation,
+  getQuotaValidation,
+  getPotentialGainsValidation,
+  getNotesValidation,
+  getCashoutValidation,
+  getNetGainValidation,
+} from 'src/Pages/CreatePick/fieldValidations'
 
 const CreatePickSingleFields = () => {
   const _T = useT()
@@ -13,55 +23,44 @@ const CreatePickSingleFields = () => {
       <TextField
         name="betAmount"
         label={_T('Bet amount')}
-        type="number"
-        step="0.01"
-        requiredMessage={_T('This field is required.')}
+        {...getBetAmountValidation()}
       />
       <TextField
         name="market"
         label={_T('Market')}
-        type="text"
-        requiredMessage={_T('This field is required.')}
+        {...getMarketValidation()}
       />
       <TextField
         name="selection"
         label={_T('Selection')}
-        type="text"
-        requiredMessage={_T('This field is required.')}
+        {...getSelectionValidation()}
       />
       <TextField
         name="quota"
         label={_T('Quota')}
-        placeholder={_T('e.g. -110')}
-        requiredMessage={_T('This field is required.')}
+        {...getQuotaValidation()}
       />
       <TextField
         name="potentialGains"
         label={_T('Potential Gains')}
-        type="number"
-        step="0.01"
-        requiredMessage={_T('This field is required.')}
+        {...getPotentialGainsValidation()}
       />
       <TextField
         name="notes"
         label={_T('Notes')}
-        type="text"
+        {...getNotesValidation()}
       />
       {outcome === 'cashout' && (
         <TextField
           name="cashout"
           label={_T('Cashout')}
-          type="number"
-          step="0.01"
-          requiredMessage={_T('This field is required.')}
+          {...getCashoutValidation()}
         />
       )}
       <TextField
         name="netGain"
         label={_T('Net Gain')}
-        type="number"
-        step="0.01"
-        requiredMessage={_T('This field is required.')}
+        {...getNetGainValidation()}
       />
     </>
   )
