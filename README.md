@@ -89,6 +89,26 @@ This command:
 
 - **Backup**: The database is a single file that can be easily backed up or exported
 
+#### Database Schema
+
+The application uses SQLite with the following tables:
+
+| Table | Purpose |
+|-------|---------|
+| `bets` | Store all bet records (single & parlay) with details like bet type, outcome, amount, quota, market, selection, potential gains, and notes |
+| `parlay_legs` | Store individual legs for parlay bets, including description, market, and quota for each leg |
+| `bankroll_snapshots` | Track bankroll changes over time with timestamps, amounts, and reasons for changes (bet wins/losses, cashouts, manual adjustments) |
+| `monthly_archives` | Store monthly statistics and metadata including total bets, wins, losses, net profit, ROI, and archive status |
+| `user_settings` | Store user preferences and configuration in a flexible key-value format |
+| `schema_version` | Track database schema version for managing migrations and ensuring compatibility |
+
+**Key Features:**
+- **Foreign key constraints** ensure referential integrity between tables
+- **Check constraints** validate data (e.g., bet types, outcomes, positive amounts)
+- **Indexes** on frequently queried columns (month_key, outcome, placed_at) for optimal performance
+- **Soft archiving** using `is_archived` flag to maintain historical data without deletion
+- **ACID transactions** guarantee data consistency and reliability
+
 ## Testing
 
 Run unit tests:
