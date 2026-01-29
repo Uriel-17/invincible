@@ -3,6 +3,7 @@
 
 const { app, BrowserWindow } = require('electron')
 const path = require('path')
+const { initDatabase, closeDatabase, testDatabase } = require('./database.cjs')
 
 // Keep a global reference of the window object
 let mainWindow
@@ -26,7 +27,7 @@ function createWindow() {
   
   if (isDev) {
     mainWindow.loadURL('http://localhost:5173') // Vite default port
-    // mainWindow.webContents.openDevTools() // Open DevTools in development
+    mainWindow.webContents.openDevTools() // Open DevTools in development
   } else {
     mainWindow.loadFile(path.join(__dirname, '../dist/index.html'))
   }
@@ -39,6 +40,15 @@ function createWindow() {
 
 // This method will be called when Electron has finished initialization
 app.whenReady().then(() => {
+  // Initialize database first
+  console.log('🚀 Initializing database...')
+  initDatabase()
+
+  // Test database
+  console.log('🧪 Testing database...')
+  testDatabase()
+
+  // Create window
   createWindow()
 
   // On macOS, re-create window when dock icon is clicked
@@ -54,6 +64,12 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
+})
+
+// Clean up database connection before quitting
+app.on('before-quit', () => {
+  console.log('🔒 Closing database connection...')
+  closeDatabase()
 })
 
 console.log('Electron main process started!')
