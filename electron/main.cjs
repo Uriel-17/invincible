@@ -1,4 +1,4 @@
-// Electron main process - This is your "backend"
+// Electron main process - This is the "backend"
 // This file runs in Node.js and can access the file system, SQLite, etc.
 
 const { app, BrowserWindow } = require('electron')
@@ -13,16 +13,13 @@ function createWindow() {
     width: 1200,
     height: 800,
     webPreferences: {
-      // Security: Enable context isolation
       contextIsolation: true,
-      // Security: Disable Node.js in renderer
       nodeIntegration: false,
-      // We'll add preload script in Step 3
       preload: path.join(__dirname, 'preload.cjs')
     }
   })
 
-  // Load your React app
+  // Load React app
   // In development: Load from Vite dev server
   // In production: Load from built files
   const isDev = process.env.NODE_ENV === 'development'
