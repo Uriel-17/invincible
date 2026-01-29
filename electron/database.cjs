@@ -197,11 +197,184 @@ function testDatabase() {
   }
 }
 
+/**
+ * Create a new bet record
+ * @param {Object} betData - Bet data from the form
+ * @returns {Object} Created bet record with ID
+ */
+function createBet(betData) {
+  const { v4: uuidv4 } = require('uuid')
+
+  try {
+    const betId = uuidv4()
+    const now = new Date().toISOString()
+    const monthKey = betData.placedAt.substring(0, 7) // "YYYY-MM"
+
+    // Ensure month archive exists
+    ensureMonthArchive(monthKey, betData.placedAt)
+
+    // Start transaction
+    const transaction = db.transaction(() => {
+      // Insert bet
+      const insertBet = db.prepare(`
+        INSERT INTO bets (
+          id, bet_type, outcome, placed_at, bet_amount, quota,
+          market, selection, potential_gains, cashout_amount, net_gain,
+          notes, created_at, updated_at, month_key, is_archived
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
+      `)
+
+      insertBet.run(
+        betId,
+        betData.betType,
+        betData.outcome,
+        betData.placedAt,
+        parseFloat(betData.betAmount),
+        betData.quota,
+        betData.market || null,
+        betData.selection || null,
+        parseFloat(betData.potentialGains),
+        betData.cashout ? parseFloat(betData.cashout) : null,
+        parseFloat(betData.netGain),
+        betData.notes || null,
+        now,
+        now,
+        monthKey
+      )
+
+      // Insert parlay legs if applicable
+      if (betData.betType === 'parlay' && betData.legs && betData.legs.length > 0) {
+        const insertLeg = db.prepare(`
+          INSERT INTO parlay_legs (
+            id, bet_id, leg_index, description, market, quota, created_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?)
+        `)
+
+        betData.legs.forEach((leg, index) => {
+          insertLeg.run(
+            uuidv4(),
+            betId,
+            index,
+            leg.description,
+            leg.market,
+            leg.quota,
+            now
+          )
+        })
+      }
+
+      console.log(`✅ Bet created: ${betId}`)
+    })
+
+    transaction()
+
+    // Return created bet
+    return getBetById(betId)
+  } catch (error) {
+    console.error('❌ Error creating bet:', error.message)
+    throw error
+  }
+}
+
+/**
+ * Ensure month archive exists for the given month
+ */
+function ensureMonthArchive(monthKey, startDate) {
+  const existing = db.prepare('SELECT month_key FROM monthly_archives WHERE month_key = ?').get(monthKey)
+
+  if (!existing) {
+    const [year, month] = monthKey.split('-')
+    const lastDay = new Date(parseInt(year), parseInt(month), 0).getDate()
+    const endDate = `${monthKey}-${lastDay.toString().padStart(2, '0')}`
+
+    db.prepare(`
+      INSERT INTO monthly_archives (
+        month_key, start_date, end_date, starting_bankroll, ending_bankroll, is_active
+      ) VALUES (?, ?, ?, 0, 0, 1)
+    `).run(monthKey, startDate, endDate)
+
+    console.log(`✅ Created month archive: ${monthKey}`)
+  }
+}
+
+/**
+ * Get bet by ID
+ */
+function getBetById(betId) {
+  const bet = db.prepare('SELECT * FROM bets WHERE id = ?').get(betId)
+
+  if (bet && bet.bet_type === 'parlay') {
+    const legs = db.prepare(`
+      SELECT * FROM parlay_legs
+      WHERE bet_id = ?
+      ORDER BY leg_index
+    `).all(betId)
+
+    bet.legs = legs
+  }
+
+  return bet
+}
+
+/**
+ * Get all bets with optional filters
+ */
+function getBets(filters = {}) {
+  let query = 'SELECT * FROM bets WHERE 1=1'
+  const params = []
+
+  if (filters.monthKey) {
+    query += ' AND month_key = ?'
+    params.push(filters.monthKey)
+  }
+
+  if (filters.isArchived !== undefined) {
+    query += ' AND is_archived = ?'
+    params.push(filters.isArchived ? 1 : 0)
+  }
+
+  if (filters.outcome) {
+    query += ' AND outcome = ?'
+    params.push(filters.outcome)
+  }
+
+  query += ' ORDER BY placed_at DESC, created_at DESC'
+
+  const bets = db.prepare(query).all(...params)
+
+  // Load parlay legs for each parlay bet
+  bets.forEach(bet => {
+    if (bet.bet_type === 'parlay') {
+      bet.legs = db.prepare(`
+        SELECT * FROM parlay_legs
+        WHERE bet_id = ?
+        ORDER BY leg_index
+      `).all(bet.id)
+    }
+  })
+
+  return bets
+}
+
+/**
+ * Get current month key (YYYY-MM)
+ */
+function getCurrentMonthKey() {
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = (now.getMonth() + 1).toString().padStart(2, '0')
+  return `${year}-${month}`
+}
+
 // Export functions
 module.exports = {
   initDatabase,
   getDatabase,
   closeDatabase,
-  testDatabase
+  testDatabase,
+  createBet,
+  getBets,
+  getBetById,
+  getCurrentMonthKey
 }
 
