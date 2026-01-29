@@ -11,6 +11,84 @@ Currently, two official plugins are available:
 
 The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
+## Architecture
+
+This application is built as an **Electron desktop application** with a React frontend and SQLite database for local data storage.
+
+### Electron Architecture Overview
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    ELECTRON APP                              │
+│                                                              │
+│  ┌────────────────────┐         ┌─────────────────────┐    │
+│  │  RENDERER PROCESS  │         │   MAIN PROCESS      │    │
+│  │  (Your React App)  │◄───────►│   (Node.js)         │    │
+│  │                    │   IPC   │                     │    │
+│  │  - UI Components   │         │  - SQLite Database  │    │
+│  │  - React Hooks     │         │  - File System      │    │
+│  │  - Forms           │         │  - Native APIs      │    │
+│  └────────────────────┘         └─────────────────────┘    │
+│         ▲                                  │                │
+│         │                                  │                │
+│         │                                  ▼                │
+│         │                          invincible.db            │
+│         │                          (SQLite file)            │
+│         │                                                   │
+│         └───────────── User sees this ─────────────────────┘
+```
+
+**Key Components:**
+
+- **Renderer Process (Frontend)**: Your React application runs here in a browser-like environment. It handles UI rendering, user interactions, and form management. For security reasons, it cannot directly access the file system or native APIs.
+
+- **Main Process (Backend)**: A Node.js process that acts as the application's backend. It manages the SQLite database, handles file system operations, and provides access to native Electron APIs.
+
+- **IPC (Inter-Process Communication)**: A secure bridge that allows the React app to communicate with the main process. Think of it like API calls between frontend and backend.
+
+- **SQLite Database**: A local database file (`invincible.db`) stored in the user's application data directory, managed entirely by the main process.
+
+### Project Structure
+
+```
+invincible/
+├── electron/
+│   ├── main.cjs      ← Electron main process (your "backend")
+│   └── preload.cjs   ← Security bridge (IPC communication)
+├── src/              ← Your React app (frontend)
+│   ├── Components/
+│   ├── Pages/
+│   ├── hooks/
+│   ├── routes/
+│   └── main.tsx
+├── package.json      ← Project configuration with Electron scripts
+└── README.md
+```
+
+### Development Workflow
+
+Run the application in development mode:
+
+```bash
+npm run electron:dev
+```
+
+This command:
+1. Starts the Vite development server for React (with hot reload)
+2. Launches the Electron window
+3. Loads your React app inside the Electron window
+
+### Data Storage
+
+- **Location**: User data is stored in platform-specific directories:
+  - **macOS**: `~/Library/Application Support/invincible`
+  - **Windows**: `%APPDATA%/invincible`
+  - **Linux**: `~/.config/invincible`
+
+- **Database**: SQLite database file (`invincible.db`) for storing bets, bankroll history, and user settings
+
+- **Backup**: The database is a single file that can be easily backed up or exported
+
 ## Testing
 
 Run unit tests:

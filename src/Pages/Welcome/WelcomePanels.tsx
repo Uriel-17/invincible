@@ -1,4 +1,4 @@
-import { useT } from '../../hooks/useT'
+import { useT } from 'src/hooks/useT'
 
 const WelcomePanels = () => {
   const _T = useT()

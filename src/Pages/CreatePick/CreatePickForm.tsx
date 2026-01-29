@@ -1,10 +1,11 @@
 import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import type { CreatePickFormProps, CreatePickFormValues } from '../types'
-import CreatePickFields from './CreatePickFields'
+import type { CreatePickFormProps, CreatePickFormValues } from 'src/Pages/types'
+import CreatePickFields from 'src/Pages/CreatePick/CreatePickFields'
 
 const CreatePickForm = ({ onSubmit, actions }: CreatePickFormProps) => {
   const methods = useForm<CreatePickFormValues>({
+    mode: 'onChange',
     defaultValues: {
       betType: 'single',
       betAmount: '',
