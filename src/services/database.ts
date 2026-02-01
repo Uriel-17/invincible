@@ -93,6 +93,102 @@ export async function getCurrentMonthBets(): Promise<BetRecord[]> {
   return getBets({ monthKey, isArchived: false })
 }
 
+/**
+ * Check if this is the first launch (no user settings exist)
+ */
+export async function isFirstLaunch(): Promise<boolean> {
+  const api = getElectronAPI()
+
+  console.log('🔍 Checking if first launch...')
+
+  const response = await api.database.isFirstLaunch()
+
+  if (!response.success || response.data === undefined) {
+    throw new Error(response.error || 'Failed to check first launch')
+  }
+
+  console.log(`✅ First launch check: ${response.data}`)
+  return response.data
+}
+
+/**
+ * Get user setting by key
+ */
+export async function getUserSetting(key: string): Promise<string | null> {
+  const api = getElectronAPI()
+
+  console.log('🔍 Getting user setting:', key)
+
+  const response = await api.database.getUserSetting(key)
+
+  if (!response.success) {
+    throw new Error(response.error || 'Failed to get user setting')
+  }
+
+  console.log(`✅ User setting retrieved: ${key}`)
+  return response.data ?? null
+}
+
+/**
+ * Set user setting (upsert)
+ * @returns Object with needsRecalculation flag
+ */
+export async function setUserSetting(key: string, value: string): Promise<{ needsRecalculation: boolean }> {
+  const api = getElectronAPI()
+
+  console.log('💾 Setting user setting:', key, '=', value)
+
+  const response = await api.database.setUserSetting(key, value)
+
+  if (!response.success || !response.data) {
+    throw new Error(response.error || 'Failed to set user setting')
+  }
+
+  console.log(`✅ User setting saved: ${key}`)
+
+  if (response.data.needsRecalculation) {
+    console.log('⚠️  This setting change requires statistics recalculation')
+  }
+
+  return response.data
+}
+
+/**
+ * Initialize user (onboarding)
+ */
+export async function initializeUser(username: string, startingBankroll: number): Promise<void> {
+  const api = getElectronAPI()
+
+  console.log('🎯 Initializing user...', { username, startingBankroll })
+
+  const response = await api.database.initializeUser({ username, startingBankroll })
+
+  if (!response.success) {
+    throw new Error(response.error || 'Failed to initialize user')
+  }
+
+  console.log('✅ User initialized successfully')
+}
+
+/**
+ * Recalculate all monthly statistics
+ * Useful when starting bankroll or other settings change
+ */
+export async function recalculateAllStatistics(): Promise<{ monthsRecalculated: number }> {
+  const api = getElectronAPI()
+
+  console.log('🔄 Recalculating all statistics...')
+
+  const response = await api.database.recalculateAllStatistics()
+
+  if (!response.success || !response.data) {
+    throw new Error(response.error || 'Failed to recalculate statistics')
+  }
+
+  console.log(`✅ Recalculated statistics for ${response.data.monthsRecalculated} month(s)`)
+  return response.data
+}
+
 // Export all functions
 export const databaseService = {
   createBet,
@@ -100,6 +196,11 @@ export const databaseService = {
   getBetById,
   getCurrentMonthKey,
   getCurrentMonthBets,
+  isFirstLaunch,
+  getUserSetting,
+  setUserSetting,
+  initializeUser,
+  recalculateAllStatistics,
   isElectron
 }
 
