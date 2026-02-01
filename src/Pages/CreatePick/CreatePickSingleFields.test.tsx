@@ -2,12 +2,12 @@ import { render, screen } from '@testing-library/react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { I18nextProvider } from 'react-i18next'
 import CreatePickSingleFields from 'src/Pages/CreatePick/CreatePickSingleFields'
-import type { CreatePickFormValues } from 'src/Pages/types'
+import type { CreateBetFormValues } from 'src/types/bets'
 import i18n from 'src/i18n'
 
-const renderWithForm = (defaultValues?: Partial<CreatePickFormValues>) => {
+const renderWithForm = (defaultValues?: Partial<CreateBetFormValues>) => {
   const Wrapper = ({ children }: { children: React.ReactNode }) => {
-    const methods = useForm<CreatePickFormValues>({
+    const methods = useForm<CreateBetFormValues>({
       defaultValues: {
         betType: 'single',
         betAmount: '',
