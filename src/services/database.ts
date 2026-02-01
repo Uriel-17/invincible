@@ -1,6 +1,6 @@
 // Database service - React interface to Electron database
-import type { BetRecord, BetFilters, DatabaseResponse } from '../types/electron'
-import type { CreatePickFormValues } from '../Pages/types'
+import type { BetRecord, BetFilters } from '../types/electron'
+import type { CreateBetFormValues } from '../types/bets'
 
 /**
  * Check if we're running in Electron
@@ -22,7 +22,7 @@ function getElectronAPI() {
 /**
  * Create a new bet in the database
  */
-export async function createBet(formValues: CreatePickFormValues): Promise<BetRecord> {
+export async function createBet(formValues: CreateBetFormValues): Promise<BetRecord> {
   const api = getElectronAPI()
   
   console.log('📝 Creating bet...', formValues)
