@@ -1,6 +1,6 @@
 import { useT } from 'src/hooks/useT'
 import { useFormContext } from 'react-hook-form'
-import type { CreatePickFormValues } from 'src/Pages/types'
+import type { CreateBetFormValues } from 'src/types/bets'
 import CreatePickSingleFields from 'src/Pages/CreatePick/CreatePickSingleFields'
 import CreatePickParlayFields from 'src/Pages/CreatePick/CreatePickParlayFields'
 import SelectField from 'src/Components/Form/SelectField'
@@ -8,7 +8,7 @@ import DateField from 'src/Components/Form/DateField'
 
 const CreatePickFields = () => {
   const _T = useT()
-  const { watch } = useFormContext<CreatePickFormValues>()
+  const { watch } = useFormContext<CreateBetFormValues>()
   const betType = watch('betType')
 
   return (
