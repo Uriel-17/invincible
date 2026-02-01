@@ -1,0 +1,47 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "src/main.tsx",
+    "src/router.tsx",
+    "electron/database.cjs",
+    "electron/preload.cjs"
+  ],
+  "project": [
+    "src/**/*.{ts,tsx}",
+    "electron/**/*.{js,cjs}"
+  ],
+  "ignore": [
+    "src/routeTree.gen.ts",
+    "dist/**",
+    "node_modules/**",
+    "src/App.tsx",
+    "src/App.css",
+    "src/types/forms.ts",
+    "src/vitest.d.ts"
+  ],
+  "ignoreMembers": [
+    "src/hooks/mutations/useCreateBet.ts:isCreateBetError",
+    "src/services/database.ts:databaseService",
+    "src/types/bets.ts:BetFilters",
+    "src/types/bets.ts:MonthlyBetSummary"
+  ],
+  "ignoreDependencies": [
+    "ag-charts-community",
+    "ag-charts-react",
+    "ag-grid-community",
+    "ag-grid-react"
+  ],
+  "ignoreExportsUsedInFile": true,
+  "rules": {
+    "files": "warn",
+    "dependencies": "warn",
+    "unlisted": "error",
+    "exports": "warn",
+    "types": "warn",
+    "nsExports": "warn",
+    "nsTypes": "warn",
+    "enumMembers": "warn",
+    "classMembers": "warn",
+    "duplicates": "error"
+  }
+}
