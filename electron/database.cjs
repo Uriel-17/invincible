@@ -268,6 +268,28 @@ function createBet(betData) {
 
     transaction()
 
+    // Update monthly statistics after bet creation
+    updateMonthlyStatistics(monthKey)
+
+    // Create bankroll snapshot if bet has a settled outcome
+    if (['win', 'loss', 'cashout'].includes(betData.outcome)) {
+      const currentBankroll = getCurrentBankroll()
+      const changeReasonMap = {
+        'win': 'bet_win',
+        'loss': 'bet_loss',
+        'cashout': 'bet_cashout'
+      }
+
+      createBankrollSnapshot({
+        amount: currentBankroll,
+        changeAmount: parseFloat(betData.netGain),
+        changeReason: changeReasonMap[betData.outcome],
+        monthKey: monthKey,
+        betId: betId,
+        timestamp: betData.placedAt
+      })
+    }
+
     // Return created bet
     return getBetById(betId)
   } catch (error) {
@@ -294,6 +316,192 @@ function ensureMonthArchive(monthKey, startDate) {
     `).run(monthKey, startDate, endDate)
 
     console.log(`✅ Created month archive: ${monthKey}`)
+  }
+}
+
+/**
+ * Update monthly statistics for a given month
+ * Recalculates all statistics from the bets table
+ * @param {string} monthKey - Month key in format "YYYY-MM"
+ */
+function updateMonthlyStatistics(monthKey) {
+  try {
+    // Calculate statistics from bets table
+    const stats = db.prepare(`
+      SELECT
+        COUNT(*) as total_bets,
+        COUNT(CASE WHEN outcome = 'win' THEN 1 END) as total_wins,
+        COUNT(CASE WHEN outcome = 'loss' THEN 1 END) as total_losses,
+        COUNT(CASE WHEN outcome = 'push' THEN 1 END) as total_pushes,
+        COUNT(CASE WHEN outcome = 'cashout' THEN 1 END) as total_cashouts,
+        COALESCE(SUM(net_gain), 0) as net_profit,
+        COALESCE(SUM(bet_amount), 0) as total_wagered
+      FROM bets
+      WHERE month_key = ? AND is_archived = 0
+    `).get(monthKey)
+
+    // Calculate ROI: (net_profit / total_wagered) * 100
+    const roi = stats.total_wagered > 0
+      ? (stats.net_profit / stats.total_wagered) * 100
+      : 0
+
+    // Get starting bankroll from previous month's ending bankroll
+    const startingBankroll = getStartingBankrollForMonth(monthKey)
+    const endingBankroll = startingBankroll + stats.net_profit
+
+    // Update monthly_archives table
+    db.prepare(`
+      UPDATE monthly_archives
+      SET
+        total_bets = ?,
+        total_wins = ?,
+        total_losses = ?,
+        total_pushes = ?,
+        total_cashouts = ?,
+        net_profit = ?,
+        roi = ?,
+        starting_bankroll = ?,
+        ending_bankroll = ?,
+        updated_at = datetime('now')
+      WHERE month_key = ?
+    `).run(
+      stats.total_bets,
+      stats.total_wins,
+      stats.total_losses,
+      stats.total_pushes,
+      stats.total_cashouts,
+      stats.net_profit,
+      roi,
+      startingBankroll,
+      endingBankroll,
+      monthKey
+    )
+
+    console.log(`✅ Updated monthly statistics for ${monthKey}:`, {
+      total_bets: stats.total_bets,
+      net_profit: stats.net_profit,
+      roi: roi.toFixed(2) + '%'
+    })
+
+    return {
+      monthKey,
+      ...stats,
+      roi,
+      startingBankroll,
+      endingBankroll
+    }
+  } catch (error) {
+    console.error(`❌ Error updating monthly statistics for ${monthKey}:`, error.message)
+    throw error
+  }
+}
+
+/**
+ * Get starting bankroll for a given month
+ * Uses the ending bankroll from the previous month, or user's initial bankroll
+ * @param {string} monthKey - Month key in format "YYYY-MM"
+ * @returns {number} Starting bankroll amount
+ */
+function getStartingBankrollForMonth(monthKey) {
+  // Try to get ending bankroll from previous month
+  const [year, month] = monthKey.split('-').map(Number)
+  const prevMonth = month === 1 ? 12 : month - 1
+  const prevYear = month === 1 ? year - 1 : year
+  const prevMonthKey = `${prevYear}-${prevMonth.toString().padStart(2, '0')}`
+
+  const prevMonthData = db.prepare(`
+    SELECT ending_bankroll
+    FROM monthly_archives
+    WHERE month_key = ?
+  `).get(prevMonthKey)
+
+  if (prevMonthData && prevMonthData.ending_bankroll !== null) {
+    return prevMonthData.ending_bankroll
+  }
+
+  // Fall back to user's starting bankroll from settings
+  const userSetting = db.prepare(`
+    SELECT value
+    FROM user_settings
+    WHERE key = 'starting_bankroll'
+  `).get()
+
+  return userSetting ? parseFloat(userSetting.value) : 0
+}
+
+/**
+ * Get current bankroll amount
+ * Calculates from starting bankroll + all net gains
+ * @returns {number} Current bankroll amount
+ */
+function getCurrentBankroll() {
+  try {
+    // Get starting bankroll from user settings
+    const startingSetting = db.prepare(`
+      SELECT value
+      FROM user_settings
+      WHERE key = 'starting_bankroll'
+    `).get()
+
+    const startingBankroll = startingSetting ? parseFloat(startingSetting.value) : 0
+
+    // Get total net gains from all settled bets
+    const result = db.prepare(`
+      SELECT COALESCE(SUM(net_gain), 0) as total_net_gain
+      FROM bets
+      WHERE outcome IN ('win', 'loss', 'cashout')
+    `).get()
+
+    return startingBankroll + result.total_net_gain
+  } catch (error) {
+    console.error('❌ Error getting current bankroll:', error.message)
+    return 0
+  }
+}
+
+/**
+ * Create a bankroll snapshot record
+ * @param {Object} snapshotData - Snapshot data
+ * @param {number} snapshotData.amount - New bankroll amount
+ * @param {number} snapshotData.changeAmount - Amount of change (positive or negative)
+ * @param {string} snapshotData.changeReason - Reason for change ('bet_win', 'bet_loss', 'bet_cashout', 'deposit', 'withdrawal', 'initial')
+ * @param {string} snapshotData.monthKey - Month key in format "YYYY-MM"
+ * @param {string} snapshotData.betId - Optional bet ID if related to a bet
+ * @returns {Object} Created snapshot record
+ */
+function createBankrollSnapshot(snapshotData) {
+  const { v4: uuidv4 } = require('uuid')
+
+  try {
+    const snapshotId = uuidv4()
+    const now = new Date().toISOString()
+
+    db.prepare(`
+      INSERT INTO bankroll_snapshots (
+        id, amount, change_amount, change_reason, timestamp, month_key, bet_id, created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      snapshotId,
+      snapshotData.amount,
+      snapshotData.changeAmount,
+      snapshotData.changeReason,
+      snapshotData.timestamp || now,
+      snapshotData.monthKey,
+      snapshotData.betId || null,
+      now
+    )
+
+    console.log(`✅ Created bankroll snapshot: ${snapshotId} (${snapshotData.changeReason})`)
+
+    return {
+      id: snapshotId,
+      ...snapshotData,
+      timestamp: snapshotData.timestamp || now,
+      created_at: now
+    }
+  } catch (error) {
+    console.error('❌ Error creating bankroll snapshot:', error.message)
+    throw error
   }
 }
 
@@ -366,6 +574,106 @@ function getCurrentMonthKey() {
   return `${year}-${month}`
 }
 
+/**
+ * Get a user setting by key
+ * @param {string} key - Setting key
+ * @returns {string|null} Setting value or null if not found
+ */
+function getUserSetting(key) {
+  try {
+    const result = db.prepare(`
+      SELECT value
+      FROM user_settings
+      WHERE key = ?
+    `).get(key)
+
+    return result ? result.value : null
+  } catch (error) {
+    console.error(`❌ Error getting user setting '${key}':`, error.message)
+    return null
+  }
+}
+
+/**
+ * Set a user setting
+ * @param {string} key - Setting key
+ * @param {string} value - Setting value
+ * @returns {Object} { needsRecalculation: boolean } - Flag indicating if statistics need recalculation
+ */
+function setUserSetting(key, value) {
+  try {
+    db.prepare(`
+      INSERT INTO user_settings (key, value, updated_at)
+      VALUES (?, ?, datetime('now'))
+      ON CONFLICT(key) DO UPDATE SET
+        value = excluded.value,
+        updated_at = datetime('now')
+    `).run(key, value)
+
+    console.log(`✅ User setting saved: ${key}`)
+
+    // Check if this setting change requires statistics recalculation
+    const needsRecalculation = key === 'starting_bankroll'
+
+    if (needsRecalculation) {
+      console.log('⚠️  Starting bankroll changed - statistics recalculation recommended')
+    }
+
+    return { needsRecalculation }
+  } catch (error) {
+    console.error(`❌ Error setting user setting '${key}':`, error.message)
+    throw error
+  }
+}
+
+/**
+ * Recalculate all monthly statistics
+ * Useful when starting bankroll or other settings change
+ */
+function recalculateAllStatistics() {
+  try {
+    console.log('🔄 Recalculating all monthly statistics...')
+
+    // Get all distinct month keys from monthly_archives
+    const months = db.prepare('SELECT DISTINCT month_key FROM monthly_archives ORDER BY month_key').all()
+
+    if (months.length === 0) {
+      console.log('ℹ️  No months to recalculate')
+      return { monthsRecalculated: 0 }
+    }
+
+    // Recalculate statistics for each month
+    months.forEach(({ month_key }) => {
+      console.log(`  📊 Recalculating ${month_key}...`)
+      updateMonthlyStatistics(month_key)
+    })
+
+    console.log(`✅ Recalculated statistics for ${months.length} month(s)`)
+    return { monthsRecalculated: months.length }
+  } catch (error) {
+    console.error('❌ Error recalculating statistics:', error.message)
+    throw error
+  }
+}
+
+/**
+ * Check if this is the first launch (no user settings exist)
+ * @returns {boolean} True if first launch
+ */
+function isFirstLaunch() {
+  try {
+    const result = db.prepare(`
+      SELECT COUNT(*) as count
+      FROM user_settings
+    `).get()
+
+    return result.count === 0
+  } catch (error) {
+    console.error('❌ Error checking first launch:', error.message)
+    return false
+  }
+}
+
 // Export functions
 module.exports = {
   initDatabase,
@@ -375,6 +683,13 @@ module.exports = {
   createBet,
   getBets,
   getBetById,
-  getCurrentMonthKey
+  getCurrentMonthKey,
+  updateMonthlyStatistics,
+  recalculateAllStatistics,
+  createBankrollSnapshot,
+  getCurrentBankroll,
+  getUserSetting,
+  setUserSetting,
+  isFirstLaunch
 }
 

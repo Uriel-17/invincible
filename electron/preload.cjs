@@ -35,7 +35,41 @@ contextBridge.exposeInMainWorld('electronAPI', {
      * Get current month key (YYYY-MM)
      * @returns {Promise<{success: boolean, data?: string, error?: string}>}
      */
-    getCurrentMonthKey: () => ipcRenderer.invoke('db:getCurrentMonthKey')
+    getCurrentMonthKey: () => ipcRenderer.invoke('db:getCurrentMonthKey'),
+
+    /**
+     * Check if this is the first launch (no user settings exist)
+     * @returns {Promise<{success: boolean, data?: boolean, error?: string}>}
+     */
+    isFirstLaunch: () => ipcRenderer.invoke('db:isFirstLaunch'),
+
+    /**
+     * Get user setting by key
+     * @param {string} key - Setting key
+     * @returns {Promise<{success: boolean, data?: string, error?: string}>}
+     */
+    getUserSetting: (key) => ipcRenderer.invoke('db:getUserSetting', key),
+
+    /**
+     * Set user setting (upsert)
+     * @param {string} key - Setting key
+     * @param {string} value - Setting value
+     * @returns {Promise<{success: boolean, error?: string}>}
+     */
+    setUserSetting: (key, value) => ipcRenderer.invoke('db:setUserSetting', key, value),
+
+    /**
+     * Initialize user (onboarding)
+     * @param {Object} userData - User data {username: string, startingBankroll: number}
+     * @returns {Promise<{success: boolean, error?: string}>}
+     */
+    initializeUser: (userData) => ipcRenderer.invoke('db:initializeUser', userData),
+
+    /**
+     * Recalculate all monthly statistics
+     * @returns {Promise<{success: boolean, data?: {monthsRecalculated: number}, error?: string}>}
+     */
+    recalculateAllStatistics: () => ipcRenderer.invoke('db:recalculateAllStatistics')
   }
 })
 

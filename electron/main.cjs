@@ -10,7 +10,13 @@ const {
   createBet,
   getBets,
   getBetById,
-  getCurrentMonthKey
+  getCurrentMonthKey,
+  getUserSetting,
+  setUserSetting,
+  isFirstLaunch,
+  createBankrollSnapshot,
+  updateMonthlyStatistics,
+  recalculateAllStatistics
 } = require('./database.cjs')
 
 // Keep a global reference of the window object
@@ -66,6 +72,99 @@ function registerIPCHandlers() {
       return { success: true, data: result }
     } catch (error) {
       console.error('❌ IPC: Error getting current month:', error.message)
+      return { success: false, error: error.message }
+    }
+  })
+
+  // Check if first launch
+  ipcMain.handle('db:isFirstLaunch', async () => {
+    try {
+      console.log('🔍 IPC: Checking if first launch...')
+      const result = isFirstLaunch()
+      console.log(`✅ IPC: First launch check: ${result}`)
+      return { success: true, data: result }
+    } catch (error) {
+      console.error('❌ IPC: Error checking first launch:', error.message)
+      return { success: false, error: error.message }
+    }
+  })
+
+  // Get user setting
+  ipcMain.handle('db:getUserSetting', async (event, key) => {
+    try {
+      console.log('🔍 IPC: Getting user setting:', key)
+      const result = getUserSetting(key)
+      console.log(`✅ IPC: User setting retrieved: ${key}`)
+      return { success: true, data: result }
+    } catch (error) {
+      console.error('❌ IPC: Error getting user setting:', error.message)
+      return { success: false, error: error.message }
+    }
+  })
+
+  // Set user setting
+  ipcMain.handle('db:setUserSetting', async (event, key, value) => {
+    try {
+      console.log('💾 IPC: Setting user setting:', key, '=', value)
+      const result = setUserSetting(key, value)
+      console.log(`✅ IPC: User setting saved: ${key}`)
+      return { success: true, data: result }
+    } catch (error) {
+      console.error('❌ IPC: Error setting user setting:', error.message)
+      return { success: false, error: error.message }
+    }
+  })
+
+  // Recalculate all monthly statistics
+  ipcMain.handle('db:recalculateAllStatistics', async () => {
+    try {
+      console.log('🔄 IPC: Recalculating all statistics...')
+      const result = recalculateAllStatistics()
+      console.log(`✅ IPC: Statistics recalculated for ${result.monthsRecalculated} month(s)`)
+      return { success: true, data: result }
+    } catch (error) {
+      console.error('❌ IPC: Error recalculating statistics:', error.message)
+      return { success: false, error: error.message }
+    }
+  })
+
+  // Initialize user (onboarding)
+  ipcMain.handle('db:initializeUser', async (event, { username, startingBankroll }) => {
+    try {
+      console.log('🎯 IPC: Initializing user...', { username, startingBankroll })
+
+      // Get database instance
+      const db = require('./database.cjs').getDatabase()
+
+      // Create transaction for atomic operation
+      const transaction = db.transaction(() => {
+        // Save user settings
+        setUserSetting('username', username)
+        setUserSetting('starting_bankroll', startingBankroll.toString())
+
+        // Create initial bankroll snapshot
+        const monthKey = getCurrentMonthKey()
+        const now = new Date().toISOString()
+
+        createBankrollSnapshot({
+          amount: startingBankroll,
+          changeAmount: startingBankroll,
+          changeReason: 'initial',
+          monthKey: monthKey,
+          timestamp: now
+        })
+
+        // Update monthly statistics for current month
+        updateMonthlyStatistics(monthKey)
+      })
+
+      // Execute transaction
+      transaction()
+
+      console.log('✅ IPC: User initialized successfully')
+      return { success: true }
+    } catch (error) {
+      console.error('❌ IPC: Error initializing user:', error.message)
       return { success: false, error: error.message }
     }
   })
