@@ -1,7 +1,10 @@
 import { useT } from 'src/hooks/useT'
+import { useUsername } from 'src/hooks/useUsername'
 
 const WelcomePanels = () => {
   const _T = useT()
+  const { username } = useUsername()
+
   return (
     <section className="welcome-page-grid">
       <div className="welcome-page-panel">
@@ -31,7 +34,7 @@ const WelcomePanels = () => {
       <div className="welcome-page-panel welcome-page-panel--accent">
         <div className="welcome-page-panel-header">
           <h2>{_T('Momentum picks')}</h2>
-          <span className="welcome-page-chip">{_T('Geo picks')}</span>
+          <span className="welcome-page-chip">{_T('{{username}} picks', { username })}</span>
         </div>
         <div className="welcome-page-ticket">
           <div>

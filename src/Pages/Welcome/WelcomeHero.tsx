@@ -1,4 +1,5 @@
 import { useT } from 'src/hooks/useT'
+import { useUsername } from 'src/hooks/useUsername'
 
 type WelcomeHeroProps = {
   onCreatePick: () => void
@@ -6,12 +7,13 @@ type WelcomeHeroProps = {
 
 const WelcomeHero = ({ onCreatePick }: WelcomeHeroProps) => {
   const _T = useT()
+  const { username } = useUsername()
 
   return (
     <section className="welcome-page-hero">
       <div className="welcome-page-hero-text">
-        <p className="welcome-page-eyebrow">{_T("Geo's sportsbook desk")}</p>
-        <h1>{_T('Welcome back, Geo')}</h1>
+        <p className="welcome-page-eyebrow">{_T("{{username}}'s sportsbook desk", { username })}</p>
+        <h1>{_T('Welcome back, {{username}}', { username })}</h1>
         <p className="welcome-page-subhead">
           {_T('Track lines, lock picks, and keep your bankroll disciplined.')}
         </p>

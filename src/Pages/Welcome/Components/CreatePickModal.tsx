@@ -4,7 +4,7 @@ import FormActions from 'src/Pages/Welcome/Components/FormActions'
 import 'src/Pages/Welcome/Styles/CreatePickModal.css'
 import type { CreatePickModalProps } from 'src/Pages/types'
 import type { CreateBetFormValues } from 'src/types/bets'
-import { useCreateBet } from 'src/hooks/mutations/useCreateBet'
+import { useCreateBet } from 'src/hooks/useCreateBet'
 
 const CreatePickModal = ({ isOpen, onClose }: CreatePickModalProps) => {
   const _T = useT()
