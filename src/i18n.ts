@@ -34,9 +34,13 @@ const resources = {
         'Edit <code>src/App.tsx</code> and save to test HMR',
       'e.g. -110': 'e.g. -110',
       English: 'English',
-      'Geo picks': 'Geo picks',
-      "Geo's sportsbook desk": "Geo's sportsbook desk",
+      'Error setting up account: ': 'Error setting up account: ',
+      'Error: ': 'Error: ',
+      'Get Started': 'Get Started',
+      '{{username}} picks': '{{username}} picks',
+      "{{username}}'s sportsbook desk": "{{username}}'s sportsbook desk",
       'Invalid format': 'Invalid format',
+      "Let's set up your betting tracker.": "Let's set up your betting tracker.",
       Invincible: 'Invincible',
       Language: 'Language',
       'Last 15 min': 'Last 15 min',
@@ -84,22 +88,34 @@ const resources = {
       'Save pick': 'Save pick',
       Selection: 'Selection',
       'Set your first pick': 'Set your first pick',
+      'Setting up your account...': 'Setting up your account...',
+      'Setting up...': 'Setting up...',
       'Sharp money': 'Sharp money',
       Single: 'Single',
       Spanish: 'Spanish',
       'Stable lines': 'Stable lines',
       Standby: 'Standby',
+      'Starting bankroll is required': 'Starting bankroll is required',
+      'Starting bankroll must be greater than 0': 'Starting bankroll must be greater than 0',
+      'Starting Bankroll': 'Starting Bankroll',
       'Team vs Team': 'Team vs Team',
       'This field is required.': 'This field is required.',
       "Today's slate": "Today's slate",
       'Toggle dark mode': 'Toggle dark mode',
+      Username: 'Username',
+      'Username is required': 'Username is required',
+      'Username must be at least 2 characters': 'Username must be at least 2 characters',
       'Track lines, lock picks, and keep your bankroll disciplined.':
         'Track lines, lock picks, and keep your bankroll disciplined.',
       'View history': 'View history',
       'Vite + React': 'Vite + React',
       Waiting: 'Waiting',
       'Watching for signals': 'Watching for signals',
-      'Welcome back, Geo': 'Welcome back, Geo',
+      'Welcome back, {{username}}': 'Welcome back, {{username}}',
+      'Welcome! Your account has been set up successfully.':
+        'Welcome! Your account has been set up successfully.',
+      'Welcome to Invincible!': 'Welcome to Invincible!',
+      '¡Bienvenido a Invincible!': '¡Bienvenido a Invincible!',
       Win: 'Win',
     },
   },
@@ -135,9 +151,13 @@ const resources = {
         'Edita <code>src/App.tsx</code> y guarda para probar HMR',
       'e.g. -110': 'ej. -110',
       English: 'Inglés',
-      'Geo picks': 'Picks de Geo',
-      "Geo's sportsbook desk": 'Escritorio deportivo de Geo',
+      'Error setting up account: ': 'Error al configurar la cuenta: ',
+      'Error: ': 'Error: ',
+      'Get Started': 'Comenzar',
+      '{{username}} picks': 'Picks de {{username}}',
+      "{{username}}'s sportsbook desk": 'Escritorio deportivo de {{username}}',
       'Invalid format': 'Formato inválido',
+      "Let's set up your betting tracker.": 'Configuremos tu rastreador de apuestas.',
       Invincible: 'Invincible',
       Language: 'Idioma',
       'Last 15 min': 'Últimos 15 min',
@@ -185,39 +205,82 @@ const resources = {
       'Save pick': 'Guardar pick',
       Selection: 'Selección',
       'Set your first pick': 'Define tu primer pick',
+      'Setting up your account...': 'Configurando tu cuenta...',
+      'Setting up...': 'Configurando...',
       'Sharp money': 'Dinero sharp',
       Single: 'Simple',
       Spanish: 'Español',
       'Stable lines': 'Líneas estables',
       Standby: 'En espera',
+      'Starting bankroll is required': 'El bankroll inicial es obligatorio',
+      'Starting bankroll must be greater than 0': 'El bankroll inicial debe ser mayor que 0',
+      'Starting Bankroll': 'Bankroll Inicial',
       'Team vs Team': 'Equipo vs Equipo',
       'This field is required.': 'Este campo es obligatorio.',
       "Today's slate": 'Cartelera de hoy',
       'Toggle dark mode': 'Alternar modo oscuro',
+      Username: 'Nombre de usuario',
+      'Username is required': 'El nombre de usuario es obligatorio',
+      'Username must be at least 2 characters': 'El nombre de usuario debe tener al menos 2 caracteres',
       'Track lines, lock picks, and keep your bankroll disciplined.':
         'Sigue líneas, asegura picks y mantén tu bankroll disciplinado.',
       'View history': 'Ver historial',
       'Vite + React': 'Vite + React',
       Waiting: 'En espera',
       'Watching for signals': 'Vigilando señales',
-      'Welcome back, Geo': 'Bienvenido de nuevo, Geo',
+      'Welcome back, {{username}}': 'Bienvenido de nuevo, {{username}}',
+      'Welcome! Your account has been set up successfully.':
+        '¡Bienvenido! Tu cuenta ha sido configurada exitosamente.',
+      'Welcome to Invincible!': '¡Bienvenido a Invincible!',
+      '¡Bienvenido a Invincible!': '¡Bienvenido a Invincible!',
       Win: 'Ganada',
     },
   },
 } as const
 
-const defaultLanguage =
-  typeof navigator !== 'undefined' && navigator.language.startsWith('es')
-    ? 'es'
-    : 'en'
+/**
+ * Get saved language from database or use default
+ * This function is async and will be called during app initialization
+ */
+async function getSavedLanguage(): Promise<string> {
+  // Check if we're in Electron environment
+  if (typeof window !== 'undefined' && window.electronAPI?.database?.getUserSetting) {
+    try {
+      const response = await window.electronAPI.database.getUserSetting('language')
+      if (response.success && response.data) {
+        console.log('📖 Loaded saved language from database:', response.data)
+        return response.data
+      }
+    } catch (error) {
+      console.warn('⚠️ Failed to load saved language from database:', error)
+    }
+  }
 
+  // Fallback to navigator language detection
+  const defaultLanguage =
+    typeof navigator !== 'undefined' && navigator.language.startsWith('es')
+      ? 'es'
+      : 'en'
+
+  console.log('📖 Using default language from navigator:', defaultLanguage)
+  return defaultLanguage
+}
+
+// Initialize i18n with fallback language first
 void i18n.use(initReactI18next).init({
   resources,
   fallbackLng: 'en',
-  lng: defaultLanguage,
+  lng: 'en', // Start with English, will be updated after loading from database
   interpolation: {
     escapeValue: false,
   },
+})
+
+// Load saved language asynchronously and update i18n
+getSavedLanguage().then((language) => {
+  if (i18n.language !== language) {
+    void i18n.changeLanguage(language)
+  }
 })
 
 /**

@@ -1,0 +1,170 @@
+.onboarding-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(15, 23, 42, 0.98);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  padding: 24px;
+}
+
+.onboarding-dialog {
+  width: min(480px, 92vw);
+  border-radius: 18px;
+  border: 1px solid rgb(var(--border));
+  background-color: rgb(var(--surface));
+  color: rgb(var(--text));
+  padding: 32px;
+  box-shadow: 0 24px 50px rgba(15, 23, 42, 0.3);
+}
+
+.onboarding-header {
+  position: relative;
+  text-align: center;
+  padding: 0 50px; /* Add padding on both sides to account for back button */
+}
+
+.onboarding-back-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgb(var(--border));
+  background-color: rgb(var(--surface-2));
+  color: rgb(var(--text));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0;
+}
+
+.onboarding-back-button:hover {
+  background-color: rgb(var(--surface));
+  border-color: rgb(var(--primary));
+  transform: translateX(-2px);
+}
+
+.onboarding-back-button:focus-visible {
+  outline: 2px solid rgb(var(--info));
+  outline-offset: 2px;
+}
+
+.onboarding-back-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.onboarding-header h2 {
+  margin: 0 0 8px;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.onboarding-header p {
+  margin: 0 0 24px;
+  color: rgb(var(--muted));
+  font-size: 0.95rem;
+}
+
+.onboarding-error {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: rgba(239, 68, 68, 0.1);
+  color: rgb(var(--danger));
+  font-size: 0.9rem;
+}
+
+.onboarding-form {
+  display: grid;
+  gap: 20px;
+}
+
+.onboarding-field {
+  display: grid;
+  gap: 8px;
+}
+
+.onboarding-field label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: rgb(var(--text));
+}
+
+.onboarding-field input {
+  border-radius: 12px;
+  border: 1px solid rgb(var(--border));
+  padding: 12px 14px;
+  background-color: rgb(var(--surface-2));
+  color: rgb(var(--text));
+  font-family: inherit;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.onboarding-field input:focus {
+  outline: none;
+  border-color: rgb(var(--primary));
+}
+
+.onboarding-field input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.onboarding-field-error {
+  color: rgb(var(--danger));
+  font-size: 0.85rem;
+}
+
+.onboarding-actions {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.onboarding-button {
+  border-radius: 999px;
+  border: 1px solid rgb(var(--border));
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.onboarding-button-primary {
+  background-color: rgb(var(--primary));
+  border-color: rgb(var(--primary));
+  color: rgb(255 255 255);
+}
+
+.onboarding-button-primary:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.onboarding-button-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.onboarding-button:focus-visible {
+  outline: 2px solid rgb(var(--info));
+  outline-offset: 2px;
+}
+
+.onboarding-loading {
+  margin-top: 16px;
+  text-align: center;
+  color: rgb(var(--muted));
+  font-size: 0.9rem;
+}
+
