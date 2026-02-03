@@ -15,6 +15,7 @@
     "test:all": "npm run test && npm run test:electron",
     "preview": "vite preview",
     "prepare": "husky",
+    "postinstall": "electron-rebuild -f -w better-sqlite3",
     "electron": "NODE_ENV=development electron .",
     "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && npm run electron\"",
     "electron:build": "npm run build && electron-builder",
