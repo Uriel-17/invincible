@@ -26,10 +26,9 @@
     "src/types/bets.ts:MonthlyBetSummary"
   ],
   "ignoreDependencies": [
-    "ag-charts-community",
-    "ag-charts-react",
-    "ag-grid-community",
-    "ag-grid-react"
+    "@tanstack/react-table",
+    "recharts",
+    "@tanstack/react-query-devtools"
   ],
   "ignoreExportsUsedInFile": true,
   "rules": {

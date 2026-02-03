@@ -42,12 +42,30 @@ export interface DatabaseResponse<T> {
   error?: string
 }
 
+export interface InitializeUserData {
+  username: string
+  startingBankroll: number
+}
+
+export interface SetUserSettingResult {
+  needsRecalculation: boolean
+}
+
+export interface RecalculateStatisticsResult {
+  monthsRecalculated: number
+}
+
 export interface ElectronAPI {
   database: {
     createBet: (betData: unknown) => Promise<DatabaseResponse<BetRecord>>
     getBets: (filters?: BetFilters) => Promise<DatabaseResponse<BetRecord[]>>
     getBetById: (betId: string) => Promise<DatabaseResponse<BetRecord>>
     getCurrentMonthKey: () => Promise<DatabaseResponse<string>>
+    isFirstLaunch: () => Promise<DatabaseResponse<boolean>>
+    getUserSetting: (key: string) => Promise<DatabaseResponse<string | null>>
+    setUserSetting: (key: string, value: string) => Promise<DatabaseResponse<SetUserSettingResult>>
+    initializeUser: (userData: InitializeUserData) => Promise<DatabaseResponse<void>>
+    recalculateAllStatistics: () => Promise<DatabaseResponse<RecalculateStatisticsResult>>
   }
 }
 
