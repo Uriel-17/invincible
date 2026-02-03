@@ -9,3 +9,6 @@
 
 export const FIRST_LAUNCH_QC_KEY = 'firstLaunch'
 export const USER_SETTING_QC_KEY = 'userSetting'
+export const BANKROLL_QC_KEY = 'bankroll'
+export const MONTHLY_STATS_QC_KEY = 'monthlyStats'
+export const BETS_QC_KEY = 'bets'
