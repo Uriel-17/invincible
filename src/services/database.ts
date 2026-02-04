@@ -12,7 +12,7 @@ function isElectron(): boolean {
 /**
  * Get the Electron API (throws if not available)
  */
-function getElectronAPI() {
+export function getElectronAPI() {
   if (!isElectron()) {
     throw new Error('Electron API not available. Are you running in Electron?')
   }
