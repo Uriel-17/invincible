@@ -55,6 +55,20 @@ export interface RecalculateStatisticsResult {
   monthsRecalculated: number
 }
 
+export interface MonthlyStatistics {
+  monthKey: string
+  total_bets: number
+  total_wins: number
+  total_losses: number
+  total_pushes: number
+  total_cashouts: number
+  net_profit: number
+  total_wagered: number
+  roi: number
+  startingBankroll: number
+  endingBankroll: number
+}
+
 export interface ElectronAPI {
   database: {
     createBet: (betData: unknown) => Promise<DatabaseResponse<BetRecord>>
@@ -66,6 +80,8 @@ export interface ElectronAPI {
     setUserSetting: (key: string, value: string) => Promise<DatabaseResponse<SetUserSettingResult>>
     initializeUser: (userData: InitializeUserData) => Promise<DatabaseResponse<void>>
     recalculateAllStatistics: () => Promise<DatabaseResponse<RecalculateStatisticsResult>>
+    getCurrentBankroll: () => Promise<DatabaseResponse<number>>
+    updateMonthlyStatistics: (monthKey: string) => Promise<DatabaseResponse<MonthlyStatistics>>
   }
 }
 
