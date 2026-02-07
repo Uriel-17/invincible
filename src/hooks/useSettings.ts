@@ -4,7 +4,6 @@ import { SETTINGS_QC_KEY } from 'src/queryKeys'
 
 export interface SettingsData {
   username: string
-  startingBankroll: string
   language: string
   theme: string
 }
@@ -17,17 +16,16 @@ export function useSettings() {
   return useQuery({
     queryKey: [SETTINGS_QC_KEY],
     queryFn: async (): Promise<SettingsData> => {
-      const [username, startingBankroll, language] = await Promise.all([
+      const [username, language] = await Promise.all([
         getUserSetting('username'),
-        getUserSetting('starting_bankroll'),
         getUserSetting('language'),
       ])
-      const theme = typeof window !== 'undefined' 
+
+      const theme = typeof window !== 'undefined'
         ? localStorage.getItem('theme') || 'light'
         : 'light'
       return {
         username: username || '',
-        startingBankroll: startingBankroll || '',
         language: language || 'en',
         theme,
       }

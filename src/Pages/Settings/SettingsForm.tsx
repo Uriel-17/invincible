@@ -1,9 +1,10 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { useT } from 'src/hooks/useT'
 import { useSaveSettings } from 'src/hooks/useSaveSettings'
+import { useBankroll } from 'src/hooks/useBankroll'
 import type { SettingsData } from 'src/hooks/useSettings'
 import TextField from 'src/Components/Form/TextField'
-import { getUsernameValidation, getStartingBankrollValidation } from './settingsFieldValidations'
+import { getUsernameValidation } from './settingsFieldValidations'
 
 interface SettingsFormProps {
   initialData: SettingsData
@@ -12,6 +13,7 @@ interface SettingsFormProps {
 const SettingsForm = ({ initialData }: SettingsFormProps) => {
   const _T = useT()
   const mutation = useSaveSettings()
+  const { data: currentBankroll, formatCurrency } = useBankroll()
 
   const methods = useForm<SettingsData>({
     mode: 'onChange',
@@ -41,13 +43,15 @@ const SettingsForm = ({ initialData }: SettingsFormProps) => {
             fieldClassName="settings-field"
             errorClassName="settings-field-error"
           />
-          <TextField
-            name="startingBankroll"
-            label={_T('Starting Bankroll')}
-            {...getStartingBankrollValidation()}
-            fieldClassName="settings-field"
-            errorClassName="settings-field-error"
-          />
+          <div className="settings-field">
+            <span>{_T('Current Bankroll')}</span>
+            <div className="settings-bankroll-display">
+              {currentBankroll !== undefined ? formatCurrency(currentBankroll) : _T('Loading...')}
+            </div>
+            <span className="settings-field-hint">
+              {_T('Your bankroll is calculated from your betting activity.')}
+            </span>
+          </div>
         </div>
         <div className="settings-section">
           <h3 className="settings-section-title">{_T('Preferences')}</h3>
