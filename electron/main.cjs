@@ -16,7 +16,9 @@ const {
   isFirstLaunch,
   createBankrollSnapshot,
   updateMonthlyStatistics,
-  recalculateAllStatistics
+  recalculateAllStatistics,
+  getCurrentBankroll,
+  clearAllData
 } = require('./database.cjs')
 
 // Keep a global reference of the window object
@@ -128,6 +130,28 @@ function registerIPCHandlers() {
     }
   })
 
+  // Get current bankroll
+  ipcMain.handle('db:getCurrentBankroll', async () => {
+    try {
+      const result = getCurrentBankroll()
+      return { success: true, data: result }
+    } catch (error) {
+      console.error('❌ IPC: Error getting current bankroll:', error.message)
+      return { success: false, error: error.message }
+    }
+  })
+
+  // Update monthly statistics
+  ipcMain.handle('db:updateMonthlyStatistics', async (event, monthKey) => {
+    try {
+      const result = updateMonthlyStatistics(monthKey)
+      return { success: true, data: result }
+    } catch (error) {
+      console.error('❌ IPC: Error updating monthly statistics:', error.message)
+      return { success: false, error: error.message }
+    }
+  })
+
   // Initialize user (onboarding)
   ipcMain.handle('db:initializeUser', async (event, { username, startingBankroll }) => {
     try {
@@ -165,6 +189,24 @@ function registerIPCHandlers() {
       return { success: true }
     } catch (error) {
       console.error('❌ IPC: Error initializing user:', error.message)
+      return { success: false, error: error.message }
+    }
+  })
+
+  // Clear all data
+  ipcMain.handle('db:clearAllData', async () => {
+    try {
+      console.log('🗑️ IPC: Clearing all data...')
+      const result = clearAllData()
+
+      if (result.success) {
+        console.log(`✅ IPC: Cleared ${result.deletedRecords} records`)
+        return { success: true, data: { deletedRecords: result.deletedRecords } }
+      } else {
+        throw new Error(result.error)
+      }
+    } catch (error) {
+      console.error('❌ IPC: Error clearing all data:', error.message)
       return { success: false, error: error.message }
     }
   })

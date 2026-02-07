@@ -69,7 +69,27 @@ contextBridge.exposeInMainWorld('electronAPI', {
      * Recalculate all monthly statistics
      * @returns {Promise<{success: boolean, data?: {monthsRecalculated: number}, error?: string}>}
      */
-    recalculateAllStatistics: () => ipcRenderer.invoke('db:recalculateAllStatistics')
+    recalculateAllStatistics: () => ipcRenderer.invoke('db:recalculateAllStatistics'),
+
+    /**
+     * Get current bankroll amount
+     * @returns {Promise<{success: boolean, data?: number, error?: string}>}
+     */
+    getCurrentBankroll: () => ipcRenderer.invoke('db:getCurrentBankroll'),
+
+    /**
+     * Update monthly statistics for a given month
+     * @param {string} monthKey - Month key in format "YYYY-MM"
+     * @returns {Promise<{success: boolean, data?: any, error?: string}>}
+     */
+    updateMonthlyStatistics: (monthKey) => ipcRenderer.invoke('db:updateMonthlyStatistics', monthKey),
+
+    /**
+     * Clear all betting data (bets, parlay legs, bankroll snapshots, monthly archives)
+     * Keeps user_settings table intact
+     * @returns {Promise<{success: boolean, data?: {deletedRecords: number}, error?: string}>}
+     */
+    clearAllData: () => ipcRenderer.invoke('db:clearAllData')
   }
 })
 

@@ -3,6 +3,5 @@ remote_name="$1"
 if [ "$remote_name" = "origin" ]; then
   npm run lint -- --max-warnings=0
   npm run depcheck
-  npm test -- --run
-  npm run test:electron -- --run
+  npm run test:all
 fi
