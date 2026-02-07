@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useT } from 'src/hooks/useT'
 import { getElectronAPI } from 'src/services/database'
+import './Styles/ClearDataModal.css'
 
 interface ClearDataModalProps {
   isOpen: boolean
