@@ -124,7 +124,21 @@
 
 .welcome-page-stat-trend {
   font-size: 0.9rem;
-  color: rgb(var(--info));
+  color: rgb(var(--muted));
+}
+
+.welcome-page-stat-trend--positive {
+  color: rgb(var(--primary));
+  font-weight: 500;
+}
+
+.welcome-page-stat-trend--negative {
+  color: rgb(var(--danger));
+  font-weight: 500;
+}
+
+.welcome-page-stat-trend--neutral {
+  color: rgb(var(--muted));
 }
 
 .welcome-page-grid {
