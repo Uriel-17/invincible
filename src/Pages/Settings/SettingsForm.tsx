@@ -1,4 +1,4 @@
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { useMemo } from 'react';
 import { useT } from 'src/hooks/useT';
 import { useSaveSettings } from 'src/hooks/useSaveSettings';
@@ -18,14 +18,17 @@ const SettingsForm = ({ initialData }: SettingsFormProps) => {
     defaultValues: initialData,
   });
 
-  const currentValues = methods.watch();
+  const username = useWatch({ control: methods.control, name: 'username' });
+  const language = useWatch({ control: methods.control, name: 'language' });
+  const theme = useWatch({ control: methods.control, name: 'theme' });
+
   const hasChanges = useMemo(() => {
     return (
-      currentValues.username !== initialData.username ||
-      currentValues.language !== initialData.language ||
-      currentValues.theme !== initialData.theme
+      username !== initialData.username ||
+      language !== initialData.language ||
+      theme !== initialData.theme
     );
-  }, [currentValues, initialData]);
+  }, [username, language, theme, initialData]);
 
   const onSubmit = (values: SettingsData) => {
     mutation.mutate(values, {
