@@ -1,5 +1,6 @@
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { useMemo } from 'react';
+import { useNavigate } from '@tanstack/react-router';
 import { useT } from 'src/hooks/useT';
 import { useSaveSettings } from 'src/hooks/useSaveSettings';
 import { useBankroll } from 'src/hooks/useBankroll';
@@ -11,6 +12,7 @@ import type { PreferencesSectionProps, SettingsActionsProps, SettingsFormProps, 
 const SettingsForm = ({ initialData }: SettingsFormProps) => {
   const _T = useT();
   const mutation = useSaveSettings();
+  const navigate = useNavigate();
   const { data: currentBankroll, formatCurrency } = useBankroll();
 
   const methods = useForm<SettingsData>({
@@ -18,27 +20,38 @@ const SettingsForm = ({ initialData }: SettingsFormProps) => {
     defaultValues: initialData,
   });
 
+  const { errors } = methods.formState;
+  const isValid = Object.keys(errors).length === 0;
+
   const username = useWatch({ control: methods.control, name: 'username' });
   const language = useWatch({ control: methods.control, name: 'language' });
   const theme = useWatch({ control: methods.control, name: 'theme' });
 
+  const { username: initialUsername, language: initialLanguage, theme: initialTheme } = initialData;
+
   const hasChanges = useMemo(() => {
     return (
-      username !== initialData.username ||
-      language !== initialData.language ||
-      theme !== initialData.theme
+      username !== initialUsername ||
+      language !== initialLanguage ||
+      theme !== initialTheme
     );
-  }, [username, language, theme, initialData]);
+  }, [username, language, theme, initialUsername, initialLanguage, initialTheme]);
 
   const onSubmit = (values: SettingsData) => {
     mutation.mutate(values, {
       onSuccess: () => {
-        alert(_T('Settings saved successfully!'));
+        methods.reset(values);
+        navigate({ to: '/' });
       },
       onError: (error: Error) => {
         alert(_T('Error saving settings: ') + error.message);
       },
     });
+  };
+
+  const handleCancel = () => {
+    methods.reset(initialData);
+    navigate({ to: '/' });
   };
 
   return (
@@ -53,8 +66,9 @@ const SettingsForm = ({ initialData }: SettingsFormProps) => {
         <SettingsActions
           _T={_T}
           hasChanges={hasChanges}
-          isValid={methods.formState.isValid}
+          isValid={isValid}
           isPending={mutation.isPending}
+          onCancel={handleCancel}
         />
         {mutation.isError && mutation.error && (
           <div className='settings-error'>
@@ -138,9 +152,18 @@ const SettingsActions = ({
   hasChanges,
   isValid,
   isPending,
+  onCancel,
 }: SettingsActionsProps) => {
   return (
     <div className='settings-actions'>
+      <button
+        onClick={onCancel}
+        type='button'
+        className='settings-button settings-button-cancel'
+        disabled={isPending}
+      >
+        {_T('Cancel')}
+      </button>
       <button
         type='submit'
         className='settings-button settings-button-primary'
