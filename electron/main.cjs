@@ -193,6 +193,54 @@ function registerIPCHandlers() {
     }
   })
 
+  // Add funds to bankroll
+  ipcMain.handle('db:addFunds', async (event, amount) => {
+    try {
+      console.log('💰 IPC: Adding funds to bankroll...', amount)
+
+      // Get database instance
+      const db = require('./database.cjs').getDatabase()
+
+      // Create transaction for atomic operation
+      const transaction = db.transaction(() => {
+        // Get current starting bankroll
+        const currentSetting = getUserSetting('starting_bankroll')
+        const currentStartingBankroll = currentSetting ? parseFloat(currentSetting) : 0
+
+        // Calculate new starting bankroll
+        const newStartingBankroll = currentStartingBankroll + amount
+
+        // Update starting bankroll
+        setUserSetting('starting_bankroll', newStartingBankroll.toString())
+
+        // Create bankroll snapshot
+        const monthKey = getCurrentMonthKey()
+        const now = new Date().toISOString()
+        const newBankroll = getCurrentBankroll()
+
+        createBankrollSnapshot({
+          amount: newBankroll,
+          changeAmount: amount,
+          changeReason: 'manual_adjustment',
+          monthKey: monthKey,
+          timestamp: now
+        })
+
+        // Recalculate all statistics since starting bankroll changed
+        recalculateAllStatistics()
+      })
+
+      // Execute transaction
+      transaction()
+
+      console.log('✅ IPC: Funds added successfully')
+      return { success: true }
+    } catch (error) {
+      console.error('❌ IPC: Error adding funds:', error.message)
+      return { success: false, error: error.message }
+    }
+  })
+
   // Clear all data
   ipcMain.handle('db:clearAllData', async () => {
     try {
