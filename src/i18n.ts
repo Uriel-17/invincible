@@ -5,8 +5,15 @@ const resources = {
   en: {
     translation: {
       '--': '--',
+      'Add Funds': 'Add Funds',
+      'Add Funds to Bankroll': 'Add Funds to Bankroll',
       'Add leg': 'Add leg',
+      'Adding...': 'Adding...',
       Alerts: 'Alerts',
+      'Amount cannot exceed 1,000,000': 'Amount cannot exceed 1,000,000',
+      'Amount is required': 'Amount is required',
+      'Amount must be at least 0.01': 'Amount must be at least 0.01',
+      'Amount to Add': 'Amount to Add',
       'All data has been cleared successfully': 'All data has been cleared successfully',
       'Are you sure you want to delete this months bets?':
         'Are you sure you want to delete this months bets?',
@@ -44,6 +51,8 @@ const resources = {
       'Error saving settings: ': 'Error saving settings: ',
       'Error setting up account: ': 'Error setting up account: ',
       'Error: ': 'Error: ',
+      'Increase your starting bankroll by adding funds.':
+        'Increase your starting bankroll by adding funds.',
       'Get Started': 'Get Started',
       '{{username}} picks': '{{username}} picks',
       "{{username}}'s sportsbook desk": "{{username}}'s sportsbook desk",
@@ -84,6 +93,8 @@ const resources = {
       'Permanently delete all your betting data. This action cannot be undone.':
         'Permanently delete all your betting data. This action cannot be undone.',
       'Please enter a valid date': 'Please enter a valid date',
+      'Please enter a valid amount (e.g., 100 or 100.50)':
+        'Please enter a valid amount (e.g., 100 or 100.50)',
       'Please enter a valid number': 'Please enter a valid number',
       'Please enter a valid number with max 2 decimal places':
         'Please enter a valid number with max 2 decimal places',
@@ -146,13 +157,22 @@ const resources = {
       'Welcome to Invincible!': 'Welcome to Invincible!',
       '¡Bienvenido a Invincible!': '¡Bienvenido a Invincible!',
       Win: 'Win',
+      'Funds added successfully!': 'Funds added successfully!',
+      'Error adding funds: ': 'Error adding funds: ',
     },
   },
   es: {
     translation: {
       '--': '--',
+      'Add Funds': 'Agregar Fondos',
+      'Add Funds to Bankroll': 'Agregar Fondos al Bankroll',
       'Add leg': 'Agregar leg',
+      'Adding...': 'Agregando...',
       Alerts: 'Alertas',
+      'Amount cannot exceed 1,000,000': 'El monto no puede exceder 1,000,000',
+      'Amount is required': 'El monto es obligatorio',
+      'Amount must be at least 0.01': 'El monto debe ser al menos 0.01',
+      'Amount to Add': 'Monto a Agregar',
       'All data has been cleared successfully': 'Todos los datos han sido eliminados exitosamente',
       'Are you sure you want to delete this months bets?':
         '¿Estás seguro de que quieres borrar las apuestas de este mes?',
@@ -190,6 +210,8 @@ const resources = {
       'Error saving settings: ': 'Error al guardar configuración: ',
       'Error setting up account: ': 'Error al configurar la cuenta: ',
       'Error: ': 'Error: ',
+      'Increase your starting bankroll by adding funds.':
+        'Aumenta tu bankroll inicial agregando fondos.',
       'Get Started': 'Comenzar',
       '{{username}} picks': 'Picks de {{username}}',
       "{{username}}'s sportsbook desk": 'Escritorio deportivo de {{username}}',
@@ -229,6 +251,8 @@ const resources = {
       'Permanently delete all your betting data. This action cannot be undone.':
         'Eliminar permanentemente todos tus datos de apuestas. Esta acción no se puede deshacer.',
       'Placed at': 'Fecha y hora',
+      'Please enter a valid amount (e.g., 100 or 100.50)':
+        'Por favor ingresa un monto válido (ej., 100 o 100.50)',
       'Please enter a valid date': 'Por favor ingresa una fecha válida',
       'Please enter a valid number': 'Por favor ingresa un número válido',
       'Please enter a valid number with max 2 decimal places':
@@ -292,6 +316,8 @@ const resources = {
       'Welcome to Invincible!': '¡Bienvenido a Invincible!',
       '¡Bienvenido a Invincible!': '¡Bienvenido a Invincible!',
       Win: 'Ganada',
+      'Funds added successfully!': 'Fondos agregados exitosamente!',
+      'Error adding funds: ': 'Error al agregar fondos: ',
     },
   },
 } as const
