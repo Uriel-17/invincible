@@ -1,0 +1,273 @@
+.settings-page {
+  height: 100vh;
+  padding: 2rem;
+  background-color: rgb(var(--background));
+  color: rgb(var(--text));
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.settings-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding-bottom: 4rem;
+}
+
+.settings-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: rgb(var(--text));
+}
+
+.settings-loading,
+.settings-error {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.1rem;
+}
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.settings-section {
+  background-color: rgb(var(--card-background));
+  border: 1px solid rgb(var(--border));
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.settings-section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: rgb(var(--text));
+}
+
+.settings-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.settings-field:last-child {
+  margin-bottom: 0;
+}
+
+.settings-field > span:first-child {
+  font-weight: 500;
+  color: rgb(var(--text));
+}
+
+.settings-field input[type="text"],
+.settings-field select {
+  padding: 0.75rem;
+  border: 1px solid rgb(var(--border));
+  border-radius: 4px;
+  background-color: rgb(var(--background));
+  color: rgb(var(--text));
+  font-size: 1rem;
+}
+
+.settings-field input[type="text"]:focus,
+.settings-field select:focus {
+  outline: none;
+  border-color: rgb(var(--primary));
+}
+
+.settings-field-error {
+  color: rgb(var(--error));
+  font-size: 0.875rem;
+}
+
+.settings-bankroll-display {
+  padding: 0.75rem;
+  border: 1px solid rgb(var(--border));
+  border-radius: 4px;
+  background-color: rgb(var(--surface-2));
+  color: rgb(var(--text));
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.settings-field-hint {
+  font-size: 0.875rem;
+  color: rgb(var(--muted));
+  font-style: italic;
+}
+
+.settings-theme-options {
+  display: flex;
+  gap: 1rem;
+}
+
+.settings-radio-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.settings-radio-option input[type="radio"] {
+  cursor: pointer;
+}
+
+.settings-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.settings-button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.settings-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.settings-button-primary {
+  background-color: rgb(var(--primary));
+  color: white;
+}
+
+.settings-button-primary:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.settings-button-danger {
+  background-color: #dc2626;
+  color: white;
+}
+
+.settings-button-danger:hover:not(:disabled) {
+  background-color: #b91c1c;
+}
+
+.settings-danger-zone {
+  margin: 20px 0px 20px 0px;
+  border-color: #dc2626;
+}
+
+.settings-danger-description {
+  margin-bottom: 1rem;
+  color: rgb(var(--text-secondary));
+}
+
+.clear-data-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.clear-data-dialog {
+  background-color: rgb(var(--card-background));
+  border: 1px solid rgb(var(--border));
+  border-radius: 8px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.clear-data-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: rgb(var(--text));
+}
+
+.clear-data-content {
+  margin-bottom: 1.5rem;
+}
+
+.clear-data-warning {
+  color: #dc2626;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.clear-data-description {
+  margin-bottom: 1rem;
+  color: rgb(var(--text));
+  line-height: 1.5;
+}
+
+.clear-data-instruction {
+  margin-bottom: 0.5rem;
+  color: rgb(var(--text));
+}
+
+.clear-data-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid rgb(var(--border));
+  border-radius: 4px;
+  background-color: rgb(var(--background));
+  color: rgb(var(--text));
+  font-size: 1rem;
+}
+
+.clear-data-input:focus {
+  outline: none;
+  border-color: #dc2626;
+}
+
+.clear-data-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.clear-data-button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.clear-data-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.clear-data-button-cancel {
+  background-color: rgb(var(--border));
+  color: rgb(var(--text));
+}
+
+.clear-data-button-cancel:hover:not(:disabled) {
+  opacity: 0.8;
+}
+
+.clear-data-button-danger {
+  background-color: #dc2626;
+  color: white;
+}
+
+.clear-data-button-danger:hover:not(:disabled) {
+  background-color: #b91c1c;
+}

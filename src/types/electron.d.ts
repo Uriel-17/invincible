@@ -55,6 +55,10 @@ export interface RecalculateStatisticsResult {
   monthsRecalculated: number
 }
 
+export interface ClearAllDataResult {
+  deletedRecords: number
+}
+
 export interface MonthlyStatistics {
   monthKey: string
   total_bets: number
@@ -82,6 +86,7 @@ export interface ElectronAPI {
     recalculateAllStatistics: () => Promise<DatabaseResponse<RecalculateStatisticsResult>>
     getCurrentBankroll: () => Promise<DatabaseResponse<number>>
     updateMonthlyStatistics: (monthKey: string) => Promise<DatabaseResponse<MonthlyStatistics>>
+    clearAllData: () => Promise<DatabaseResponse<ClearAllDataResult>>
   }
 }
 

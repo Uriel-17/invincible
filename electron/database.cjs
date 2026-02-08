@@ -361,8 +361,7 @@ function updateMonthlyStatistics(monthKey) {
         net_profit = ?,
         roi = ?,
         starting_bankroll = ?,
-        ending_bankroll = ?,
-        updated_at = datetime('now')
+        ending_bankroll = ?
       WHERE month_key = ?
     `).run(
       stats.total_bets,
@@ -674,6 +673,58 @@ function isFirstLaunch() {
   }
 }
 
+/**
+ * Clear all betting data (bets, parlay legs, bankroll snapshots, monthly archives)
+ * Keeps user_settings table intact
+ * @returns {Object} { success: boolean, deletedRecords: number }
+ */
+function clearAllData() {
+  try {
+    console.log('🗑️ Clearing all betting data...')
+
+    const transaction = db.transaction(() => {
+      // Delete all parlay legs first (foreign key constraint)
+      const deletedLegs = db.prepare('DELETE FROM parlay_legs').run()
+
+      // Delete all bets
+      const deletedBets = db.prepare('DELETE FROM bets').run()
+
+      // Delete all bankroll snapshots
+      const deletedSnapshots = db.prepare('DELETE FROM bankroll_snapshots').run()
+
+      // Delete all monthly archives
+      const deletedArchives = db.prepare('DELETE FROM monthly_archives').run()
+
+      const totalDeleted =
+        deletedLegs.changes +
+        deletedBets.changes +
+        deletedSnapshots.changes +
+        deletedArchives.changes
+
+      console.log(`✅ Deleted ${totalDeleted} records:`)
+      console.log(`   - Parlay legs: ${deletedLegs.changes}`)
+      console.log(`   - Bets: ${deletedBets.changes}`)
+      console.log(`   - Bankroll snapshots: ${deletedSnapshots.changes}`)
+      console.log(`   - Monthly archives: ${deletedArchives.changes}`)
+
+      return totalDeleted
+    })
+
+    const deletedRecords = transaction()
+
+    return {
+      success: true,
+      deletedRecords
+    }
+  } catch (error) {
+    console.error('❌ Error clearing all data:', error.message)
+    return {
+      success: false,
+      error: error.message
+    }
+  }
+}
+
 // Export functions
 module.exports = {
   initDatabase,
@@ -690,6 +741,7 @@ module.exports = {
   getCurrentBankroll,
   getUserSetting,
   setUserSetting,
-  isFirstLaunch
+  isFirstLaunch,
+  clearAllData
 }
 
