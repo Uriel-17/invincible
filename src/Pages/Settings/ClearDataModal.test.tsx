@@ -556,8 +556,8 @@ describe('ClearDataModal', () => {
       const user = userEvent.setup()
 
       // Mock API with delay
-      let resolveAPI: (value: any) => void
-      const apiPromise = new Promise((resolve) => {
+      let resolveAPI: ((value: { success: boolean; data: { deletedRecords: number } }) => void) | undefined
+      const apiPromise = new Promise<{ success: boolean; data: { deletedRecords: number } }>((resolve) => {
         resolveAPI = resolve
       })
       mockAPI.database.clearAllData = vi.fn().mockReturnValue(apiPromise)
@@ -588,8 +588,8 @@ describe('ClearDataModal', () => {
     it('disables Cancel button during clearing operation', async () => {
       const user = userEvent.setup()
 
-      let resolveAPI: (value: any) => void
-      const apiPromise = new Promise((resolve) => {
+      let resolveAPI: ((value: { success: boolean; data: { deletedRecords: number } }) => void) | undefined
+      const apiPromise = new Promise<{ success: boolean; data: { deletedRecords: number } }>((resolve) => {
         resolveAPI = resolve
       })
       mockAPI.database.clearAllData = vi.fn().mockReturnValue(apiPromise)
@@ -616,8 +616,8 @@ describe('ClearDataModal', () => {
     it('disables input field during clearing operation', async () => {
       const user = userEvent.setup()
 
-      let resolveAPI: (value: any) => void
-      const apiPromise = new Promise((resolve) => {
+      let resolveAPI: ((value: { success: boolean; data: { deletedRecords: number } }) => void) | undefined
+      const apiPromise = new Promise<{ success: boolean; data: { deletedRecords: number } }>((resolve) => {
         resolveAPI = resolve
       })
       mockAPI.database.clearAllData = vi.fn().mockReturnValue(apiPromise)
@@ -643,8 +643,8 @@ describe('ClearDataModal', () => {
     it('changes button text to "Clearing..." during operation', async () => {
       const user = userEvent.setup()
 
-      let resolveAPI: (value: any) => void
-      const apiPromise = new Promise((resolve) => {
+      let resolveAPI: ((value: { success: boolean; data: { deletedRecords: number } }) => void) | undefined
+      const apiPromise = new Promise<{ success: boolean; data: { deletedRecords: number } }>((resolve) => {
         resolveAPI = resolve
       })
       mockAPI.database.clearAllData = vi.fn().mockReturnValue(apiPromise)
@@ -654,7 +654,7 @@ describe('ClearDataModal', () => {
       })
 
       const input = screen.getByPlaceholderText('DELETE')
-      let clearButton = screen.getByRole('button', { name: 'Clear All Data' })
+      const clearButton = screen.getByRole('button', { name: 'Clear All Data' })
 
       await user.type(input, 'DELETE')
       await user.click(clearButton)
