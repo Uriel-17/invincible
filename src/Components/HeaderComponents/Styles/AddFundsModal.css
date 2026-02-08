@@ -1,0 +1,163 @@
+.add-funds-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  padding: 24px;
+}
+
+.add-funds-dialog {
+  width: min(480px, 92vw);
+  border-radius: 18px;
+  border: 1px solid rgb(var(--border));
+  background-color: rgb(var(--surface));
+  color: rgb(var(--text));
+  padding: 32px;
+  box-shadow: 0 24px 50px rgba(15, 23, 42, 0.3);
+}
+
+.add-funds-header {
+  margin-bottom: 24px;
+}
+
+.add-funds-header h2 {
+  margin: 0 0 8px;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: rgb(var(--text));
+}
+
+.add-funds-header p {
+  margin: 0;
+  color: rgb(var(--muted));
+  font-size: 0.95rem;
+}
+
+.add-funds-current-bankroll {
+  margin: 16px 0 24px;
+  padding: 16px;
+  border-radius: 12px;
+  background-color: rgb(var(--surface-2));
+  border: 1px solid rgb(var(--border));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.add-funds-current-bankroll-label {
+  font-size: 0.95rem;
+  color: rgb(var(--muted));
+  font-weight: 500;
+}
+
+.add-funds-current-bankroll-amount {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: rgb(var(--primary));
+}
+
+.add-funds-form {
+  display: grid;
+  gap: 20px;
+}
+
+.add-funds-field {
+  display: grid;
+  gap: 8px;
+}
+
+.add-funds-field label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: rgb(var(--text));
+}
+
+.add-funds-field input {
+  border-radius: 12px;
+  border: 1px solid rgb(var(--border));
+  padding: 12px 14px;
+  background-color: rgb(var(--surface-2));
+  color: rgb(var(--text));
+  font-family: inherit;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.add-funds-field input:focus {
+  outline: none;
+  border-color: rgb(var(--primary));
+}
+
+.add-funds-field input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.add-funds-field-error {
+  color: rgb(var(--danger));
+  font-size: 0.85rem;
+}
+
+.add-funds-error {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: rgba(239, 68, 68, 0.1);
+  color: rgb(var(--danger));
+  font-size: 0.9rem;
+}
+
+.add-funds-actions {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.add-funds-button {
+  border-radius: 999px;
+  border: 1px solid rgb(var(--border));
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.add-funds-button-cancel {
+  background-color: rgb(var(--surface-2));
+  color: rgb(var(--text));
+}
+
+.add-funds-button-cancel:hover:not(:disabled) {
+  background-color: rgb(var(--surface));
+  border-color: rgb(var(--primary));
+}
+
+.add-funds-button-primary {
+  background-color: rgb(var(--primary));
+  border-color: rgb(var(--primary));
+  color: rgb(255 255 255);
+}
+
+.add-funds-button-primary:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.add-funds-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.add-funds-button:focus-visible {
+  outline: 2px solid rgb(var(--info));
+  outline-offset: 2px;
+}
+
