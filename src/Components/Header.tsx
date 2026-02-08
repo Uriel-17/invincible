@@ -2,8 +2,8 @@ import './Styles/Header.css'
 import { useT } from 'src/hooks/useT'
 import { Link } from '@tanstack/react-router'
 import ThemeToggle from 'src/Components/HeaderComponents/ThemeToggle'
-import ClearMonthBtn from 'src/Components/HeaderComponents/ClearMonthBtn'
-import SwitchLanguageBtn from 'src/Components/HeaderComponents/SwitchLanguageBtn'
+import SettingsBtn from 'src/Components/HeaderComponents/SettingsBtn'
+import AddFundsBtn from 'src/Components/HeaderComponents/AddFundsBtn'
 
 const Header = () => {
   const _T = useT()
@@ -14,8 +14,8 @@ const Header = () => {
         {_T('Invincible')}
       </Link>
       <div className="app-header-actions">
-        <SwitchLanguageBtn />
-        <ClearMonthBtn />
+        <AddFundsBtn />
+        <SettingsBtn/>
         <ThemeToggle />
       </div>
     </header>
