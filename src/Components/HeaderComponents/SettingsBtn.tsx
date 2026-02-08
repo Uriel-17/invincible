@@ -1,5 +1,6 @@
 import { useNavigate } from '@tanstack/react-router'
 import { useT } from 'src/hooks/useT'
+import './Styles/HeaderButtons.css'
 
 const SettingsBtn = () => {
   const _T = useT()
@@ -10,10 +11,10 @@ const SettingsBtn = () => {
   }
 
   return (
-    <div className="switch-language">
+    <div className="header-btn-wrapper">
       <button
         type="button"
-        className="switch-language-button"
+        className="header-btn header-btn-secondary"
         onClick={handleClick}
       >
         {_T('Settings')}

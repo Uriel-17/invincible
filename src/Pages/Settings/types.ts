@@ -21,4 +21,5 @@ export interface SettingsActionsProps {
   hasChanges: boolean;
   isValid: boolean;
   isPending: boolean;
+  onCancel: () => void;
 }

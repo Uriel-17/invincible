@@ -86,6 +86,7 @@ export interface ElectronAPI {
     recalculateAllStatistics: () => Promise<DatabaseResponse<RecalculateStatisticsResult>>
     getCurrentBankroll: () => Promise<DatabaseResponse<number>>
     updateMonthlyStatistics: (monthKey: string) => Promise<DatabaseResponse<MonthlyStatistics>>
+    addFunds: (amount: number) => Promise<DatabaseResponse<void>>
     clearAllData: () => Promise<DatabaseResponse<ClearAllDataResult>>
   }
 }

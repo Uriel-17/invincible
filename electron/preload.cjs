@@ -85,6 +85,13 @@ contextBridge.exposeInMainWorld('electronAPI', {
     updateMonthlyStatistics: (monthKey) => ipcRenderer.invoke('db:updateMonthlyStatistics', monthKey),
 
     /**
+     * Add funds to bankroll
+     * @param {number} amount - Amount to add to starting bankroll
+     * @returns {Promise<{success: boolean, error?: string}>}
+     */
+    addFunds: (amount) => ipcRenderer.invoke('db:addFunds', amount),
+
+    /**
      * Clear all betting data (bets, parlay legs, bankroll snapshots, monthly archives)
      * Keeps user_settings table intact
      * @returns {Promise<{success: boolean, data?: {deletedRecords: number}, error?: string}>}
