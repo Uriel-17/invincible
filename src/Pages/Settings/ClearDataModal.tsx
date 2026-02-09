@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useT } from 'src/hooks/useT'
 import { getElectronAPI } from 'src/services/database'
 import './Styles/ClearDataModal.css'
+import { useNavigate } from '@tanstack/react-router'
 
 interface ClearDataModalProps {
   isOpen: boolean
@@ -12,6 +13,7 @@ interface ClearDataModalProps {
 const ClearDataModal = ({ isOpen, onClose }: ClearDataModalProps) => {
   const _T = useT()
   const queryClient = useQueryClient()
+  const navigate = useNavigate();
   const [confirmText, setConfirmText] = useState('')
   const [isClearing, setIsClearing] = useState(false)
 
@@ -20,7 +22,7 @@ const ClearDataModal = ({ isOpen, onClose }: ClearDataModalProps) => {
   }
 
   const handleConfirm = async () => {
-    if (confirmText !== 'DELETE') {
+    if (confirmText.toUpperCase() !== 'DELETE') {
       alert(_T('Please type DELETE to confirm'))
       return
     }
@@ -33,17 +35,15 @@ const ClearDataModal = ({ isOpen, onClose }: ClearDataModalProps) => {
       if (response.success) {
         console.log('✅ All data cleared successfully')
         queryClient.invalidateQueries()
-        alert(_T('All data has been cleared successfully'))
         setConfirmText('')
         onClose()
+        navigate({ to: '/' });
       } else {
         throw new Error(response.error || 'Failed to clear data')
       }
     } catch (error) {
       console.error('❌ Failed to clear data:', error)
       alert(_T('Error clearing data: ') + (error as Error).message)
-    } finally {
-      setIsClearing(false)
     }
   }
 
@@ -99,7 +99,7 @@ const ClearDataModal = ({ isOpen, onClose }: ClearDataModalProps) => {
             type="button"
             className="clear-data-button clear-data-button-danger"
             onClick={handleConfirm}
-            disabled={isClearing || confirmText !== 'DELETE'}
+            disabled={isClearing || confirmText.toUpperCase() !== 'DELETE'}
           >
             {isClearing ? _T('Clearing...') : _T('Clear All Data')}
           </button>
