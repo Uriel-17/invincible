@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import i18n, { t, getSavedLanguage } from './i18n'
+import type { ElectronAPI } from './types/electron'
 
 /**
  * CRITICAL: Infinite Loop Prevention Tests
@@ -56,7 +57,7 @@ describe('Infinite Loop Prevention', () => {
     it('does not access window.electronAPI during module import', () => {
       // Mock window.electronAPI to track if it's accessed
       const mockGetUserSetting = vi.fn()
-      const originalElectronAPI = (window as any).electronAPI
+      const originalElectronAPI = window.electronAPI
 
       // Set up a getter that will throw if accessed during import
       Object.defineProperty(window, 'electronAPI', {
@@ -66,7 +67,7 @@ describe('Infinite Loop Prevention', () => {
             database: {
               getUserSetting: mockGetUserSetting
             }
-          }
+          } as unknown as ElectronAPI
         },
         configurable: true
       })
@@ -76,9 +77,9 @@ describe('Infinite Loop Prevention', () => {
 
       // Restore original
       if (originalElectronAPI) {
-        (window as any).electronAPI = originalElectronAPI
+        window.electronAPI = originalElectronAPI
       } else {
-        delete (window as any).electronAPI
+        delete (window as { electronAPI?: ElectronAPI }).electronAPI
       }
     })
   })
@@ -95,11 +96,12 @@ describe('Infinite Loop Prevention', () => {
       })
 
       // Mock window.electronAPI
-      ;(window as any).electronAPI = {
+      const mockAPI = {
         database: {
           getUserSetting: mockGetUserSetting
         }
       }
+      ;(window as { electronAPI?: ElectronAPI }).electronAPI = mockAPI as unknown as ElectronAPI
 
       // Call getSavedLanguage explicitly
       const language = await getSavedLanguage()
@@ -110,12 +112,12 @@ describe('Infinite Loop Prevention', () => {
       expect(language).toBe('es')
 
       // Clean up
-      delete (window as any).electronAPI
+      delete (window as { electronAPI?: ElectronAPI }).electronAPI
     })
 
     it('returns navigator language when electronAPI is not available', async () => {
       // Ensure electronAPI is not available
-      delete (window as any).electronAPI
+      delete (window as { electronAPI?: ElectronAPI }).electronAPI
 
       const language = await getSavedLanguage()
 
@@ -127,11 +129,12 @@ describe('Infinite Loop Prevention', () => {
       const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
       const mockGetUserSetting = vi.fn().mockRejectedValue(new Error('Database error'))
 
-      ;(window as any).electronAPI = {
+      const mockAPI = {
         database: {
           getUserSetting: mockGetUserSetting
         }
       }
+      ;(window as { electronAPI?: ElectronAPI }).electronAPI = mockAPI as unknown as ElectronAPI
 
       const language = await getSavedLanguage()
 
@@ -143,7 +146,7 @@ describe('Infinite Loop Prevention', () => {
       )
 
       consoleWarnSpy.mockRestore()
-      delete (window as any).electronAPI
+      delete (window as { electronAPI?: ElectronAPI }).electronAPI
     })
   })
 })
