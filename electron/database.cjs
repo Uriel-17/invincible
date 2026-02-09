@@ -21,12 +21,12 @@ function initDatabase() {
   
   // Enable foreign keys
   db.pragma('foreign_keys = ON')
-  
+
   // Create tables
   createTables()
-  
+
   console.log('✅ Database initialized successfully!')
-  
+
   return db
 }
 
@@ -119,11 +119,13 @@ function createTables() {
       month_key TEXT NOT NULL,
       timestamp TEXT NOT NULL DEFAULT (datetime('now')),
       amount REAL NOT NULL CHECK (amount >= 0),
+      change_amount REAL NOT NULL,
       change_reason TEXT NOT NULL CHECK (change_reason IN ('initial', 'bet_win', 'bet_loss', 'bet_cashout', 'manual_adjustment', 'month_start')),
-      related_bet_id TEXT,
+      bet_id TEXT,
       notes TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
       FOREIGN KEY (month_key) REFERENCES monthly_archives(month_key),
-      FOREIGN KEY (related_bet_id) REFERENCES bets(id)
+      FOREIGN KEY (bet_id) REFERENCES bets(id)
     )
   `)
   
@@ -140,7 +142,7 @@ function createTables() {
   
   // Insert initial schema version
   db.exec(`INSERT OR IGNORE INTO schema_version (version) VALUES (1)`)
-  
+
   console.log('✅ Database tables created successfully!')
 }
 
