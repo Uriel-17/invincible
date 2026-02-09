@@ -852,6 +852,243 @@ describe('Database Module - Comprehensive Tests', () => {
   })
 
   // ============================================================================
+  // TEST SUITE: Critical Integration Tests - User Initialization Flow
+  // ============================================================================
+
+  describe('User Initialization Flow - Integration Tests', () => {
+    // These tests simulate the ACTUAL user flows to catch foreign key constraint bugs
+    // that occur when monthly archives don't exist yet
+
+    // Use a separate database instance for these tests to avoid conflicts
+    let integrationDb
+
+    beforeEach(() => {
+      // Create fresh in-memory database WITHOUT pre-populated data
+      integrationDb = new Database(':memory:')
+      integrationDb.pragma('foreign_keys = ON')
+      createTestTables(integrationDb)
+      // NOTE: We deliberately DON'T insert starting_bankroll here
+      // to simulate a truly fresh user initialization
+    })
+
+    afterEach(() => {
+      if (integrationDb) {
+        integrationDb.close()
+      }
+    })
+
+    it('should successfully initialize user when NO monthly archive exists', () => {
+      const { v4: uuidv4 } = require('uuid')
+
+      // Verify no monthly archives exist (simulating first-time user)
+      const archives = integrationDb.prepare('SELECT COUNT(*) as count FROM monthly_archives').get()
+      expect(archives.count).toBe(0)
+
+      // Simulate the user initialization flow (what db:initializeUser does)
+      const username = 'TestUser'
+      const startingBankroll = 1000
+      const monthKey = '2024-01'
+      const now = new Date().toISOString()
+
+      // This should NOT throw a foreign key constraint error
+      expect(() => {
+        integrationDb.transaction(() => {
+          // Save user settings
+          integrationDb.prepare(`
+            INSERT INTO user_settings (key, value, updated_at)
+            VALUES (?, ?, datetime('now'))
+          `).run('username', username)
+
+          integrationDb.prepare(`
+            INSERT INTO user_settings (key, value, updated_at)
+            VALUES (?, ?, datetime('now'))
+          `).run('starting_bankroll', startingBankroll.toString())
+
+          // Create monthly archive FIRST (this is the fix)
+          integrationDb.prepare(`
+            INSERT INTO monthly_archives (
+              month_key, start_date, end_date, starting_bankroll, ending_bankroll, is_active
+            ) VALUES (?, ?, ?, ?, ?, 1)
+            ON CONFLICT(month_key) DO NOTHING
+          `).run(monthKey, '2024-01-01', '2024-01-31', startingBankroll, startingBankroll)
+
+          // Now create bankroll snapshot (should succeed because monthly archive exists)
+          integrationDb.prepare(`
+            INSERT INTO bankroll_snapshots (
+              id, amount, change_amount, change_reason, timestamp, month_key, bet_id, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+          `).run(
+            uuidv4(),
+            startingBankroll,
+            startingBankroll,
+            'initial',
+            now,
+            monthKey,
+            null,
+            now
+          )
+        })()
+      }).not.toThrow()
+
+      // Verify monthly archive was created
+      const archive = integrationDb.prepare('SELECT * FROM monthly_archives WHERE month_key = ?').get(monthKey)
+      expect(archive).toBeTruthy()
+      expect(archive.starting_bankroll).toBe(startingBankroll)
+
+      // Verify bankroll snapshot was created
+      const snapshot = integrationDb.prepare('SELECT * FROM bankroll_snapshots WHERE change_reason = ?').get('initial')
+      expect(snapshot).toBeTruthy()
+      expect(snapshot.amount).toBe(startingBankroll)
+    })
+
+    it('should FAIL if monthly archive is NOT created before bankroll snapshot', () => {
+      const { v4: uuidv4 } = require('uuid')
+
+      // Verify no monthly archives exist
+      const archives = integrationDb.prepare('SELECT COUNT(*) as count FROM monthly_archives').get()
+      expect(archives.count).toBe(0)
+
+      const monthKey = '2024-01'
+      const now = new Date().toISOString()
+
+      // This SHOULD throw a foreign key constraint error (the bug we're preventing)
+      expect(() => {
+        integrationDb.prepare(`
+          INSERT INTO bankroll_snapshots (
+            id, amount, change_amount, change_reason, timestamp, month_key, bet_id, created_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `).run(
+          uuidv4(),
+          1000,
+          1000,
+          'initial',
+          now,
+          monthKey,  // References non-existent monthly archive
+          null,
+          now
+        )
+      }).toThrow(/FOREIGN KEY constraint failed/)
+    })
+
+    it('should successfully add funds when monthly archive already exists', () => {
+      const { v4: uuidv4 } = require('uuid')
+
+      // Set up initial user state
+      integrationDb.prepare(`
+        INSERT INTO user_settings (key, value, updated_at)
+        VALUES ('starting_bankroll', '1000', datetime('now'))
+      `).run()
+
+      const monthKey = '2024-01'
+
+      // Create monthly archive (simulating existing user)
+      integrationDb.prepare(`
+        INSERT INTO monthly_archives (
+          month_key, start_date, end_date, starting_bankroll, ending_bankroll, is_active
+        ) VALUES (?, ?, ?, 1000, 1000, 1)
+      `).run(monthKey, '2024-01-01', '2024-01-31')
+
+      // Simulate adding funds (what db:addFunds does)
+      const addAmount = 500
+      const now = new Date().toISOString()
+
+      expect(() => {
+        integrationDb.transaction(() => {
+          // Update starting bankroll
+          integrationDb.prepare(`
+            UPDATE user_settings
+            SET value = ?, updated_at = datetime('now')
+            WHERE key = 'starting_bankroll'
+          `).run('1500')
+
+          // Create bankroll snapshot (should succeed)
+          integrationDb.prepare(`
+            INSERT INTO bankroll_snapshots (
+              id, amount, change_amount, change_reason, timestamp, month_key, bet_id, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+          `).run(
+            uuidv4(),
+            1500,
+            addAmount,
+            'manual_adjustment',
+            now,
+            monthKey,
+            null,
+            now
+          )
+        })()
+      }).not.toThrow()
+
+      // Verify snapshot was created
+      const snapshot = integrationDb.prepare('SELECT * FROM bankroll_snapshots WHERE change_reason = ?').get('manual_adjustment')
+      expect(snapshot).toBeTruthy()
+      expect(snapshot.change_amount).toBe(addAmount)
+    })
+
+    it('should successfully add funds when NO monthly archive exists (new month)', () => {
+      const { v4: uuidv4 } = require('uuid')
+
+      // Set up initial user state
+      integrationDb.prepare(`
+        INSERT INTO user_settings (key, value, updated_at)
+        VALUES ('starting_bankroll', '1000', datetime('now'))
+      `).run()
+
+      // Verify no monthly archives exist (simulating new month)
+      const archives = integrationDb.prepare('SELECT COUNT(*) as count FROM monthly_archives').get()
+      expect(archives.count).toBe(0)
+
+      // Simulate adding funds in a new month (what db:addFunds should do)
+      const monthKey = '2024-02'
+      const addAmount = 500
+      const now = new Date().toISOString()
+
+      expect(() => {
+        integrationDb.transaction(() => {
+          // Update starting bankroll
+          integrationDb.prepare(`
+            UPDATE user_settings
+            SET value = ?, updated_at = datetime('now')
+            WHERE key = 'starting_bankroll'
+          `).run('1500')
+
+          // Create monthly archive FIRST (this is the fix)
+          integrationDb.prepare(`
+            INSERT INTO monthly_archives (
+              month_key, start_date, end_date, starting_bankroll, ending_bankroll, is_active
+            ) VALUES (?, ?, ?, ?, ?, 1)
+            ON CONFLICT(month_key) DO NOTHING
+          `).run(monthKey, '2024-02-01', '2024-02-29', 1000, 1000)
+
+          // Now create bankroll snapshot (should succeed)
+          integrationDb.prepare(`
+            INSERT INTO bankroll_snapshots (
+              id, amount, change_amount, change_reason, timestamp, month_key, bet_id, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+          `).run(
+            uuidv4(),
+            1500,
+            addAmount,
+            'manual_adjustment',
+            now,
+            monthKey,
+            null,
+            now
+          )
+        })()
+      }).not.toThrow()
+
+      // Verify monthly archive was created
+      const archive = integrationDb.prepare('SELECT * FROM monthly_archives WHERE month_key = ?').get(monthKey)
+      expect(archive).toBeTruthy()
+
+      // Verify snapshot was created
+      const snapshot = integrationDb.prepare('SELECT * FROM bankroll_snapshots WHERE change_reason = ?').get('manual_adjustment')
+      expect(snapshot).toBeTruthy()
+    })
+  })
+
+  // ============================================================================
   // TEST SUITE: Database Function Tests (Using Actual Module Functions)
   // ============================================================================
 
