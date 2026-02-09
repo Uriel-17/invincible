@@ -6,6 +6,7 @@ import { useT } from 'src/hooks/useT'
 import TextField from 'src/Components/Form/TextField'
 import { getUsernameValidation, getStartingBankrollValidation } from './onboardingFieldValidations'
 import { FIRST_LAUNCH_QC_KEY } from 'src/queryKeys'
+import Modal from 'src/Components/Modal/Modal'
 import './Styles/OnboardingModal.css'
 
 interface OnboardingFormValues {
@@ -45,79 +46,72 @@ const OnboardingModal = ({ isOpen, onBack }: OnboardingModalProps) => {
     },
   })
 
-  if (!isOpen) {
-    return null
-  }
-
   const onSubmit = (values: OnboardingFormValues) => {
     mutation.mutate(values)
   }
 
   return (
-    <div className="onboarding-overlay" role="presentation">
-      <div
-        className="onboarding-dialog"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="onboarding-title"
-      >
-        <div className="onboarding-header">
-          {onBack && (
-            <button
-              type="button"
-              className="onboarding-back-button"
-              onClick={onBack}
-              aria-label="Go back to language selection"
-            >
-              <ArrowLeftIcon />
-            </button>
-          )}
-          <h2 id="onboarding-title">{_T('Welcome to Invincible!')}</h2>
-          <p>{_T("Let's set up your betting tracker.")}</p>
-          {mutation.isError && mutation.error && (
-            <div className="onboarding-error">
-              {_T('Error: ')} {mutation.error.message}
-            </div>
-          )}
-        </div>
-
-        <FormProvider {...methods}>
-          <form className="onboarding-form" onSubmit={methods.handleSubmit(onSubmit)}>
-            <TextField
-              name="username"
-              label={_T('Username')}
-              {...getUsernameValidation()}
-              fieldClassName="onboarding-field"
-              errorClassName="onboarding-field-error"
-            />
-
-            <TextField
-              name="startingBankroll"
-              label={_T('Starting Bankroll')}
-              {...getStartingBankrollValidation()}
-              fieldClassName="onboarding-field"
-              errorClassName="onboarding-field-error"
-            />
-
-            <div className="onboarding-actions">
-              <button
-                type="submit"
-                className="onboarding-button onboarding-button-primary"
-                disabled={mutation.isPending || !methods.formState.isValid}
-              >
-                {mutation.isPending ? _T('Setting up...') : _T('Get Started')}
-              </button>
-            </div>
-          </form>
-        </FormProvider>
-
-        {mutation.isPending && (
-          <div className="onboarding-loading">
-            {_T('Setting up your account...')}
+    <Modal
+      isOpen={isOpen}
+      titleId="onboarding-title"
+      classNamePrefix="onboarding"
+    >
+      <div className="onboarding-header">
+        {onBack && (
+          <button
+            type="button"
+            className="onboarding-back-button"
+            onClick={onBack}
+            aria-label="Go back to language selection"
+          >
+            <ArrowLeftIcon />
+          </button>
+        )}
+        <h2 id="onboarding-title">{_T('Welcome to Invincible!')}</h2>
+        <p>{_T("Let's set up your betting tracker.")}</p>
+        {mutation.isError && mutation.error && (
+          <div className="onboarding-error">
+            {_T('Error: ')} {mutation.error.message}
           </div>
         )}
       </div>
-    </div>
+
+      <FormProvider {...methods}>
+        <form className="onboarding-form" onSubmit={methods.handleSubmit(onSubmit)}>
+          <TextField
+            name="username"
+            label={_T('Username')}
+            {...getUsernameValidation()}
+            fieldClassName="onboarding-field"
+            errorClassName="onboarding-field-error"
+          />
+
+          <TextField
+            name="startingBankroll"
+            label={_T('Starting Bankroll')}
+            {...getStartingBankrollValidation()}
+            fieldClassName="onboarding-field"
+            errorClassName="onboarding-field-error"
+          />
+
+          <div className="onboarding-actions">
+            <button
+              type="submit"
+              className="onboarding-button onboarding-button-primary"
+              disabled={mutation.isPending || !methods.formState.isValid}
+            >
+              {mutation.isPending ? _T('Setting up...') : _T('Get Started')}
+            </button>
+          </div>
+        </form>
+      </FormProvider>
+
+      {mutation.isPending && (
+        <div className="onboarding-loading">
+          {_T('Setting up your account...')}
+        </div>
+      )}
+    </Modal>
   )
 }
 
