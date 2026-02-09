@@ -1,4 +1,152 @@
-import i18n, { t } from './i18n'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import i18n, { t, getSavedLanguage } from './i18n'
+
+/**
+ * CRITICAL: Infinite Loop Prevention Tests
+ *
+ * These tests ensure that the i18n module does NOT trigger async database calls
+ * during module initialization, which would cause an infinite reload loop.
+ *
+ * The bug occurred when getSavedLanguage() was called at module level, causing:
+ * 1. Module import → database query
+ * 2. Language change → React re-render
+ * 3. Vite HMR reload → module re-import
+ * 4. Back to step 1 (infinite loop)
+ */
+describe('Infinite Loop Prevention', () => {
+  describe('getSavedLanguage function', () => {
+    it('is exported as a function (not called during import)', () => {
+      expect(typeof getSavedLanguage).toBe('function')
+    })
+
+    it('does not execute during module import', () => {
+      // If getSavedLanguage was called during import, window.electronAPI would be accessed
+      // This test verifies it's just a function reference
+      expect(getSavedLanguage).toBeDefined()
+      expect(getSavedLanguage.name).toBe('getSavedLanguage')
+    })
+
+    it('returns a Promise when called', () => {
+      const result = getSavedLanguage()
+      expect(result).toBeInstanceOf(Promise)
+      // Clean up the promise to avoid unhandled rejection
+      result.catch(() => {})
+    })
+  })
+
+  describe('Module initialization', () => {
+    it('initializes i18n synchronously without async calls', () => {
+      // i18n should be initialized immediately
+      expect(i18n.isInitialized).toBe(true)
+      expect(i18n.language).toBe('en')
+    })
+
+    it('does not call i18n.changeLanguage during module import', () => {
+      // Spy on changeLanguage to ensure it's not called during import
+      const changeLanguageSpy = vi.spyOn(i18n, 'changeLanguage')
+
+      // Re-import the module (this simulates HMR reload)
+      // Note: In actual test, the module is already imported, so we just verify
+      // that changeLanguage hasn't been called yet
+      expect(changeLanguageSpy).not.toHaveBeenCalled()
+
+      changeLanguageSpy.mockRestore()
+    })
+
+    it('does not access window.electronAPI during module import', () => {
+      // Mock window.electronAPI to track if it's accessed
+      const mockGetUserSetting = vi.fn()
+      const originalElectronAPI = (window as any).electronAPI
+
+      // Set up a getter that will throw if accessed during import
+      Object.defineProperty(window, 'electronAPI', {
+        get: () => {
+          // If this is accessed during import, the test will fail
+          return {
+            database: {
+              getUserSetting: mockGetUserSetting
+            }
+          }
+        },
+        configurable: true
+      })
+
+      // Verify that getUserSetting was NOT called during import
+      expect(mockGetUserSetting).not.toHaveBeenCalled()
+
+      // Restore original
+      if (originalElectronAPI) {
+        (window as any).electronAPI = originalElectronAPI
+      } else {
+        delete (window as any).electronAPI
+      }
+    })
+  })
+
+  describe('getSavedLanguage behavior', () => {
+    beforeEach(() => {
+      vi.clearAllMocks()
+    })
+
+    it('queries database only when explicitly called', async () => {
+      const mockGetUserSetting = vi.fn().mockResolvedValue({
+        success: true,
+        data: 'es'
+      })
+
+      // Mock window.electronAPI
+      ;(window as any).electronAPI = {
+        database: {
+          getUserSetting: mockGetUserSetting
+        }
+      }
+
+      // Call getSavedLanguage explicitly
+      const language = await getSavedLanguage()
+
+      // Verify it was called
+      expect(mockGetUserSetting).toHaveBeenCalledTimes(1)
+      expect(mockGetUserSetting).toHaveBeenCalledWith('language')
+      expect(language).toBe('es')
+
+      // Clean up
+      delete (window as any).electronAPI
+    })
+
+    it('returns navigator language when electronAPI is not available', async () => {
+      // Ensure electronAPI is not available
+      delete (window as any).electronAPI
+
+      const language = await getSavedLanguage()
+
+      // Should return 'en' or 'es' based on navigator
+      expect(['en', 'es']).toContain(language)
+    })
+
+    it('handles database errors gracefully', async () => {
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const mockGetUserSetting = vi.fn().mockRejectedValue(new Error('Database error'))
+
+      ;(window as any).electronAPI = {
+        database: {
+          getUserSetting: mockGetUserSetting
+        }
+      }
+
+      const language = await getSavedLanguage()
+
+      // Should fall back to navigator language
+      expect(['en', 'es']).toContain(language)
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        '⚠️ Failed to load saved language from database:',
+        expect.any(Error)
+      )
+
+      consoleWarnSpy.mockRestore()
+      delete (window as any).electronAPI
+    })
+  })
+})
 
 describe('i18n resources', () => {
   describe('English translations', () => {

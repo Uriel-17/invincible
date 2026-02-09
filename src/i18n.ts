@@ -324,9 +324,10 @@ const resources = {
 
 /**
  * Get saved language from database or use default
- * This function is async and will be called during app initialization
+ * This function should be called once during app initialization
+ * DO NOT call this during module initialization to avoid infinite reload loops
  */
-async function getSavedLanguage(): Promise<string> {
+export async function getSavedLanguage(): Promise<string> {
   // Check if we're in Electron environment
   if (typeof window !== 'undefined' && window.electronAPI?.database?.getUserSetting) {
     try {
@@ -350,7 +351,8 @@ async function getSavedLanguage(): Promise<string> {
   return defaultLanguage
 }
 
-// Initialize i18n with fallback language first
+// Initialize i18n with fallback language
+// Language will be loaded from database by AppWithOnboarding component
 void i18n.use(initReactI18next).init({
   resources,
   fallbackLng: 'en',
@@ -358,13 +360,6 @@ void i18n.use(initReactI18next).init({
   interpolation: {
     escapeValue: false,
   },
-})
-
-// Load saved language asynchronously and update i18n
-getSavedLanguage().then((language) => {
-  if (i18n.language !== language) {
-    void i18n.changeLanguage(language)
-  }
 })
 
 /**
