@@ -1,8 +1,23 @@
+.language-selection-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(15, 23, 42, 0.98);
+  backdrop-filter: blur(8px);
+  z-index: 101; /* Higher than onboarding modal */
+  padding: 24px;
+}
+
 .language-selection-dialog {
   width: min(420px, 92vw);
+  border-radius: 18px;
   border: 1px solid rgb(var(--border));
+  background-color: rgb(var(--surface));
   color: rgb(var(--text));
   padding: 40px 32px;
+  box-shadow: 0 24px 50px rgba(15, 23, 42, 0.3);
   text-align: center;
 }
 
