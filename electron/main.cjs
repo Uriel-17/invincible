@@ -166,16 +166,31 @@ function registerIPCHandlers() {
         setUserSetting('username', username)
         setUserSetting('starting_bankroll', startingBankroll.toString())
 
-        // Create initial bankroll snapshot
+        // Get current month info
         const monthKey = getCurrentMonthKey()
-        const now = new Date().toISOString()
+        const now = new Date()
+        const year = now.getFullYear()
+        const month = now.getMonth() + 1
+        const lastDay = new Date(year, month, 0).getDate()
+        const startDate = `${monthKey}-01`
+        const endDate = `${monthKey}-${lastDay.toString().padStart(2, '0')}`
 
+        // Create monthly archive FIRST (required for foreign key constraint)
+        db.prepare(`
+          INSERT INTO monthly_archives (
+            month_key, start_date, end_date, starting_bankroll, ending_bankroll, is_active
+          ) VALUES (?, ?, ?, ?, ?, 1)
+          ON CONFLICT(month_key) DO NOTHING
+        `).run(monthKey, startDate, endDate, startingBankroll, startingBankroll)
+
+        // Now create initial bankroll snapshot (references monthly_archives)
+        const timestamp = now.toISOString()
         createBankrollSnapshot({
           amount: startingBankroll,
           changeAmount: startingBankroll,
           changeReason: 'initial',
           monthKey: monthKey,
-          timestamp: now
+          timestamp: timestamp
         })
 
         // Update monthly statistics for current month
@@ -213,9 +228,25 @@ function registerIPCHandlers() {
         // Update starting bankroll
         setUserSetting('starting_bankroll', newStartingBankroll.toString())
 
-        // Create bankroll snapshot
+        // Get current month info
         const monthKey = getCurrentMonthKey()
-        const now = new Date().toISOString()
+        const now = new Date()
+        const year = now.getFullYear()
+        const month = now.getMonth() + 1
+        const lastDay = new Date(year, month, 0).getDate()
+        const startDate = `${monthKey}-01`
+        const endDate = `${monthKey}-${lastDay.toString().padStart(2, '0')}`
+
+        // Ensure monthly archive exists FIRST (required for foreign key constraint)
+        db.prepare(`
+          INSERT INTO monthly_archives (
+            month_key, start_date, end_date, starting_bankroll, ending_bankroll, is_active
+          ) VALUES (?, ?, ?, ?, ?, 1)
+          ON CONFLICT(month_key) DO NOTHING
+        `).run(monthKey, startDate, endDate, currentStartingBankroll, currentStartingBankroll)
+
+        // Now create bankroll snapshot (references monthly_archives)
+        const timestamp = now.toISOString()
         const newBankroll = getCurrentBankroll()
 
         createBankrollSnapshot({
@@ -223,7 +254,7 @@ function registerIPCHandlers() {
           changeAmount: amount,
           changeReason: 'manual_adjustment',
           monthKey: monthKey,
-          timestamp: now
+          timestamp: timestamp
         })
 
         // Recalculate all statistics since starting bankroll changed

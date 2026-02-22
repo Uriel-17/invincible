@@ -1,23 +1,8 @@
-.add-funds-overlay {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(8px);
-  z-index: 100;
-  padding: 24px;
-}
-
 .add-funds-dialog {
   width: min(480px, 92vw);
-  border-radius: 18px;
   border: 1px solid rgb(var(--border));
-  background-color: rgb(var(--surface));
   color: rgb(var(--text));
   padding: 32px;
-  box-shadow: 0 24px 50px rgba(15, 23, 42, 0.3);
 }
 
 .add-funds-header {

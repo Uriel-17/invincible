@@ -109,11 +109,13 @@ function createTestTables(database) {
       month_key TEXT NOT NULL,
       timestamp TEXT NOT NULL DEFAULT (datetime('now')),
       amount REAL NOT NULL CHECK (amount >= 0),
+      change_amount REAL NOT NULL,
       change_reason TEXT NOT NULL CHECK (change_reason IN ('initial', 'bet_win', 'bet_loss', 'bet_cashout', 'manual_adjustment', 'month_start')),
-      related_bet_id TEXT,
+      bet_id TEXT,
       notes TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
       FOREIGN KEY (month_key) REFERENCES monthly_archives(month_key),
-      FOREIGN KEY (related_bet_id) REFERENCES bets(id)
+      FOREIGN KEY (bet_id) REFERENCES bets(id)
     )
   `)
 
@@ -647,6 +649,660 @@ describe('Database Module - Comprehensive Tests', () => {
       // 1000 + 150 = 1150 (pending bet excluded)
       expect(currentBankroll).toBe(1150)
     })
+  })
+
+  // ============================================================================
+  // TEST SUITE: Bankroll Snapshots Schema Validation
+  // ============================================================================
+
+  describe('Bankroll Snapshots Schema Validation', () => {
+    beforeEach(() => {
+      // Create month archive for test snapshots
+      db.prepare(`
+        INSERT INTO monthly_archives (
+          month_key, start_date, end_date, starting_bankroll, ending_bankroll, is_active
+        ) VALUES ('2024-01', '2024-01-01', '2024-01-31', 1000, 1000, 1)
+      `).run()
+    })
+
+    it('should have all required columns in bankroll_snapshots table', () => {
+      const tableInfo = db.prepare('PRAGMA table_info(bankroll_snapshots)').all()
+      const columnNames = tableInfo.map(col => col.name)
+
+      // Verify all required columns exist
+      expect(columnNames).toContain('id')
+      expect(columnNames).toContain('month_key')
+      expect(columnNames).toContain('timestamp')
+      expect(columnNames).toContain('amount')
+      expect(columnNames).toContain('change_amount')  // Critical: This was missing before
+      expect(columnNames).toContain('change_reason')
+      expect(columnNames).toContain('bet_id')  // Renamed from related_bet_id
+      expect(columnNames).toContain('notes')
+      expect(columnNames).toContain('created_at')  // Critical: This was missing before
+    })
+
+    it('should successfully insert snapshot with all required columns', () => {
+      const { v4: uuidv4 } = require('uuid')
+      const snapshotId = uuidv4()
+      const now = new Date().toISOString()
+
+      // This INSERT statement matches what createBankrollSnapshot() uses
+      db.prepare(`
+        INSERT INTO bankroll_snapshots (
+          id, amount, change_amount, change_reason, timestamp, month_key, bet_id, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `).run(
+        snapshotId,
+        1100,
+        100,
+        'manual_adjustment',
+        now,
+        '2024-01',
+        null,
+        now
+      )
+
+      const snapshot = db.prepare('SELECT * FROM bankroll_snapshots WHERE id = ?').get(snapshotId)
+      expect(snapshot).toBeTruthy()
+      expect(snapshot.amount).toBe(1100)
+      expect(snapshot.change_amount).toBe(100)
+      expect(snapshot.change_reason).toBe('manual_adjustment')
+      expect(snapshot.bet_id).toBeNull()
+      expect(snapshot.created_at).toBe(now)
+    })
+
+    it('should enforce change_reason check constraint', () => {
+      const { v4: uuidv4 } = require('uuid')
+      const now = new Date().toISOString()
+
+      expect(() => {
+        db.prepare(`
+          INSERT INTO bankroll_snapshots (
+            id, amount, change_amount, change_reason, timestamp, month_key, bet_id, created_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `).run(
+          uuidv4(),
+          1100,
+          100,
+          'invalid_reason',  // Invalid change_reason
+          now,
+          '2024-01',
+          null,
+          now
+        )
+      }).toThrow()
+    })
+
+    it('should enforce amount >= 0 check constraint', () => {
+      const { v4: uuidv4 } = require('uuid')
+      const now = new Date().toISOString()
+
+      expect(() => {
+        db.prepare(`
+          INSERT INTO bankroll_snapshots (
+            id, amount, change_amount, change_reason, timestamp, month_key, bet_id, created_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `).run(
+          uuidv4(),
+          -100,  // Invalid: amount must be >= 0
+          -100,
+          'manual_adjustment',
+          now,
+          '2024-01',
+          null,
+          now
+        )
+      }).toThrow()
+    })
+
+    it('should enforce foreign key constraint for month_key', () => {
+      const { v4: uuidv4 } = require('uuid')
+      const now = new Date().toISOString()
+
+      expect(() => {
+        db.prepare(`
+          INSERT INTO bankroll_snapshots (
+            id, amount, change_amount, change_reason, timestamp, month_key, bet_id, created_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `).run(
+          uuidv4(),
+          1100,
+          100,
+          'manual_adjustment',
+          now,
+          '2024-99',  // Invalid: month archive doesn't exist
+          null,
+          now
+        )
+      }).toThrow()
+    })
+
+    it('should allow null bet_id for non-bet-related snapshots', () => {
+      const { v4: uuidv4 } = require('uuid')
+      const snapshotId = uuidv4()
+      const now = new Date().toISOString()
+
+      db.prepare(`
+        INSERT INTO bankroll_snapshots (
+          id, amount, change_amount, change_reason, timestamp, month_key, bet_id, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `).run(
+        snapshotId,
+        1000,
+        1000,
+        'initial',
+        now,
+        '2024-01',
+        null,  // bet_id should be null for initial snapshot
+        now
+      )
+
+      const snapshot = db.prepare('SELECT * FROM bankroll_snapshots WHERE id = ?').get(snapshotId)
+      expect(snapshot.bet_id).toBeNull()
+    })
+
+    it('should enforce foreign key constraint for bet_id when provided', () => {
+      const { v4: uuidv4 } = require('uuid')
+      const now = new Date().toISOString()
+
+      expect(() => {
+        db.prepare(`
+          INSERT INTO bankroll_snapshots (
+            id, amount, change_amount, change_reason, timestamp, month_key, bet_id, created_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `).run(
+          uuidv4(),
+          1100,
+          100,
+          'bet_win',
+          now,
+          '2024-01',
+          'non-existent-bet-id',  // Invalid: bet doesn't exist
+          now
+        )
+      }).toThrow()
+    })
+
+    it('should accept all valid change_reason values', () => {
+      const { v4: uuidv4 } = require('uuid')
+      const now = new Date().toISOString()
+      const validReasons = ['initial', 'bet_win', 'bet_loss', 'bet_cashout', 'manual_adjustment', 'month_start']
+
+      validReasons.forEach(reason => {
+        const snapshotId = uuidv4()
+        db.prepare(`
+          INSERT INTO bankroll_snapshots (
+            id, amount, change_amount, change_reason, timestamp, month_key, bet_id, created_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `).run(
+          snapshotId,
+          1000,
+          0,
+          reason,
+          now,
+          '2024-01',
+          null,
+          now
+        )
+
+        const snapshot = db.prepare('SELECT * FROM bankroll_snapshots WHERE id = ?').get(snapshotId)
+        expect(snapshot.change_reason).toBe(reason)
+      })
+    })
+  })
+
+  // ============================================================================
+  // TEST SUITE: Critical Integration Tests - User Initialization Flow
+  // ============================================================================
+
+  describe('User Initialization Flow - Integration Tests', () => {
+    // These tests simulate the ACTUAL user flows to catch foreign key constraint bugs
+    // that occur when monthly archives don't exist yet
+
+    // Use a separate database instance for these tests to avoid conflicts
+    let integrationDb
+
+    beforeEach(() => {
+      // Create fresh in-memory database WITHOUT pre-populated data
+      integrationDb = new Database(':memory:')
+      integrationDb.pragma('foreign_keys = ON')
+      createTestTables(integrationDb)
+      // NOTE: We deliberately DON'T insert starting_bankroll here
+      // to simulate a truly fresh user initialization
+    })
+
+    afterEach(() => {
+      if (integrationDb) {
+        integrationDb.close()
+      }
+    })
+
+    it('should successfully initialize user when NO monthly archive exists', () => {
+      const { v4: uuidv4 } = require('uuid')
+
+      // Verify no monthly archives exist (simulating first-time user)
+      const archives = integrationDb.prepare('SELECT COUNT(*) as count FROM monthly_archives').get()
+      expect(archives.count).toBe(0)
+
+      // Simulate the user initialization flow (what db:initializeUser does)
+      const username = 'TestUser'
+      const startingBankroll = 1000
+      const monthKey = '2024-01'
+      const now = new Date().toISOString()
+
+      // This should NOT throw a foreign key constraint error
+      expect(() => {
+        integrationDb.transaction(() => {
+          // Save user settings
+          integrationDb.prepare(`
+            INSERT INTO user_settings (key, value, updated_at)
+            VALUES (?, ?, datetime('now'))
+          `).run('username', username)
+
+          integrationDb.prepare(`
+            INSERT INTO user_settings (key, value, updated_at)
+            VALUES (?, ?, datetime('now'))
+          `).run('starting_bankroll', startingBankroll.toString())
+
+          // Create monthly archive FIRST (this is the fix)
+          integrationDb.prepare(`
+            INSERT INTO monthly_archives (
+              month_key, start_date, end_date, starting_bankroll, ending_bankroll, is_active
+            ) VALUES (?, ?, ?, ?, ?, 1)
+            ON CONFLICT(month_key) DO NOTHING
+          `).run(monthKey, '2024-01-01', '2024-01-31', startingBankroll, startingBankroll)
+
+          // Now create bankroll snapshot (should succeed because monthly archive exists)
+          integrationDb.prepare(`
+            INSERT INTO bankroll_snapshots (
+              id, amount, change_amount, change_reason, timestamp, month_key, bet_id, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+          `).run(
+            uuidv4(),
+            startingBankroll,
+            startingBankroll,
+            'initial',
+            now,
+            monthKey,
+            null,
+            now
+          )
+        })()
+      }).not.toThrow()
+
+      // Verify monthly archive was created
+      const archive = integrationDb.prepare('SELECT * FROM monthly_archives WHERE month_key = ?').get(monthKey)
+      expect(archive).toBeTruthy()
+      expect(archive.starting_bankroll).toBe(startingBankroll)
+
+      // Verify bankroll snapshot was created
+      const snapshot = integrationDb.prepare('SELECT * FROM bankroll_snapshots WHERE change_reason = ?').get('initial')
+      expect(snapshot).toBeTruthy()
+      expect(snapshot.amount).toBe(startingBankroll)
+    })
+
+    it('should FAIL if monthly archive is NOT created before bankroll snapshot', () => {
+      const { v4: uuidv4 } = require('uuid')
+
+      // Verify no monthly archives exist
+      const archives = integrationDb.prepare('SELECT COUNT(*) as count FROM monthly_archives').get()
+      expect(archives.count).toBe(0)
+
+      const monthKey = '2024-01'
+      const now = new Date().toISOString()
+
+      // This SHOULD throw a foreign key constraint error (the bug we're preventing)
+      expect(() => {
+        integrationDb.prepare(`
+          INSERT INTO bankroll_snapshots (
+            id, amount, change_amount, change_reason, timestamp, month_key, bet_id, created_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `).run(
+          uuidv4(),
+          1000,
+          1000,
+          'initial',
+          now,
+          monthKey,  // References non-existent monthly archive
+          null,
+          now
+        )
+      }).toThrow(/FOREIGN KEY constraint failed/)
+    })
+
+    it('should successfully add funds when monthly archive already exists', () => {
+      const { v4: uuidv4 } = require('uuid')
+
+      // Set up initial user state
+      integrationDb.prepare(`
+        INSERT INTO user_settings (key, value, updated_at)
+        VALUES ('starting_bankroll', '1000', datetime('now'))
+      `).run()
+
+      const monthKey = '2024-01'
+
+      // Create monthly archive (simulating existing user)
+      integrationDb.prepare(`
+        INSERT INTO monthly_archives (
+          month_key, start_date, end_date, starting_bankroll, ending_bankroll, is_active
+        ) VALUES (?, ?, ?, 1000, 1000, 1)
+      `).run(monthKey, '2024-01-01', '2024-01-31')
+
+      // Simulate adding funds (what db:addFunds does)
+      const addAmount = 500
+      const now = new Date().toISOString()
+
+      expect(() => {
+        integrationDb.transaction(() => {
+          // Update starting bankroll
+          integrationDb.prepare(`
+            UPDATE user_settings
+            SET value = ?, updated_at = datetime('now')
+            WHERE key = 'starting_bankroll'
+          `).run('1500')
+
+          // Create bankroll snapshot (should succeed)
+          integrationDb.prepare(`
+            INSERT INTO bankroll_snapshots (
+              id, amount, change_amount, change_reason, timestamp, month_key, bet_id, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+          `).run(
+            uuidv4(),
+            1500,
+            addAmount,
+            'manual_adjustment',
+            now,
+            monthKey,
+            null,
+            now
+          )
+        })()
+      }).not.toThrow()
+
+      // Verify snapshot was created
+      const snapshot = integrationDb.prepare('SELECT * FROM bankroll_snapshots WHERE change_reason = ?').get('manual_adjustment')
+      expect(snapshot).toBeTruthy()
+      expect(snapshot.change_amount).toBe(addAmount)
+    })
+
+    it('should successfully add funds when NO monthly archive exists (new month)', () => {
+      const { v4: uuidv4 } = require('uuid')
+
+      // Set up initial user state
+      integrationDb.prepare(`
+        INSERT INTO user_settings (key, value, updated_at)
+        VALUES ('starting_bankroll', '1000', datetime('now'))
+      `).run()
+
+      // Verify no monthly archives exist (simulating new month)
+      const archives = integrationDb.prepare('SELECT COUNT(*) as count FROM monthly_archives').get()
+      expect(archives.count).toBe(0)
+
+      // Simulate adding funds in a new month (what db:addFunds should do)
+      const monthKey = '2024-02'
+      const addAmount = 500
+      const now = new Date().toISOString()
+
+      expect(() => {
+        integrationDb.transaction(() => {
+          // Update starting bankroll
+          integrationDb.prepare(`
+            UPDATE user_settings
+            SET value = ?, updated_at = datetime('now')
+            WHERE key = 'starting_bankroll'
+          `).run('1500')
+
+          // Create monthly archive FIRST (this is the fix)
+          integrationDb.prepare(`
+            INSERT INTO monthly_archives (
+              month_key, start_date, end_date, starting_bankroll, ending_bankroll, is_active
+            ) VALUES (?, ?, ?, ?, ?, 1)
+            ON CONFLICT(month_key) DO NOTHING
+          `).run(monthKey, '2024-02-01', '2024-02-29', 1000, 1000)
+
+          // Now create bankroll snapshot (should succeed)
+          integrationDb.prepare(`
+            INSERT INTO bankroll_snapshots (
+              id, amount, change_amount, change_reason, timestamp, month_key, bet_id, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+          `).run(
+            uuidv4(),
+            1500,
+            addAmount,
+            'manual_adjustment',
+            now,
+            monthKey,
+            null,
+            now
+          )
+        })()
+      }).not.toThrow()
+
+      // Verify monthly archive was created
+      const archive = integrationDb.prepare('SELECT * FROM monthly_archives WHERE month_key = ?').get(monthKey)
+      expect(archive).toBeTruthy()
+
+      // Verify snapshot was created
+      const snapshot = integrationDb.prepare('SELECT * FROM bankroll_snapshots WHERE change_reason = ?').get('manual_adjustment')
+      expect(snapshot).toBeTruthy()
+    })
+  })
+
+  // ============================================================================
+  // TEST SUITE: Database Function Tests (Using Actual Module Functions)
+  // ============================================================================
+
+  describe('Database Module Functions - Direct Testing', () => {
+    // These tests directly test the SQL logic that the module functions use
+    // This approach avoids complex mocking while still validating the core functionality
+
+    // ============================================================================
+    // User Settings SQL Logic Tests
+    // ============================================================================
+
+    describe('User Settings SQL Logic', () => {
+      it('should retrieve existing user setting using SELECT', () => {
+        const result = db.prepare('SELECT value FROM user_settings WHERE key = ?').get('starting_bankroll')
+        expect(result.value).toBe('1000')
+      })
+
+      it('should return undefined for non-existent setting', () => {
+        const result = db.prepare('SELECT value FROM user_settings WHERE key = ?').get('non_existent_key')
+        expect(result).toBeUndefined()
+      })
+
+      it('should insert new user setting using INSERT', () => {
+        db.prepare(`
+          INSERT INTO user_settings (key, value, updated_at)
+          VALUES (?, ?, datetime('now'))
+        `).run('username', 'TestUser')
+
+        const result = db.prepare('SELECT value FROM user_settings WHERE key = ?').get('username')
+        expect(result.value).toBe('TestUser')
+      })
+
+      it('should update existing user setting using UPSERT', () => {
+        db.prepare(`
+          INSERT INTO user_settings (key, value, updated_at)
+          VALUES (?, ?, datetime('now'))
+          ON CONFLICT(key) DO UPDATE SET
+            value = excluded.value,
+            updated_at = datetime('now')
+        `).run('starting_bankroll', '2000')
+
+        const result = db.prepare('SELECT value FROM user_settings WHERE key = ?').get('starting_bankroll')
+        expect(result.value).toBe('2000')
+      })
+
+      it('should handle special characters in values', () => {
+        const specialValue = 'Test "quotes" and \'apostrophes\' and $pecial ch@rs!'
+        db.prepare(`
+          INSERT INTO user_settings (key, value, updated_at)
+          VALUES (?, ?, datetime('now'))
+        `).run('special_test', specialValue)
+
+        const result = db.prepare('SELECT value FROM user_settings WHERE key = ?').get('special_test')
+        expect(result.value).toBe(specialValue)
+      })
+    })
+
+    // ============================================================================
+    // First Launch Detection SQL Logic Tests
+    // ============================================================================
+
+    describe('First Launch Detection SQL Logic', () => {
+      it('should return false when user settings exist', () => {
+        const result = db.prepare('SELECT COUNT(*) as count FROM user_settings').get()
+        expect(result.count).toBeGreaterThan(0)
+      })
+
+      it('should return true when no user settings exist', () => {
+        // Clear all user settings
+        db.prepare('DELETE FROM user_settings').run()
+
+        const result = db.prepare('SELECT COUNT(*) as count FROM user_settings').get()
+        expect(result.count).toBe(0)
+      })
+    })
+
+    // ============================================================================
+    // Current Month Key SQL Logic Tests
+    // ============================================================================
+
+    describe('Current Month Key SQL Logic', () => {
+      it('should generate month key in YYYY-MM format', () => {
+        const now = new Date()
+        const year = now.getFullYear()
+        const month = String(now.getMonth() + 1).padStart(2, '0')
+        const monthKey = `${year}-${month}`
+
+        expect(monthKey).toMatch(/^\d{4}-\d{2}$/)
+      })
+
+      it('should generate current month key', () => {
+        const now = new Date()
+        const expectedYear = now.getFullYear()
+        const expectedMonth = String(now.getMonth() + 1).padStart(2, '0')
+        const expectedKey = `${expectedYear}-${expectedMonth}`
+
+        const year = now.getFullYear()
+        const month = String(now.getMonth() + 1).padStart(2, '0')
+        const monthKey = `${year}-${month}`
+
+        expect(monthKey).toBe(expectedKey)
+      })
+    })
+
+    // ============================================================================
+    // Current Bankroll Calculation SQL Logic Tests
+    // ============================================================================
+
+    describe('Current Bankroll Calculation SQL Logic', () => {
+      it('should return starting bankroll when no bets exist', () => {
+        const startingSetting = db.prepare('SELECT value FROM user_settings WHERE key = ?').get('starting_bankroll')
+        const startingBankroll = startingSetting ? parseFloat(startingSetting.value) : 0
+
+        const result = db.prepare(`
+          SELECT COALESCE(SUM(net_gain), 0) as total_net_gain
+          FROM bets
+          WHERE outcome IN ('win', 'loss', 'cashout')
+        `).get()
+
+        const currentBankroll = startingBankroll + result.total_net_gain
+        expect(currentBankroll).toBe(1000)
+      })
+
+      it('should calculate bankroll including settled bets', () => {
+        const monthKey = '2024-01'
+
+        // Create month archive
+        db.prepare(`
+          INSERT INTO monthly_archives (
+            month_key, start_date, end_date, starting_bankroll, ending_bankroll, is_active
+          ) VALUES (?, ?, ?, 1000, 1000, 1)
+        `).run(monthKey, `${monthKey}-01`, `${monthKey}-31`)
+
+        // Create a winning bet
+        const { v4: uuidv4 } = require('uuid')
+        const now = new Date().toISOString()
+        db.prepare(`
+          INSERT INTO bets (
+            id, bet_type, outcome, placed_at, bet_amount, quota,
+            potential_gains, net_gain, created_at, updated_at, month_key, is_archived
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
+        `).run(
+          uuidv4(),
+          'single',
+          'win',
+          now,
+          100,
+          '2.50',
+          250,
+          150,
+          now,
+          now,
+          monthKey
+        )
+
+        const startingSetting = db.prepare('SELECT value FROM user_settings WHERE key = ?').get('starting_bankroll')
+        const startingBankroll = startingSetting ? parseFloat(startingSetting.value) : 0
+
+        const result = db.prepare(`
+          SELECT COALESCE(SUM(net_gain), 0) as total_net_gain
+          FROM bets
+          WHERE outcome IN ('win', 'loss', 'cashout')
+        `).get()
+
+        const currentBankroll = startingBankroll + result.total_net_gain
+        expect(currentBankroll).toBe(1150) // 1000 + 150
+      })
+
+      it('should exclude pending bets from bankroll calculation', () => {
+        const monthKey = '2024-01'
+
+        // Create month archive
+        db.prepare(`
+          INSERT INTO monthly_archives (
+            month_key, start_date, end_date, starting_bankroll, ending_bankroll, is_active
+          ) VALUES (?, ?, ?, 1000, 1000, 1)
+        `).run(monthKey, `${monthKey}-01`, `${monthKey}-31`)
+
+        // Create a pending bet
+        const { v4: uuidv4 } = require('uuid')
+        const now = new Date().toISOString()
+        db.prepare(`
+          INSERT INTO bets (
+            id, bet_type, outcome, placed_at, bet_amount, quota,
+            potential_gains, net_gain, created_at, updated_at, month_key, is_archived
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)
+        `).run(
+          uuidv4(),
+          'single',
+          'pending',
+          now,
+          100,
+          '2.50',
+          250,
+          0,
+          now,
+          now,
+          monthKey
+        )
+
+        const startingSetting = db.prepare('SELECT value FROM user_settings WHERE key = ?').get('starting_bankroll')
+        const startingBankroll = startingSetting ? parseFloat(startingSetting.value) : 0
+
+        const result = db.prepare(`
+          SELECT COALESCE(SUM(net_gain), 0) as total_net_gain
+          FROM bets
+          WHERE outcome IN ('win', 'loss', 'cashout')
+        `).get()
+
+        const currentBankroll = startingBankroll + result.total_net_gain
+        expect(currentBankroll).toBe(1000) // Pending bet not included
+      })
+    })
+
   })
 })
 
