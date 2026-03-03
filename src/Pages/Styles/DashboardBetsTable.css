@@ -1,0 +1,114 @@
+.dashboard-bets-section {
+  background-color: rgb(var(--surface));
+  border: 1px solid rgb(var(--border));
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.dashboard-bets-table-wrapper {
+  overflow-x: auto;
+}
+
+.dashboard-bets-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.dashboard-bets-table th {
+  text-align: left;
+  padding: 10px 12px;
+  font-weight: 600;
+  color: rgb(var(--muted));
+  border-bottom: 2px solid rgb(var(--border));
+  white-space: nowrap;
+}
+
+.dashboard-bets-table td {
+  padding: 10px 12px;
+  color: rgb(var(--text));
+  border-bottom: 1px solid rgb(var(--border));
+}
+
+.dashboard-bets-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.dashboard-bets-table tbody tr:hover {
+  background-color: rgba(var(--border), 0.3);
+}
+
+.dashboard-bets-result--win {
+  color: rgb(var(--primary));
+  font-weight: 600;
+}
+
+.dashboard-bets-result--loss {
+  color: rgb(var(--danger));
+  font-weight: 600;
+}
+
+.dashboard-bets-result--cashout {
+  color: rgb(var(--warning));
+  font-weight: 600;
+}
+
+.dashboard-bets-result--push {
+  color: rgb(var(--muted));
+  font-weight: 600;
+}
+
+.dashboard-bets-result--pending {
+  color: rgb(var(--info));
+  font-weight: 600;
+}
+
+.dashboard-bets-profit--positive {
+  color: rgb(var(--primary));
+  font-weight: 600;
+}
+
+.dashboard-bets-profit--negative {
+  color: rgb(var(--danger));
+  font-weight: 600;
+}
+
+.dashboard-bets-eye-btn {
+  background: none;
+  border: 1px solid rgb(var(--border));
+  border-radius: 6px;
+  color: rgb(var(--muted));
+  cursor: pointer;
+  padding: 4px 10px;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.dashboard-bets-eye-btn:hover {
+  color: rgb(var(--text));
+  border-color: rgb(var(--primary));
+}
+
+.dashboard-bets-empty {
+  text-align: center;
+  padding: 2rem;
+  color: rgb(var(--muted));
+  font-size: 0.95rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard-bets-section {
+    padding: 1rem;
+  }
+
+  .dashboard-bets-table {
+    font-size: 0.85rem;
+  }
+
+  .dashboard-bets-table th,
+  .dashboard-bets-table td {
+    padding: 8px 8px;
+  }
+}
+
