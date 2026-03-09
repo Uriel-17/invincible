@@ -6,14 +6,18 @@
   right: 0;
   bottom: 0;
   z-index: 100;
-  background-color: rgba(15, 23, 42, 0);
+  background-color: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(8px);
   pointer-events: none;
-  transition: background-color 0.3s ease;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .bet-detail-overlay--open {
-  background-color: rgba(15, 23, 42, 0.5);
+  background-color: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(8px);
   pointer-events: auto;
+  opacity: 1;
 }
 
 /* Panel (drawer) */
