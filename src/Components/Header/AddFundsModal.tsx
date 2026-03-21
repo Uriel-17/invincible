@@ -4,10 +4,10 @@ import { useT } from 'src/hooks/useT'
 import { useBankroll } from 'src/hooks/useBankroll'
 import { getElectronAPI } from 'src/services/database'
 import TextField from 'src/Components/Form/TextField'
-import { getAddFundsAmountValidation } from 'src/Components/addFundsFieldValidations'
+import { getAddFundsAmountValidation } from './helpers/addFundsFieldValidations'
 import { BANKROLL_QC_KEY } from 'src/queryKeys'
 import Modal from 'src/Components/Modal/Modal'
-import './Styles/AddFundsModal.css'
+import './helpers/AddFundsModal.css'
 
 interface AddFundsFormValues {
   amount: string

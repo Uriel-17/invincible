@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useT } from 'src/hooks/useT'
-import './Styles/SwitchLanguageBtn.css'
+import './helpers/SwitchLanguageBtn.css'
 
 const SwitchLanguageBtn = () => {
   const { i18n } = useTranslation()

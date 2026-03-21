@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { I18nextProvider } from 'react-i18next'
 import React from 'react'
-import AddFundsModal from 'src/Components/HeaderComponents/AddFundsModal'
+import AddFundsModal from 'src/Components/Header/AddFundsModal'
 import i18n from 'src/i18n'
 import type { ElectronAPI } from 'src/types/electron'
 

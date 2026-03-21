@@ -1,17 +1,13 @@
-import { useNavigate, useRouterState } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { useT } from 'src/hooks/useT'
-import './Styles/HeaderButtons.css'
+import './helpers/HeaderButtons.css'
 
-const HomeBtn = () => {
+const SettingsBtn = () => {
   const _T = useT()
   const navigate = useNavigate()
-  const routerState = useRouterState()
-  const isOnHomePage = routerState.location.pathname === '/'
-
-  if (isOnHomePage) return null
 
   const handleClick = () => {
-    navigate({ to: '/' })
+    navigate({ to: '/settings' })
   }
 
   return (
@@ -21,10 +17,10 @@ const HomeBtn = () => {
         className="header-btn header-btn-secondary"
         onClick={handleClick}
       >
-        {_T('Home')}
+        {_T('Settings')}
       </button>
     </div>
   )
 }
 
-export default HomeBtn
+export default SettingsBtn

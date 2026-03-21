@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { setUserSetting } from 'src/services/database'
-import './Styles/LanguageSelectionModal.css'
+import './helpers/LanguageSelectionModal.css'
 
 interface LanguageSelectionModalProps {
   isOpen: boolean

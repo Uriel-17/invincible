@@ -3,7 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { I18nextProvider } from 'react-i18next'
 import React from 'react'
-import LanguageSelectionModal from 'src/Components/LanguageSelectionModal'
+import LanguageSelectionModal from 'src/Components/LanguageSelectionModal/LanguageSelectionModal'
 import i18n from 'src/i18n'
 
 vi.mock('src/services/database', () => ({

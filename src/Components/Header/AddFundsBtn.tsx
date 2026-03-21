@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useT } from 'src/hooks/useT'
 import AddFundsModal from './AddFundsModal'
-import './Styles/HeaderButtons.css'
+import './helpers/HeaderButtons.css'
 
 const AddFundsBtn = () => {
   const _T = useT()

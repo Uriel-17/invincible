@@ -4,9 +4,9 @@ import { ArrowLeftIcon } from '@radix-ui/react-icons'
 import { initializeUser } from 'src/services/database'
 import { useT } from 'src/hooks/useT'
 import TextField from 'src/Components/Form/TextField'
-import { getUsernameValidation, getStartingBankrollValidation } from './onboardingFieldValidations'
+import { getUsernameValidation, getStartingBankrollValidation } from './helpers/onboardingFieldValidations'
 import { FIRST_LAUNCH_QC_KEY } from 'src/queryKeys'
-import './Styles/OnboardingModal.css'
+import './helpers/OnboardingModal.css'
 
 interface OnboardingFormValues {
   username: string

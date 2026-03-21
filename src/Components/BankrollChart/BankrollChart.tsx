@@ -12,7 +12,7 @@ import { useT } from 'src/hooks/useT'
 import { useTranslation } from 'react-i18next'
 import { formatCurrency } from 'src/utils/formatters'
 import type { BankrollSnapshot } from 'src/types/electron'
-import './Styles/BankrollChart.css'
+import './helpers/BankrollChart.css'
 
 interface BankrollChartProps {
   data: BankrollSnapshot[]

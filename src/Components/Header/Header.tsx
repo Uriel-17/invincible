@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import './Styles/Header.css'
-import './HeaderComponents/Styles/HeaderButtons.css'
+import './helpers/Header.css'
+import './helpers/HeaderButtons.css'
 import { useT } from 'src/hooks/useT'
 import { Link } from '@tanstack/react-router'
-import ThemeToggle from 'src/Components/HeaderComponents/ThemeToggle'
-import HomeBtn from 'src/Components/HeaderComponents/HomeBtn'
-import SettingsBtn from 'src/Components/HeaderComponents/SettingsBtn'
-import AddFundsBtn from 'src/Components/HeaderComponents/AddFundsBtn'
+import ThemeToggle from './ThemeToggle'
+import HomeBtn from './HomeBtn'
+import SettingsBtn from './SettingsBtn'
+import AddFundsBtn from './AddFundsBtn'
 import CreatePickModal from 'src/Pages/Welcome/CreatePickModal/CreatePickModal'
 
 const Header = () => {

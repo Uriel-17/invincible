@@ -3,26 +3,26 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { I18nextProvider } from 'react-i18next'
 import type { ReactNode } from 'react'
-import Header from 'src/Components/Header'
+import Header from 'src/Components/Header/Header'
 import i18n from 'src/i18n'
 
 vi.mock('@tanstack/react-router', () => ({
   Link: ({ children, ...props }: { children: ReactNode } & Record<string, unknown>) => <a {...props}>{children}</a>,
 }))
 
-vi.mock('src/Components/HeaderComponents/AddFundsBtn', () => ({
+vi.mock('src/Components/Header/AddFundsBtn', () => ({
   default: () => <div data-testid="add-funds-btn">Add Funds</div>,
 }))
 
-vi.mock('src/Components/HeaderComponents/HomeBtn', () => ({
+vi.mock('src/Components/Header/HomeBtn', () => ({
   default: () => <div data-testid="home-btn">Home</div>,
 }))
 
-vi.mock('src/Components/HeaderComponents/SettingsBtn', () => ({
+vi.mock('src/Components/Header/SettingsBtn', () => ({
   default: () => <div data-testid="settings-btn">Settings</div>,
 }))
 
-vi.mock('src/Components/HeaderComponents/ThemeToggle', () => ({
+vi.mock('src/Components/Header/ThemeToggle', () => ({
   default: () => <div data-testid="theme-toggle">Theme</div>,
 }))
 

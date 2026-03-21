@@ -1,5 +1,5 @@
 import { t } from 'src/i18n'
-import type { FieldValidationConfig } from 'src/Components/onboardingFieldValidations'
+import type { FieldValidationConfig } from 'src/Components/OnboardingModal/helpers/onboardingFieldValidations'
 
 export const getAddFundsAmountValidation = (): FieldValidationConfig => ({
   type: 'text',

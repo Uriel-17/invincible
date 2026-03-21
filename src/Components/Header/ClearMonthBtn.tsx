@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useT } from 'src/hooks/useT'
-import './Styles/ClearMonthBtn.css'
+import './helpers/ClearMonthModal.css'
 
 const ClearMonthBtn = () => {
   const [isOpen, setIsOpen] = useState(false)

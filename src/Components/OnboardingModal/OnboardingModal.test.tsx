@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { I18nextProvider } from 'react-i18next'
 import React from 'react'
-import OnboardingModal from 'src/Components/OnboardingModal'
+import OnboardingModal from 'src/Components/OnboardingModal/OnboardingModal'
 import i18n from 'src/i18n'
 
 vi.mock('src/services/database', () => ({
