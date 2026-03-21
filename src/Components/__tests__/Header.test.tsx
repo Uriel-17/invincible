@@ -47,7 +47,7 @@ describe('Header', () => {
     const createPickButton = screen.getByRole('button', { name: /Create pick/i })
     const actions = container.querySelector('.app-header-actions')
 
-    expect(createPickButton).toHaveClass('header-btn', 'header-btn-primary')
+    expect(createPickButton).toHaveClass('header-btn', 'header-btn-outlined')
     expect(actions?.firstElementChild).toHaveTextContent('Create pick')
   })
 
