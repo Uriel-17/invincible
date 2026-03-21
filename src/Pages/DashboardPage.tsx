@@ -1,36 +1,15 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { EyeOpenIcon } from '@radix-ui/react-icons'
 import { useT } from 'src/hooks/useT'
 import { useBankrollHistory } from 'src/hooks/useBankrollHistory'
 import { useBets } from 'src/hooks/useBets'
-import { formatCurrency, formatShortDate, formatROI } from 'src/utils/formatters'
+import { formatCurrency, formatROI } from 'src/utils/formatters'
 import BankrollChart from 'src/Components/BankrollChart'
 import BetDetailModal from 'src/Pages/BetDetailModal'
+import DashboardBetsTable from 'src/Pages/Bets/DashboardBetsTable'
 import type { BetRecord } from 'src/types/electron'
 import './Styles/DashboardPage.css'
 import './Styles/DashboardBetsTable.css'
-
-const RESULT_CLASS_MAP: Record<string, string> = {
-  win: 'dashboard-bets-result--win',
-  loss: 'dashboard-bets-result--loss',
-  cashout: 'dashboard-bets-result--cashout',
-  push: 'dashboard-bets-result--push',
-  pending: 'dashboard-bets-result--pending',
-}
-
-const RESULT_LABEL_MAP: Record<string, string> = {
-  win: 'Win',
-  loss: 'Loss',
-  cashout: 'Cashout',
-  push: 'Push',
-  pending: 'Pending',
-}
-
-const BET_TYPE_LABEL_MAP: Record<string, string> = {
-  single: 'Single',
-  parlay: 'Parlay',
-}
 
 interface DashboardStats {
   totalBets: number
@@ -134,76 +113,6 @@ const DashboardPage = () => {
     )
   }
 
-  const renderBetsTable = (betsList: BetRecord[]) => {
-    if (betsList.length === 0) {
-      return (
-        <div className="dashboard-bets-empty">
-          {_T('No bets found.')}
-        </div>
-      )
-    }
-
-    return (
-      <div className="dashboard-bets-table-wrapper">
-        <table className="dashboard-bets-table">
-          <thead>
-            <tr>
-              <th>{_T('Placed at')}</th>
-              <th>{_T('Bet Type')}</th>
-              <th>{_T('Event')}</th>
-              <th>{_T('Market')}</th>
-              <th>{_T('Odds')}</th>
-              <th>{_T('Result')}</th>
-              <th>{_T('Stake')}</th>
-              <th>{_T('Profit/Loss')}</th>
-              <th>{_T('Eye Log')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {betsList.map((bet) => {
-              const profitClass = bet.net_gain > 0
-                ? 'dashboard-bets-profit--positive'
-                : bet.net_gain < 0
-                  ? 'dashboard-bets-profit--negative'
-                  : ''
-
-              return (
-                <tr key={bet.id}>
-                  <td>{formatShortDate(bet.placed_at, language)}</td>
-                  <td>{_T(BET_TYPE_LABEL_MAP[bet.bet_type] || bet.bet_type)}</td>
-                  <td>{bet.selection || '—'}</td>
-                  <td>{bet.market || '—'}</td>
-                  <td>{bet.quota}</td>
-                  <td>
-                    <span className={RESULT_CLASS_MAP[bet.outcome] || ''}>
-                      {_T(RESULT_LABEL_MAP[bet.outcome] || bet.outcome)}
-                    </span>
-                  </td>
-                  <td>{formatCurrency(bet.bet_amount, language)}</td>
-                  <td>
-                    <span className={profitClass}>
-                      {formatCurrency(bet.net_gain, language)}
-                    </span>
-                  </td>
-                  <td>
-                    <button
-                      type="button"
-                      className="dashboard-bets-eye-btn"
-                      onClick={() => handleOpenBetDetail(bet.id)}
-                      aria-label={_T('View bet details')}
-                    >
-                      <EyeOpenIcon />
-                    </button>
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>
-    )
-  }
-
   return (
     <div className="dashboard-page">
       <div className="dashboard-container">
@@ -263,7 +172,14 @@ const DashboardPage = () => {
         </div>
         <div className="dashboard-bets-section">
           <h2 className="dashboard-section-title">{_T('Bets')}</h2>
-          {bets ? renderBetsTable(bets) : (
+          {bets ? (
+            <DashboardBetsTable
+              bets={bets}
+              language={language}
+              translate={_T}
+              onOpenBetDetail={handleOpenBetDetail}
+            />
+          ) : (
             <div className="dashboard-bets-empty">{_T('Loading bets...')}</div>
           )}
         </div>
