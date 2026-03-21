@@ -24,7 +24,7 @@ const DashboardTable = ({ children, style }: React.ComponentPropsWithoutRef<'tab
   <table className="dashboard-bets-table" style={style}>
     <colgroup>
       {BETS_COLUMNS.map((col) => (
-        <col key={col.label} style={{ width: col.width }} />
+        <col key={col.label} style={col.width ? { width: col.width } : undefined} />
       ))}
     </colgroup>
     {children}
