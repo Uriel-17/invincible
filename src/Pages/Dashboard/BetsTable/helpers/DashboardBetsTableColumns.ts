@@ -8,15 +8,15 @@ export interface BetsColumn {
 }
 
 export const BETS_COLUMNS: BetsColumn[] = [
-  { label: 'Placed at', sortKey: 'placed_at', width: '10%' },
-  { label: 'Bet Type', width: '8%' },
+  { label: 'Placed at', sortKey: 'placed_at', width: '110px' },
+  { label: 'Bet Type', width: '80px' },
   { label: 'Event', width: 'auto' },
-  { label: 'Market', width: '14%' },
-  { label: 'Odds', sortKey: 'quota', width: '6%' },
-  { label: 'Result', sortKey: 'outcome', width: '9%' },
-  { label: 'Stake', sortKey: 'bet_amount', width: '9%' },
-  { label: 'Profit/Loss', sortKey: 'net_gain', width: '10%' },
-  { label: 'Eye Log', width: '5%' },
+  { label: 'Market', width: '140px' },
+  { label: 'Odds', sortKey: 'quota', width: '70px' },
+  { label: 'Result', sortKey: 'outcome', width: '90px' },
+  { label: 'Stake', sortKey: 'bet_amount', width: '90px' },
+  { label: 'Profit/Loss', sortKey: 'net_gain', width: '100px' },
+  { label: 'Eye Log', width: '60px' },
 ]
 
 export const RESULT_CLASS_MAP: Record<string, string> = {

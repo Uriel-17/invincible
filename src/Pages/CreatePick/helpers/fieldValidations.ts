@@ -14,6 +14,10 @@ export type FieldValidationConfig = {
   minMessage?: string
   max?: number
   maxMessage?: string
+  minLength?: number
+  minLengthMessage?: string
+  maxLength?: number
+  maxLengthMessage?: string
   pattern?: RegExp
   patternMessage?: string
   inputMode?: 'text' | 'decimal' | 'numeric' | 'tel' | 'search' | 'email' | 'url'
@@ -87,6 +91,8 @@ export const getCashoutValidation = (): FieldValidationConfig => ({
 export const getMarketValidation = (): FieldValidationConfig => ({
   type: 'text',
   requiredMessage: t('This field is required.'),
+  maxLength: 60,
+  maxLengthMessage: t('Market cannot exceed 60 characters.'),
 })
 
 /**
@@ -96,6 +102,8 @@ export const getMarketValidation = (): FieldValidationConfig => ({
 export const getSelectionValidation = (): FieldValidationConfig => ({
   type: 'text',
   requiredMessage: t('This field is required.'),
+  maxLength: 100,
+  maxLengthMessage: t('Selection cannot exceed 100 characters.'),
 })
 
 /**
@@ -104,6 +112,8 @@ export const getSelectionValidation = (): FieldValidationConfig => ({
  */
 export const getNotesValidation = (): FieldValidationConfig => ({
   type: 'text',
+  maxLength: 300,
+  maxLengthMessage: t('Notes cannot exceed 300 characters.'),
 })
 
 /**
@@ -114,6 +124,8 @@ export const getLegDescriptionValidation = (): FieldValidationConfig => ({
   type: 'text',
   placeholder: t('Team vs Team'),
   requiredMessage: t('This field is required.'),
+  maxLength: 100,
+  maxLengthMessage: t('Leg description cannot exceed 100 characters.'),
 })
 
 /**
@@ -123,6 +135,8 @@ export const getLegDescriptionValidation = (): FieldValidationConfig => ({
 export const getLegMarketValidation = (): FieldValidationConfig => ({
   type: 'text',
   requiredMessage: t('This field is required.'),
+  maxLength: 60,
+  maxLengthMessage: t('Leg market cannot exceed 60 characters.'),
 })
 
 /**
