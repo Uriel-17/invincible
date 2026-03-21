@@ -21,7 +21,14 @@ type DashboardBetsTableProps = {
 }
 
 const DashboardTable = ({ children, style }: React.ComponentPropsWithoutRef<'table'>) => (
-  <table className="dashboard-bets-table" style={style}>{children}</table>
+  <table className="dashboard-bets-table" style={style}>
+    <colgroup>
+      {BETS_COLUMNS.map((col) => (
+        <col key={col.label} style={{ width: col.width }} />
+      ))}
+    </colgroup>
+    {children}
+  </table>
 )
 
 const DashboardTableHead = forwardRef<HTMLTableSectionElement, React.ComponentPropsWithoutRef<'thead'>>(
@@ -135,7 +142,7 @@ const DashboardBetsTable = ({ bets, language, translate, onOpenBetDetail }: Dash
               <td className={lastRowClassName}>
                 <span className={profitClass}>{formatCurrency(bet.net_gain, language)}</span>
               </td>
-              <td className={lastRowClassName}>
+              <td className={`dashboard-bets-td--action${lastRowClassName ? ` ${lastRowClassName}` : ''}`}>
                 <button
                   type="button"
                   className="dashboard-bets-eye-btn"

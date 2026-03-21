@@ -13,6 +13,7 @@
   width: 100%;
   border-collapse: collapse;
   font-size: 0.9rem;
+  table-layout: fixed;
 }
 
 .dashboard-bets-scroller {
@@ -33,6 +34,8 @@
   top: 0;
   background-color: rgb(var(--surface));
   z-index: 1;
+  overflow: hidden;
+  resize: horizontal;
 }
 
 .dashboard-bets-th--sortable {
@@ -64,10 +67,19 @@
   padding: 10px 12px;
   color: rgb(var(--text));
   border-bottom: 1px solid rgb(var(--border));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .dashboard-bets-table td.dashboard-bets-cell--last-row {
   border-bottom: none;
+}
+
+.dashboard-bets-td--action {
+  overflow: visible;
+  text-overflow: clip;
+  text-align: center;
 }
 
 .dashboard-bets-table tbody tr:hover {
