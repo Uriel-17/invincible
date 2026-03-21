@@ -76,7 +76,7 @@
   border-bottom: none;
 }
 
-.dashboard-bets-td--action {
+.dashboard-bets-table td.dashboard-bets-td--action {
   overflow: visible;
   text-overflow: clip;
   text-align: center;
