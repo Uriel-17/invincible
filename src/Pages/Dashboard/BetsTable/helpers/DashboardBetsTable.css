@@ -29,6 +29,10 @@
   color: rgb(var(--muted));
   border-bottom: 2px solid rgb(var(--border));
   white-space: nowrap;
+  position: sticky;
+  top: 0;
+  background-color: rgb(var(--surface));
+  z-index: 1;
 }
 
 .dashboard-bets-th--sortable {
