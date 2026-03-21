@@ -88,7 +88,7 @@ const DashboardBetsTable = ({ bets, language, translate, onOpenBetDetail }: Dash
     <div className="dashboard-bets-table-wrapper">
       <TableVirtuoso
         data={sortedBets}
-        style={{ height: 'min(32rem, 70vh)' }}
+        style={{ height: '70vh' }}
         defaultItemHeight={44}
         increaseViewportBy={264}
         overscan={176}
