@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useT } from 'src/hooks/useT'
 import { getBetById } from 'src/services/database'
 import { BETS_QC_KEY } from 'src/queryKeys'
-import './Styles/BetDetailModal.css'
+import './helpers/BetDetailModal.css'
 
 interface BetDetailModalProps {
   isOpen: boolean

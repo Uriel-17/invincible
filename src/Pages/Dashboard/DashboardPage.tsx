@@ -5,11 +5,10 @@ import { useBankrollHistory } from 'src/hooks/useBankrollHistory'
 import { useBets } from 'src/hooks/useBets'
 import { formatCurrency, formatROI } from 'src/utils/formatters'
 import BankrollChart from 'src/Components/BankrollChart'
-import BetDetailModal from 'src/Pages/BetDetailModal'
-import DashboardBetsTable from 'src/Pages/Bets/DashboardBetsTable'
+import BetDetailModal from './BetDetailModal/BetDetailModal'
+import DashboardBetsTable from './BetsTable/DashboardBetsTable'
 import type { BetRecord } from 'src/types/electron'
-import './Styles/DashboardPage.css'
-import './Styles/DashboardBetsTable.css'
+import './helpers/DashboardPage.css'
 
 interface DashboardStats {
   totalBets: number

@@ -9,8 +9,9 @@ import {
   RESULT_CLASS_MAP,
   RESULT_LABEL_MAP,
   type SortKey,
-} from './DashboardBetsTableColumns'
-import { handleSort, sortBets } from './DashboardBetsTableUtils'
+} from './helpers/DashboardBetsTableColumns'
+import { handleSort, sortBets } from './helpers/DashboardBetsTableUtils'
+import './helpers/DashboardBetsTable.css'
 
 type DashboardBetsTableProps = {
   bets: BetRecord[]
