@@ -29,6 +29,10 @@
   align-items: center;
   position: relative;
   z-index: 1;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
 }
 
 .welcome-page-hero-text {
@@ -96,6 +100,10 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
 }
 
 /* Monthly Scorecard */
@@ -176,6 +184,12 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
+}
+
+@media (min-width: 1200px) {
+  .welcome-page-metrics {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 .welcome-page-metric-card {
