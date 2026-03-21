@@ -142,7 +142,7 @@ const BankrollChart = ({ data }: BankrollChartProps) => {
           <Line
             type="monotone"
             dataKey="amount"
-            stroke="rgb(59, 130, 246)"
+            stroke="rgb(var(--primary))"
             strokeWidth={2}
             dot={false}
             activeDot={{ r: 6 }}

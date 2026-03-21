@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './Styles/Header.css'
+import './HeaderComponents/Styles/HeaderButtons.css'
 import { useT } from 'src/hooks/useT'
 import { Link } from '@tanstack/react-router'
 import ThemeToggle from 'src/Components/HeaderComponents/ThemeToggle'
@@ -22,7 +23,7 @@ const Header = () => {
           <div className="header-btn-wrapper">
             <button
               type="button"
-              className="header-btn header-btn-primary"
+              className="header-btn header-btn-outlined"
               onClick={() => setIsCreatePickOpen(true)}
             >
               {_T('Create pick')}
