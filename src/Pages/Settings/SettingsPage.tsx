@@ -1,8 +1,8 @@
 import { useT } from 'src/hooks/useT'
 import { useSettings } from 'src/hooks/useSettings'
-import SettingsForm from './Settings/SettingsForm'
-import ClearDataButton from './Settings/ClearDataButton'
-import './Styles/SettingsPage.css'
+import SettingsForm from './SettingsForm'
+import ClearDataButton from './ClearData/ClearDataButton'
+import './helpers/SettingsPage.css'
 
 const SettingsPage = () => {
   const _T = useT()

@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useT } from 'src/hooks/useT'
 import { getElectronAPI } from 'src/services/database'
 import Modal from 'src/Components/Modal/Modal'
-import './Styles/ClearDataModal.css'
+import './helpers/ClearDataModal.css'
 import { useNavigate } from '@tanstack/react-router'
 
 interface ClearDataModalProps {
