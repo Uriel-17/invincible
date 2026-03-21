@@ -7,7 +7,7 @@ import ThemeToggle from 'src/Components/HeaderComponents/ThemeToggle'
 import HomeBtn from 'src/Components/HeaderComponents/HomeBtn'
 import SettingsBtn from 'src/Components/HeaderComponents/SettingsBtn'
 import AddFundsBtn from 'src/Components/HeaderComponents/AddFundsBtn'
-import CreatePickModal from 'src/Pages/Welcome/Components/CreatePickModal'
+import CreatePickModal from 'src/Pages/Welcome/CreatePickModal/CreatePickModal'
 
 const Header = () => {
   const _T = useT()

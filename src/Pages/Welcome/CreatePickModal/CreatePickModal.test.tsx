@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { I18nextProvider } from 'react-i18next'
 import React from 'react'
-import CreatePickModal from 'src/Pages/Welcome/Components/CreatePickModal'
+import CreatePickModal from 'src/Pages/Welcome/CreatePickModal/CreatePickModal'
 import i18n from 'src/i18n'
 
 // Mock useCreateBet hook
@@ -28,7 +28,7 @@ vi.mock('src/Pages/CreatePick/CreatePickForm', () => ({
 }))
 
 // Mock FormActions component
-vi.mock('src/Pages/Welcome/Components/FormActions', () => ({
+vi.mock('src/Pages/Welcome/CreatePickModal/FormActions', () => ({
   default: ({ onClose }: { onClose: () => void }) => (
     <div>
       <button type="button" onClick={onClose}>Cancel</button>

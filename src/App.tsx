@@ -1,5 +1,5 @@
 import './App.css';
-import WelcomePage from './Pages/WelcomePage';
+import WelcomePage from './Pages/Welcome/WelcomePage';
 import Header from './Components/Header';
 
 const App = () => {

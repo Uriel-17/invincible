@@ -26,7 +26,7 @@ vi.mock('src/Components/HeaderComponents/ThemeToggle', () => ({
   default: () => <div data-testid="theme-toggle">Theme</div>,
 }))
 
-vi.mock('src/Pages/Welcome/Components/CreatePickModal', () => ({
+vi.mock('src/Pages/Welcome/CreatePickModal/CreatePickModal', () => ({
   default: ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) =>
     isOpen ? (
       <div data-testid="create-pick-modal">

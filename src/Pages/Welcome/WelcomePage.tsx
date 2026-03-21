@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import WelcomeHero from './Welcome/WelcomeHero'
-import WelcomePanels from './Welcome/WelcomePanels'
-import CreatePickModal from './Welcome/Components/CreatePickModal'
-import './Styles/WelcomePage.css'
+import WelcomeHero from './WelcomeHero'
+import WelcomePanels from './WelcomePanels'
+import CreatePickModal from './CreatePickModal/CreatePickModal'
+import './helpers/WelcomePage.css'
 
 const WelcomePage = () => {
   const [isCreatePickOpen, setIsCreatePickOpen] = useState(false)

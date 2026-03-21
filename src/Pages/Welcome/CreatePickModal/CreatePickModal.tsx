@@ -1,8 +1,8 @@
 import { useT } from 'src/hooks/useT'
 import CreatePickForm from 'src/Pages/CreatePick/CreatePickForm'
-import FormActions from 'src/Pages/Welcome/Components/FormActions'
-import 'src/Pages/Welcome/Styles/CreatePickModal.css'
-import type { CreatePickModalProps } from 'src/Pages/types'
+import FormActions from './FormActions'
+import './helpers/CreatePickModal.css'
+import type { CreatePickModalProps } from 'src/types/pages'
 import type { CreateBetFormValues } from 'src/types/bets'
 import { useCreateBet } from 'src/hooks/useCreateBet'
 
