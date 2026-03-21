@@ -11,7 +11,7 @@ import {
   getNotesValidation,
   getCashoutValidation,
   getNetGainValidation,
-} from 'src/Pages/CreatePick/fieldValidations'
+} from 'src/Pages/CreatePick/helpers/fieldValidations'
 
 const CreatePickSingleFields = () => {
   const _T = useT()
