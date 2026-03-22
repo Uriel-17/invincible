@@ -99,7 +99,10 @@ const DashboardBetsTable = ({ bets, language, translate, onOpenBetDetail }: Dash
             {BETS_COLUMNS.map((col) => (
               <th
                 key={col.label}
-                className={col.sortKey ? 'dashboard-bets-th--sortable' : undefined}
+                className={[
+                  col.sortKey ? 'dashboard-bets-th--sortable' : '',
+                  col.resizable ? 'dashboard-bets-th--resizable' : '',
+                ].filter(Boolean).join(' ') || undefined}
                 onClick={col.sortKey ? () => handleSort({ column: col.sortKey!, current: { sortKey, sortDir }, setSortKey, setSortDir }) : undefined}
               >
                 <span className="dashboard-bets-th-content">

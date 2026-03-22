@@ -5,13 +5,14 @@ export interface BetsColumn {
   label: string
   sortKey?: SortKey
   width?: string
+  resizable?: boolean
 }
 
 export const BETS_COLUMNS: BetsColumn[] = [
   { label: 'Placed at', sortKey: 'placed_at', width: '110px' },
   { label: 'Bet Type', width: '70px' },
-  { label: 'Event' },
-  { label: 'Market' },
+  { label: 'Event', resizable: true },
+  { label: 'Market', resizable: true },
   { label: 'Odds', sortKey: 'quota', width: '60px' },
   { label: 'Result', sortKey: 'outcome', width: '80px' },
   { label: 'Stake', sortKey: 'bet_amount', width: '80px' },

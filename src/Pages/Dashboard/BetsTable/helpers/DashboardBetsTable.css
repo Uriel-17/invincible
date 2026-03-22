@@ -35,12 +35,15 @@
   background-color: rgb(var(--surface));
   z-index: 1;
   overflow: hidden;
-  resize: horizontal;
 }
 
 .dashboard-bets-th--sortable {
   cursor: pointer;
   user-select: none;
+}
+
+.dashboard-bets-th--resizable {
+  resize: horizontal;
 }
 
 .dashboard-bets-th--sortable:hover {
