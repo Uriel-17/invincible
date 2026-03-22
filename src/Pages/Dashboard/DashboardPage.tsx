@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useT } from 'src/hooks/useT'
 import { useBankrollHistory } from 'src/hooks/useBankrollHistory'
 import { useBets } from 'src/hooks/useBets'
+import { useBankroll } from 'src/hooks/useBankroll'
 import { formatCurrency, formatROI } from 'src/utils/formatters'
 import BankrollChart from 'src/Components/BankrollChart/BankrollChart'
 import BetDetailModal from './BetDetailModal/BetDetailModal'
@@ -61,6 +62,7 @@ const DashboardPage = () => {
   const language = i18n.language
   const { data: history, isLoading, isError, error } = useBankrollHistory()
   const { data: bets } = useBets()
+  const { data: bankroll } = useBankroll()
   const [selectedBetId, setSelectedBetId] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -118,6 +120,17 @@ const DashboardPage = () => {
         <h1 className="dashboard-title">{_T('Bankroll Dashboard')}</h1>
         {stats && (
           <div className="dashboard-stats">
+            {bankroll !== undefined && (
+              <>
+                <div className="dashboard-stats-item">
+                  <span className="dashboard-stats-label">{_T('Bankroll')}</span>
+                  <span className={`dashboard-stats-value dashboard-stats-value--bankroll ${bankroll > 0 ? 'dashboard-stats-value--bankroll-positive' : bankroll < 0 ? 'dashboard-stats-value--bankroll-negative' : ''}`}>
+                    {formatCurrency(bankroll, language)}
+                  </span>
+                </div>
+                <div className="dashboard-stats-divider" />
+              </>
+            )}
             <div className="dashboard-stats-item">
               <span className="dashboard-stats-label">{_T('Total Bets')}</span>
               <span className="dashboard-stats-value">{stats.totalBets}</span>
@@ -174,8 +187,6 @@ const DashboardPage = () => {
           {bets ? (
             <DashboardBetsTable
               bets={bets}
-              language={language}
-              translate={_T}
               onOpenBetDetail={handleOpenBetDetail}
             />
           ) : (

@@ -27,14 +27,3 @@ export const getUsernameValidation = (): FieldValidationConfig => ({
   maxLengthMessage: t('Username must be at most 50 characters'),
 })
 
-export const getStartingBankrollValidation = (): FieldValidationConfig => ({
-  type: 'text',
-  inputMode: 'decimal',
-  step: '0.01',
-  requiredMessage: t('Starting bankroll is required'),
-  pattern: /^\d+(\.\d{1,2})?$/,
-  patternMessage: t('Please enter a valid number with max 2 decimal places'),
-  min: 0.01,
-  minMessage: t('Starting bankroll must be greater than 0'),
-})
-

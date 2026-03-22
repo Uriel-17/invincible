@@ -14,9 +14,7 @@
     "src/routeTree.gen.ts",
     "dist/**",
     "node_modules/**",
-    "src/App.tsx",
-    "src/App.css",
-    "src/types/forms.ts",
+"src/types/forms.ts",
     "src/vitest.d.ts"
   ],
   "ignoreMembers": [
@@ -26,8 +24,6 @@
     "src/types/bets.ts:MonthlyBetSummary"
   ],
   "ignoreDependencies": [
-    "@tanstack/react-table",
-    "recharts",
     "@tanstack/react-query-devtools"
   ],
   "ignoreExportsUsedInFile": true,

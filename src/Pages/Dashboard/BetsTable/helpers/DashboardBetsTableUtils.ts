@@ -1,5 +1,5 @@
 import type { BetRecord } from 'src/types/electron'
-import type { SortKey, SortDir } from './DashboardBetsTableColumns'
+import type { SortKey, SortDir, OutcomeFilter } from './DashboardBetsTableColumns'
 
 export interface SortState {
   sortKey: SortKey
@@ -26,6 +26,24 @@ export const handleSort = ({ column, current, setSortKey, setSortDir }: HandleSo
     setSortKey(column)
     setSortDir('desc')
   }
+}
+
+export interface FilterBetsParams {
+  bets: BetRecord[]
+  search: string
+  outcome: OutcomeFilter
+}
+
+export const filterBets = ({ bets, search, outcome }: FilterBetsParams): BetRecord[] => {
+  const query = search.trim().toLowerCase()
+  return bets.filter((bet) => {
+    if (outcome !== 'all' && bet.outcome !== outcome) return false
+    if (query) {
+      const haystack = `${bet.selection ?? ''} ${bet.market ?? ''}`.toLowerCase()
+      if (!haystack.includes(query)) return false
+    }
+    return true
+  })
 }
 
 export const sortBets = ({ bets, sortKey, sortDir }: SortBetsParams): BetRecord[] => {

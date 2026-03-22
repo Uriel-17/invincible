@@ -9,8 +9,6 @@
 }
 
 .dashboard-container {
-  max-width: 1200px;
-  margin: 0 auto;
   padding-bottom: 4rem;
 }
 
@@ -108,6 +106,18 @@
   font-size: 1.1rem;
   font-weight: 700;
   color: rgb(var(--text));
+}
+
+.dashboard-stats-value--bankroll {
+  font-size: 1.25rem;
+}
+
+.dashboard-stats-value--bankroll-positive {
+  color: rgb(var(--primary));
+}
+
+.dashboard-stats-value--bankroll-negative {
+  color: rgb(var(--danger));
 }
 
 .dashboard-stats-value--wins {

@@ -1,7 +1,9 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { I18nextProvider } from 'react-i18next'
 import { VirtuosoMockContext } from 'react-virtuoso'
+import i18n from 'src/i18n'
 import DashboardBetsTable from './DashboardBetsTable'
 import type { BetRecord } from 'src/types/electron'
 
@@ -25,18 +27,18 @@ const createBet = (index: number): BetRecord => ({
 })
 
 const renderTable = (bets: BetRecord[], onOpenBetDetail = vi.fn()) => render(
-  <VirtuosoMockContext.Provider value={{ viewportHeight: 220, itemHeight: 44 }}>
-    <DashboardBetsTable
-      bets={bets}
-      language="en"
-      translate={(key) => key}
-      onOpenBetDetail={onOpenBetDetail}
-    />
-  </VirtuosoMockContext.Provider>,
+  <I18nextProvider i18n={i18n}>
+    <VirtuosoMockContext.Provider value={{ viewportHeight: 220, itemHeight: 44 }}>
+      <DashboardBetsTable
+        bets={bets}
+        onOpenBetDetail={onOpenBetDetail}
+      />
+    </VirtuosoMockContext.Provider>
+  </I18nextProvider>,
 )
 
 describe('DashboardBetsTable', () => {
-  it('renders the original table structure and opens bet details from the Eye Log action', async () => {
+  it('renders the table structure and opens bet details from the Details action', async () => {
     const user = userEvent.setup()
     const onOpenBetDetail = vi.fn()
 
@@ -59,7 +61,6 @@ describe('DashboardBetsTable', () => {
     const { container } = renderTable(bets)
     const scroller = screen.getByTestId('dashboard-bets-scroller')
 
-    // With DESC sort, Selection 0 is near the end — check the scroller exists instead
     expect(scroller).toHaveClass('dashboard-bets-scroller')
     expect(scroller).toHaveAttribute('data-virtuoso-scroller', 'true')
 

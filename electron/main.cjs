@@ -45,7 +45,7 @@ function registerIPCHandlers() {
   // Get bets with optional filters
   ipcMain.handle('db:getBets', async (event, filters) => {
     try {
-      console.log('📋 IPC: Getting bets...', filters)
+      console.log('📋 IPC: Getting bets...', filters ?? 'no filters')
       const result = getBets(filters)
       console.log(`✅ IPC: Retrieved ${result.length} bets`)
       return { success: true, data: result }
@@ -312,6 +312,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
+    icon: path.join(__dirname, '../build/icon.png'),
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
@@ -337,6 +338,8 @@ function createWindow() {
   })
 }
 
+app.setName('Invincible')
+
 // This method will be called when Electron has finished initialization
 app.whenReady().then(() => {
   // Initialize database first
@@ -350,6 +353,11 @@ app.whenReady().then(() => {
   // Register IPC handlers
   console.log('🔌 Registering IPC handlers...')
   registerIPCHandlers()
+
+  // Set dock icon on macOS
+  if (process.platform === 'darwin' && app.dock) {
+    app.dock.setIcon(path.join(__dirname, '../build/icon.png'))
+  }
 
   // Create window
   createWindow()

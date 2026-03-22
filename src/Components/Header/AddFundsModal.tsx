@@ -68,7 +68,7 @@ const AddFundsModal = ({ isOpen, onClose }: AddFundsModalProps) => {
       onClose={handleCancel}
       titleId="add-funds-title"
       classNamePrefix="add-funds"
-      overlayOpacity={0.98}
+
     >
       <div className="add-funds-header">
         <h2 id="add-funds-title">{_T('Add Funds to Bankroll')}</h2>
