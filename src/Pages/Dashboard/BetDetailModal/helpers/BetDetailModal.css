@@ -143,11 +143,6 @@
   font-style: italic;
 }
 
-.bet-detail-summary {
-  display: grid;
-  gap: 8px;
-}
-
 .bet-detail-summary-row {
   display: flex;
   justify-content: space-between;
