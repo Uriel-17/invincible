@@ -21,14 +21,7 @@ type DashboardBetsTableProps = {
 }
 
 const DashboardTable = ({ children, style }: React.ComponentPropsWithoutRef<'table'>) => (
-  <table className="dashboard-bets-table" style={style}>
-    <colgroup>
-      {BETS_COLUMNS.map((col) => (
-        <col key={col.label} style={col.width ? { width: col.width } : undefined} />
-      ))}
-    </colgroup>
-    {children}
-  </table>
+  <table className="dashboard-bets-table" style={style}>{children}</table>
 )
 
 const DashboardTableHead = forwardRef<HTMLTableSectionElement, React.ComponentPropsWithoutRef<'thead'>>(
@@ -133,8 +126,8 @@ const DashboardBetsTable = ({ bets, language, translate, onOpenBetDetail }: Dash
             <>
               <td className={lastRowClassName}>{formatShortDate(bet.placed_at, language)}</td>
               <td className={lastRowClassName}>{translate(BET_TYPE_LABEL_MAP[bet.bet_type] || bet.bet_type)}</td>
-              <td className={lastRowClassName}>{bet.selection || '—'}</td>
-              <td className={lastRowClassName}>{bet.market || '—'}</td>
+              <td className={`dashboard-bets-td--flexible${lastRowClassName ? ` ${lastRowClassName}` : ''}`}>{bet.selection || '—'}</td>
+              <td className={`dashboard-bets-td--flexible${lastRowClassName ? ` ${lastRowClassName}` : ''}`}>{bet.market || '—'}</td>
               <td className={lastRowClassName}>{bet.quota}</td>
               <td className={lastRowClassName}>
                 <span className={RESULT_CLASS_MAP[bet.outcome] || ''}>

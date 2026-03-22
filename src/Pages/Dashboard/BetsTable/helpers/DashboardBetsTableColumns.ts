@@ -4,20 +4,19 @@ export type SortDir = 'asc' | 'desc'
 export interface BetsColumn {
   label: string
   sortKey?: SortKey
-  width?: string
   resizable?: boolean
 }
 
 export const BETS_COLUMNS: BetsColumn[] = [
-  { label: 'Placed at', sortKey: 'placed_at', width: '110px' },
-  { label: 'Bet Type', width: '70px' },
+  { label: 'Placed at', sortKey: 'placed_at' },
+  { label: 'Bet Type' },
   { label: 'Event', resizable: true },
   { label: 'Market', resizable: true },
-  { label: 'Odds', sortKey: 'quota', width: '60px' },
-  { label: 'Result', sortKey: 'outcome', width: '95px' },
-  { label: 'Stake', sortKey: 'bet_amount', width: '80px' },
-  { label: 'Profit/Loss', sortKey: 'net_gain', width: '100px' },
-  { label: 'Details', width: '60px' },
+  { label: 'Odds', sortKey: 'quota' },
+  { label: 'Result', sortKey: 'outcome' },
+  { label: 'Stake', sortKey: 'bet_amount' },
+  { label: 'Profit/Loss', sortKey: 'net_gain' },
+  { label: 'Details' },
 ]
 
 export const RESULT_CLASS_MAP: Record<string, string> = {
