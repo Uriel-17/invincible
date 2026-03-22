@@ -19,7 +19,7 @@ const Modal = ({
   titleId,
   classNamePrefix,
   zIndex = 100,
-  overlayOpacity = 0.98,
+  overlayOpacity = 0.45,
   showBackdropBlur = true,
 }: ModalProps) => {
   if (!isOpen) {

@@ -108,6 +108,11 @@
   color: rgb(var(--text));
 }
 
+.dashboard-stats-value--bankroll {
+  color: rgb(var(--primary));
+  font-size: 1.25rem;
+}
+
 .dashboard-stats-value--wins {
   color: rgb(var(--primary));
 }
