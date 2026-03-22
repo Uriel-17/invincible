@@ -11,9 +11,9 @@ export function useUpdateBet(options?: UseUpdateBetOptions) {
   const { t } = useTranslation()
 
   return useMutation<BetRecord, CreateBetError, UpdateBetVariables>({
-    mutationFn: async ({ betId, outcome, netGain, cashout }) => {
+    mutationFn: async ({ betId, outcome, netGain, cashout, market, selection, betAmount, quota, notes }) => {
       try {
-        return await updateBet(betId, { outcome, netGain, cashout })
+        return await updateBet(betId, { outcome, netGain, cashout, market, selection, betAmount, quota, notes })
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : t('Unknown error occurred')
         throw { message: errorMessage } as CreateBetError

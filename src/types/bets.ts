@@ -59,4 +59,9 @@ export interface UpdateBetVariables {
   outcome: OutcomeType
   netGain: string
   cashout?: string
+  market?: string
+  selection?: string
+  betAmount?: string
+  quota?: string
+  notes?: string
 }

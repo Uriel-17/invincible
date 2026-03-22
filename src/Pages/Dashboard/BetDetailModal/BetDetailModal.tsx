@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { useT } from 'src/hooks/useT'
 import { getBetById } from 'src/services/database'
-import { formatCurrency, formatShortDate } from 'src/utils/formatters'
+import { formatShortDate } from 'src/utils/formatters'
 import { BETS_QC_KEY } from 'src/queryKeys'
 import BetDetailResolveForm from './BetDetailResolveForm'
 import './helpers/BetDetailModal.css'
@@ -61,25 +61,9 @@ const BetDetailModal = ({ isOpen, onClose, betId }: BetDetailModalProps) => {
         {!isLoading && bet && (
           <>
             <div className="bet-detail-section">
-              <div className="bet-detail-summary">
-                {(bet.market || bet.selection) && (
-                  <div className="bet-detail-summary-row">
-                    <span className="bet-detail-summary-label">{_T('Market')}</span>
-                    <span className="bet-detail-summary-value">{bet.market ?? bet.selection}</span>
-                  </div>
-                )}
-                <div className="bet-detail-summary-row">
-                  <span className="bet-detail-summary-label">{_T('Placed at')}</span>
-                  <span className="bet-detail-summary-value">{formatShortDate(bet.placed_at, language)}</span>
-                </div>
-                <div className="bet-detail-summary-row">
-                  <span className="bet-detail-summary-label">{_T('Bet Amount')}</span>
-                  <span className="bet-detail-summary-value">{formatCurrency(bet.bet_amount, language)}</span>
-                </div>
-                <div className="bet-detail-summary-row">
-                  <span className="bet-detail-summary-label">{_T('Quota')}</span>
-                  <span className="bet-detail-summary-value">{bet.quota}</span>
-                </div>
+              <div className="bet-detail-summary-row">
+                <span className="bet-detail-summary-label">{_T('Placed at')}</span>
+                <span className="bet-detail-summary-value">{formatShortDate(bet.placed_at, language)}</span>
               </div>
             </div>
 
@@ -106,16 +90,6 @@ const BetDetailModal = ({ isOpen, onClose, betId }: BetDetailModalProps) => {
             )}
 
             <div className="bet-detail-section">
-              <h3 className="bet-detail-section-title">{_T('Notes')}</h3>
-              {bet.notes ? (
-                <div className="bet-detail-notes">{bet.notes}</div>
-              ) : (
-                <p className="bet-detail-no-notes">{_T('No notes for this bet.')}</p>
-              )}
-            </div>
-
-            <div className="bet-detail-section">
-              <h3 className="bet-detail-section-title">{_T('Resolve')}</h3>
               <BetDetailResolveForm key={bet.id} bet={bet} onSuccess={onClose} />
             </div>
           </>

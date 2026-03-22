@@ -364,9 +364,19 @@ function updateBet(betId, updates) {
     const transaction = db.transaction(() => {
       db.prepare(`
         UPDATE bets
-        SET outcome = ?, net_gain = ?, cashout_amount = ?, updated_at = datetime('now')
+        SET outcome = ?, net_gain = ?, cashout_amount = ?,
+            market = ?, selection = ?, bet_amount = ?, quota = ?, notes = ?,
+            updated_at = datetime('now')
         WHERE id = ?
-      `).run(newOutcome, newNetGain, newCashout, betId)
+      `).run(
+        newOutcome, newNetGain, newCashout,
+        updates.market ?? existing.market,
+        updates.selection ?? existing.selection,
+        updates.betAmount != null ? parseFloat(updates.betAmount) : existing.bet_amount,
+        updates.quota ?? existing.quota,
+        updates.notes !== undefined ? (updates.notes || null) : existing.notes,
+        betId
+      )
     })
 
     transaction()

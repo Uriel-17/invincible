@@ -1,9 +1,18 @@
+import { useEffect } from 'react'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { useT } from 'src/hooks/useT'
 import { useUpdateBet } from 'src/hooks/useUpdateBet'
 import SelectField from 'src/Components/Form/SelectField'
 import TextField from 'src/Components/Form/TextField'
-import { getCashoutValidation, getNetGainValidation } from 'src/Pages/CreatePick/helpers/fieldValidations'
+import {
+  getBetAmountValidation,
+  getCashoutValidation,
+  getMarketValidation,
+  getNetGainValidation,
+  getNotesValidation,
+  getQuotaValidation,
+  getSelectionValidation,
+} from 'src/Pages/CreatePick/helpers/fieldValidations'
 import type { BetRecord } from 'src/types/electron'
 import type { OutcomeType } from 'src/types/bets'
 
@@ -16,6 +25,11 @@ interface ResolveFormValues {
   outcome: OutcomeType
   netGain: string
   cashout: string
+  market: string
+  selection: string
+  betAmount: string
+  quota: string
+  notes: string
 }
 
 const BetDetailResolveForm = ({ bet, onSuccess }: BetDetailResolveFormProps) => {
@@ -27,8 +41,16 @@ const BetDetailResolveForm = ({ bet, onSuccess }: BetDetailResolveFormProps) => 
       outcome: bet.outcome,
       netGain: String(bet.net_gain),
       cashout: bet.cashout_amount != null ? String(bet.cashout_amount) : '',
+      market: bet.market ?? '',
+      selection: bet.selection ?? '',
+      betAmount: String(bet.bet_amount),
+      quota: bet.quota,
+      notes: bet.notes ?? '',
     },
   })
+
+  const { trigger } = methods
+  useEffect(() => { void trigger() }, [trigger])
 
   const outcome = useWatch({ control: methods.control, name: 'outcome' })
   const { mutate, isPending, error } = useUpdateBet({ onSuccess })
@@ -39,12 +61,37 @@ const BetDetailResolveForm = ({ bet, onSuccess }: BetDetailResolveFormProps) => 
       outcome: values.outcome,
       netGain: values.netGain,
       cashout: values.outcome === 'cashout' ? values.cashout : undefined,
+      market: values.market || undefined,
+      selection: values.selection || undefined,
+      betAmount: values.betAmount,
+      quota: values.quota,
+      notes: values.notes,
     })
   })
 
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit} className="bet-detail-resolve">
+        <TextField
+          name="market"
+          label={_T('Market')}
+          {...getMarketValidation()}
+        />
+        <TextField
+          name="selection"
+          label={_T('Selection')}
+          {...getSelectionValidation()}
+        />
+        <TextField
+          name="betAmount"
+          label={_T('Bet Amount')}
+          {...getBetAmountValidation()}
+        />
+        <TextField
+          name="quota"
+          label={_T('Odds')}
+          {...getQuotaValidation()}
+        />
         <SelectField
           name="outcome"
           label={_T('Outcome')}
@@ -69,6 +116,11 @@ const BetDetailResolveForm = ({ bet, onSuccess }: BetDetailResolveFormProps) => 
             {...getCashoutValidation()}
           />
         )}
+        <TextField
+          name="notes"
+          label={_T('Notes')}
+          {...getNotesValidation()}
+        />
 
         {error && (
           <p className="bet-detail-resolve-error">{error.message}</p>

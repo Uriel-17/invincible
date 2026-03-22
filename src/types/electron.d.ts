@@ -34,6 +34,11 @@ export interface UpdateBetData {
   outcome: 'win' | 'loss' | 'pending' | 'push' | 'cashout'
   netGain: string
   cashout?: string
+  market?: string
+  selection?: string
+  betAmount?: string
+  quota?: string
+  notes?: string
 }
 
 export interface BetFilters {
