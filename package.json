@@ -1,5 +1,7 @@
 {
   "name": "invincible",
+  "description": "A personal sports betting tracker desktop app",
+  "author": "Uriel Garcia",
   "private": true,
   "version": "1.0.0",
   "type": "module",
