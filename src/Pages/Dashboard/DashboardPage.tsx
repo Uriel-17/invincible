@@ -98,22 +98,6 @@ const DashboardPage = () => {
     )
   }
 
-  if (!history || history.length === 0) {
-    return (
-      <div className="dashboard-page">
-        <div className="dashboard-container">
-          <h1 className="dashboard-title">{_T('Bankroll Dashboard')}</h1>
-          <div className="dashboard-empty">
-            <p>{_T('No bankroll history available yet.')}</p>
-            <p className="dashboard-empty-hint">
-              {_T('Start placing bets to see your bankroll progression over time.')}
-            </p>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="dashboard-page">
       <div className="dashboard-container">
@@ -178,9 +162,18 @@ const DashboardPage = () => {
         )}
         <div className="dashboard-chart-section">
           <h2 className="dashboard-section-title">{_T('Bankroll History')}</h2>
-          <div className="dashboard-chart-wrapper">
-            <BankrollChart data={history} />
-          </div>
+          {history && history.length > 0 ? (
+            <div className="dashboard-chart-wrapper">
+              <BankrollChart data={history} />
+            </div>
+          ) : (
+            <div className="dashboard-empty">
+              <p>{_T('No bankroll history available yet.')}</p>
+              <p className="dashboard-empty-hint">
+                {_T('Start placing bets to see your bankroll progression over time.')}
+              </p>
+            </div>
+          )}
         </div>
         <div className="dashboard-bets-section">
           <h2 className="dashboard-section-title">{_T('Bets')}</h2>

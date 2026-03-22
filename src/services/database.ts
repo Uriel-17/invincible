@@ -1,5 +1,5 @@
 // Database service - React interface to Electron database
-import type { BetRecord, BetFilters } from '../types/electron'
+import type { BetRecord, BetFilters, UpdateBetData } from '../types/electron'
 import type { CreateBetFormValues } from '../types/bets'
 
 /**
@@ -34,6 +34,18 @@ export async function createBet(formValues: CreateBetFormValues): Promise<BetRec
   }
   
   console.log('✅ Bet created successfully:', response.data)
+  return response.data
+}
+
+/**
+ * Update an existing bet's outcome and financials
+ */
+export async function updateBet(betId: string, updates: UpdateBetData): Promise<BetRecord> {
+  const api = getElectronAPI()
+  const response = await api.database.updateBet(betId, updates)
+  if (!response.success || !response.data) {
+    throw new Error(response.error || 'Failed to update bet')
+  }
   return response.data
 }
 

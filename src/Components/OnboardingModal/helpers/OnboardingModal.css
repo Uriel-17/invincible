@@ -110,7 +110,11 @@
 
 .onboarding-field input:focus {
   outline: none;
-  border-color: rgb(var(--primary));
+}
+
+.onboarding-field input:focus-visible {
+  outline: 2px solid rgb(var(--info));
+  outline-offset: 2px;
 }
 
 .onboarding-field input:disabled {

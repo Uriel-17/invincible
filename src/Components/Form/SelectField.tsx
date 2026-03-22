@@ -16,7 +16,7 @@ const SelectField = ({
 
   return (
     <label className={fieldClassName}>
-      <span>{label}</span>
+      <span>{label}{requiredMessage ? <span className="required-asterisk"> *</span> : null}</span>
       <select {...register(name, rules)} required={Boolean(requiredMessage)}>
         {options.map((option) => (
           <option key={option.value} value={option.value}>

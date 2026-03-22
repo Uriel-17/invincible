@@ -53,3 +53,10 @@ export interface CreateBetError {
   message: string
   code?: string
 }
+
+export interface UpdateBetVariables {
+  betId: string
+  outcome: OutcomeType
+  netGain: string
+  cashout?: string
+}

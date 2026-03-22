@@ -59,7 +59,7 @@ const TextField = ({
 
   return (
     <label className={fieldClassName}>
-      <span>{label}</span>
+      <span>{label}{requiredMessage ? <span className="required-asterisk"> *</span> : null}</span>
       {hint ? <span className="field-hint">{hint}</span> : null}
       <input
         type={type}

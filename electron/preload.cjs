@@ -22,6 +22,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
      * @param {Object} filters - Optional filters (monthKey, isArchived, outcome)
      * @returns {Promise<{success: boolean, data?: any[], error?: string}>}
      */
+    updateBet: (betId, updates) => ipcRenderer.invoke('db:updateBet', betId, updates),
+
     getBets: (filters) => ipcRenderer.invoke('db:getBets', filters),
 
     /**

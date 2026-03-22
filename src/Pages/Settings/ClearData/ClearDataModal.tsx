@@ -18,8 +18,10 @@ const ClearDataModal = ({ isOpen, onClose }: ClearDataModalProps) => {
   const [confirmText, setConfirmText] = useState('')
   const [isClearing, setIsClearing] = useState(false)
 
+  const confirmWord = _T('DELETE')
+
   const handleConfirm = async () => {
-    if (confirmText.toUpperCase() !== 'DELETE') {
+    if (confirmText.toUpperCase() !== confirmWord.toUpperCase()) {
       alert(_T('Please type DELETE to confirm'))
       return
     }
@@ -55,7 +57,6 @@ const ClearDataModal = ({ isOpen, onClose }: ClearDataModalProps) => {
       onClose={handleCancel}
       titleId="clear-data-title"
       classNamePrefix="clear-data"
-      overlayOpacity={0.98}
     >
       <div className="clear-data-header">
         <h2 id="clear-data-title">{_T('Clear All Data')}</h2>
@@ -69,14 +70,14 @@ const ClearDataModal = ({ isOpen, onClose }: ClearDataModalProps) => {
           {_T('This will permanently delete all bets, parlay legs, bankroll snapshots, and monthly archives. Your user settings will be preserved.')}
         </p>
         <p className="clear-data-instruction">
-          {_T('Type')} <strong>DELETE</strong> {_T('to confirm')}:
+          {_T('Type')} <strong>{confirmWord}</strong> {_T('to confirm')}:
         </p>
         <input
           type="text"
           className="clear-data-input"
           value={confirmText}
           onChange={(e) => setConfirmText(e.target.value)}
-          placeholder="DELETE"
+          placeholder={confirmWord}
           disabled={isClearing}
           autoFocus
         />
@@ -95,7 +96,7 @@ const ClearDataModal = ({ isOpen, onClose }: ClearDataModalProps) => {
           type="button"
           className="clear-data-button clear-data-button-danger"
           onClick={handleConfirm}
-          disabled={isClearing || confirmText.toUpperCase() !== 'DELETE'}
+          disabled={isClearing || confirmText.toUpperCase() !== confirmWord.toUpperCase()}
         >
           {isClearing ? _T('Clearing...') : _T('Clear All Data')}
         </button>

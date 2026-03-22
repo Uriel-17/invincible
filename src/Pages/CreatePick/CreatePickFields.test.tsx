@@ -57,6 +57,6 @@ describe('CreatePickFields', () => {
     expect(screen.getByText('Parlay legs')).toBeInTheDocument()
     expect(screen.getByPlaceholderText('Team vs Team')).toBeInTheDocument()
     expect(screen.getAllByPlaceholderText('e.g. -110').length).toBeGreaterThan(0)
-    expect(screen.getByLabelText('Leg market')).toBeInTheDocument()
+    expect(screen.getByLabelText('Leg market', { exact: false })).toBeInTheDocument()
   })
 })

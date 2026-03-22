@@ -3,6 +3,11 @@
   height: 100%;
 }
 
+.bankroll-chart-container svg:focus,
+.bankroll-chart-container svg:focus-visible {
+  outline: none;
+}
+
 .bankroll-chart-empty {
   text-align: center;
   padding: 40px;

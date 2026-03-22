@@ -25,6 +25,9 @@ function initDatabase() {
   // Create tables
   createTables()
 
+  // Run migrations
+  runMigrations()
+
   console.log('✅ Database initialized successfully!')
 
   return db
@@ -144,6 +147,49 @@ function createTables() {
   db.exec(`INSERT OR IGNORE INTO schema_version (version) VALUES (1)`)
 
   console.log('✅ Database tables created successfully!')
+}
+
+/**
+ * Run schema migrations
+ * v2: Remove CHECK (amount >= 0) from bankroll_snapshots — bankroll can go negative
+ */
+function runMigrations() {
+  const current = db.prepare('SELECT MAX(version) as v FROM schema_version').get()
+  if (current.v >= 2) return
+
+  console.log('🔄 Running migration v2: allow negative bankroll snapshots...')
+
+  db.pragma('foreign_keys = OFF')
+
+  db.exec(`
+    CREATE TABLE bankroll_snapshots_v2 (
+      id TEXT PRIMARY KEY,
+      month_key TEXT NOT NULL,
+      timestamp TEXT NOT NULL DEFAULT (datetime('now')),
+      amount REAL NOT NULL,
+      change_amount REAL NOT NULL,
+      change_reason TEXT NOT NULL CHECK (change_reason IN ('initial', 'bet_win', 'bet_loss', 'bet_cashout', 'manual_adjustment', 'month_start')),
+      bet_id TEXT,
+      notes TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (month_key) REFERENCES monthly_archives(month_key),
+      FOREIGN KEY (bet_id) REFERENCES bets(id)
+    )
+  `)
+
+  db.exec(`INSERT INTO bankroll_snapshots_v2 SELECT * FROM bankroll_snapshots`)
+  db.exec(`DROP TABLE bankroll_snapshots`)
+  db.exec(`ALTER TABLE bankroll_snapshots_v2 RENAME TO bankroll_snapshots`)
+
+  db.exec(`
+    CREATE INDEX IF NOT EXISTS idx_bankroll_snapshots_month_key ON bankroll_snapshots(month_key);
+    CREATE INDEX IF NOT EXISTS idx_bankroll_snapshots_timestamp ON bankroll_snapshots(timestamp);
+  `)
+
+  db.pragma('foreign_keys = ON')
+
+  db.exec(`INSERT OR IGNORE INTO schema_version (version) VALUES (2)`)
+  console.log('✅ Migration v2 complete')
 }
 
 /**
@@ -296,6 +342,57 @@ function createBet(betData) {
     return getBetById(betId)
   } catch (error) {
     console.error('❌ Error creating bet:', error.message)
+    throw error
+  }
+}
+
+/**
+ * Update an existing bet's outcome, net gain, and cashout amount
+ * @param {string} betId - Bet ID to update
+ * @param {Object} updates - { outcome, netGain, cashout? }
+ * @returns {Object} Updated bet record
+ */
+function updateBet(betId, updates) {
+  try {
+    const existing = db.prepare('SELECT * FROM bets WHERE id = ?').get(betId)
+    if (!existing) throw new Error(`Bet not found: ${betId}`)
+
+    const newOutcome = updates.outcome
+    const newNetGain = parseFloat(updates.netGain)
+    const newCashout = newOutcome === 'cashout' && updates.cashout ? parseFloat(updates.cashout) : null
+
+    const transaction = db.transaction(() => {
+      db.prepare(`
+        UPDATE bets
+        SET outcome = ?, net_gain = ?, cashout_amount = ?, updated_at = datetime('now')
+        WHERE id = ?
+      `).run(newOutcome, newNetGain, newCashout, betId)
+    })
+
+    transaction()
+
+    // Upsert bankroll snapshot: remove old, create fresh if settled
+    db.prepare('DELETE FROM bankroll_snapshots WHERE bet_id = ?').run(betId)
+
+    if (['win', 'loss', 'cashout'].includes(newOutcome)) {
+      const currentBankroll = getCurrentBankroll()
+      const changeReasonMap = { win: 'bet_win', loss: 'bet_loss', cashout: 'bet_cashout' }
+      createBankrollSnapshot({
+        amount: currentBankroll,
+        changeAmount: newNetGain,
+        changeReason: changeReasonMap[newOutcome],
+        monthKey: existing.month_key,
+        betId: betId,
+        timestamp: existing.placed_at
+      })
+    }
+
+    updateMonthlyStatistics(existing.month_key)
+
+    console.log(`✅ Bet updated: ${betId} → ${newOutcome}`)
+    return getBetById(betId)
+  } catch (error) {
+    console.error('❌ Error updating bet:', error.message)
     throw error
   }
 }
@@ -763,6 +860,7 @@ module.exports = {
   closeDatabase,
   testDatabase,
   createBet,
+  updateBet,
   getBets,
   getBetById,
   getCurrentMonthKey,

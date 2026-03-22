@@ -14,7 +14,7 @@ const DateField = ({
 
   return (
     <label className={fieldClassName}>
-      <span>{label}</span>
+      <span>{label}{requiredMessage ? <span className="required-asterisk"> *</span> : null}</span>
       <input type="date" {...register(name, rules)} required={Boolean(requiredMessage)} />
       {error ? <span className={errorClassName}>{error}</span> : null}
     </label>
