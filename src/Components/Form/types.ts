@@ -25,6 +25,7 @@ export type DateFieldProps = {
 export type TextFieldProps = {
   name: string
   label: string
+  hint?: string
   type?: 'text' | 'number' | 'email' | 'password'
   step?: string
   placeholder?: string
