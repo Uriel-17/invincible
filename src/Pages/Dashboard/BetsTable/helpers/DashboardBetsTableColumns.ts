@@ -14,7 +14,7 @@ export const BETS_COLUMNS: BetsColumn[] = [
   { label: 'Event', resizable: true },
   { label: 'Market', resizable: true },
   { label: 'Odds', sortKey: 'quota', width: '60px' },
-  { label: 'Result', sortKey: 'outcome', width: '80px' },
+  { label: 'Result', sortKey: 'outcome', width: '95px' },
   { label: 'Stake', sortKey: 'bet_amount', width: '80px' },
   { label: 'Profit/Loss', sortKey: 'net_gain', width: '100px' },
   { label: 'Details', width: '60px' },
