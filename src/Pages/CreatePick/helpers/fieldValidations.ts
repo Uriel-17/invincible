@@ -77,7 +77,7 @@ export const getNetGainValidation = (): FieldValidationConfig => ({
   pattern: /^-?\d+(\.\d+)?$/,
   patternMessage: t('Net gain must be a valid number'),
   min: -1_000_000,
-  minMessage: t('Minimum value is {{value}}', { value: '-1,000,000' }),
+  minMessage: t('Net gain minimum is -1,000,000'),
   max: 1_000_000,
   maxMessage: t('Amount cannot exceed 1,000,000'),
 })

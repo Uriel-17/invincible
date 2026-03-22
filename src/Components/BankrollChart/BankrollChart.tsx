@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import {
   Line,
   XAxis,
@@ -90,20 +91,23 @@ const BankrollChart = ({ data }: BankrollChartProps) => {
     return _T(CHANGE_REASON_LABEL_KEYS[reason] || reason)
   }
 
-  const chartData: ChartDataPoint[] = data.map((snapshot) => ({
-    timestamp: new Date(snapshot.timestamp).getTime(),
-    amount: snapshot.amount,
-    change_reason: snapshot.change_reason,
-    change_amount: snapshot.change_amount,
-    formattedDate: new Date(snapshot.timestamp).toLocaleDateString(
-      language === 'es' ? 'es-ES' : 'en-US',
-      {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      }
-    ),
-  }))
+  const chartData: ChartDataPoint[] = useMemo(
+    () => data.map((snapshot) => ({
+      timestamp: new Date(snapshot.timestamp).getTime(),
+      amount: snapshot.amount,
+      change_reason: snapshot.change_reason,
+      change_amount: snapshot.change_amount,
+      formattedDate: new Date(snapshot.timestamp).toLocaleDateString(
+        language === 'es' ? 'es-ES' : 'en-US',
+        {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+        }
+      ),
+    })),
+    [data, language],
+  )
 
   const formatYAxis = (value: number): string => formatCurrency(value, language)
 
