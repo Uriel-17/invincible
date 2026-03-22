@@ -40,11 +40,11 @@ describe('CreatePickFields', () => {
   it('renders the single bet fields by default', () => {
     renderWithForm()
 
-    expect(screen.getByLabelText('Bet Type', { exact: false })).toBeInTheDocument()
-    expect(screen.getByLabelText('Bet amount', { exact: false })).toBeInTheDocument()
-    expect(screen.getByLabelText('Quota', { exact: false })).toBeInTheDocument()
-    expect(screen.getByLabelText('Outcome', { exact: false })).toBeInTheDocument()
-    expect(screen.getByLabelText('Placed at', { exact: false })).toBeInTheDocument()
+    expect(screen.getByLabelText('Bet Type')).toBeInTheDocument()
+    expect(screen.getByLabelText('Bet amount')).toBeInTheDocument()
+    expect(screen.getByLabelText('Quota')).toBeInTheDocument()
+    expect(screen.getByLabelText('Outcome')).toBeInTheDocument()
+    expect(screen.getByLabelText('Placed at')).toBeInTheDocument()
     expect(screen.queryByText('Parlay legs')).not.toBeInTheDocument()
   })
 

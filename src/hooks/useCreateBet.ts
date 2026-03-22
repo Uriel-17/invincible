@@ -1,13 +1,10 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { createBet } from 'src/services/database'
 import type { CreateBetFormValues, CreateBetError } from 'src/types/bets'
 import type { BetRecord } from 'src/types/electron'
 import type { UseCreateBetOptions } from 'src/types/mutations'
-import { BETS_QC_KEY, BANKROLL_QC_KEY, BANKROLL_HISTORY_QC_KEY } from 'src/queryKeys'
 
 export function useCreateBet(options?: UseCreateBetOptions) {
-  const queryClient = useQueryClient()
-
   return useMutation<BetRecord, CreateBetError, CreateBetFormValues>({
     mutationFn: async (formValues: CreateBetFormValues) => {
       try {
@@ -32,13 +29,7 @@ export function useCreateBet(options?: UseCreateBetOptions) {
         } as CreateBetError
       }
     },
-    onSuccess: (...args) => {
-      void queryClient.invalidateQueries({ queryKey: [BETS_QC_KEY] })
-      void queryClient.invalidateQueries({ queryKey: [BANKROLL_QC_KEY] })
-      void queryClient.invalidateQueries({ queryKey: [BANKROLL_HISTORY_QC_KEY] })
-      options?.onSuccess?.(...args)
-    },
-    onError: options?.onError,
+    ...options
   })
 }
 

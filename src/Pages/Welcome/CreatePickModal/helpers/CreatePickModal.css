@@ -58,12 +58,6 @@
   font-size: 0.8rem;
 }
 
-.field-hint {
-  font-size: 0.72rem;
-  color: rgb(var(--muted));
-  margin-bottom: 2px;
-}
-
 .create-pick-actions {
   display: flex;
   justify-content: flex-end;

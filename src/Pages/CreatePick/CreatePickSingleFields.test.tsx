@@ -39,8 +39,8 @@ describe('CreatePickSingleFields', () => {
   it('renders single bet amount and quota inputs', () => {
     renderWithForm()
 
-    expect(screen.getByLabelText('Bet amount', { exact: false })).toBeInTheDocument()
-    expect(screen.getByLabelText('Quota', { exact: false })).toBeInTheDocument()
+    expect(screen.getByLabelText('Bet amount')).toBeInTheDocument()
+    expect(screen.getByLabelText('Quota')).toBeInTheDocument()
   })
 
   it('does not render parlay legs section', () => {

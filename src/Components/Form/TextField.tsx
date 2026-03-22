@@ -6,7 +6,6 @@ import { buildValidationRules } from './validationUtils'
 const TextField = ({
   name,
   label,
-  hint,
   type = 'text',
   step,
   placeholder,
@@ -60,7 +59,6 @@ const TextField = ({
   return (
     <label className={fieldClassName}>
       <span>{label}</span>
-      {hint ? <span className="field-hint">{hint}</span> : null}
       <input
         type={type}
         step={step}

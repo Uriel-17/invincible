@@ -82,7 +82,7 @@ const DashboardBetsTable = ({ bets, onOpenBetDetail }: DashboardBetsTableProps) 
       </div>
       <TableVirtuoso
         data={visibleBets}
-        style={{ height: Math.min(visibleBets.length * 44 + 44, window.innerHeight * 0.7) }}
+        style={{ height: '70vh' }}
         defaultItemHeight={44}
         increaseViewportBy={264}
         overscan={176}
