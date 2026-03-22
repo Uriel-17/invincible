@@ -77,7 +77,12 @@
 .settings-field input[type="text"]:focus,
 .settings-field select:focus {
   outline: none;
-  border-color: rgb(var(--primary));
+}
+
+.settings-field input[type="text"]:focus-visible,
+.settings-field select:focus-visible {
+  outline: 2px solid rgb(var(--info));
+  outline-offset: 2px;
 }
 
 .settings-field-error {

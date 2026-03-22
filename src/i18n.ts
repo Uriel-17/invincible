@@ -106,6 +106,7 @@ const resources = {
         'Please enter a valid number with max 2 decimal places',
       'Please select a valid option': 'Please select a valid option',
       'Please type DELETE to confirm': 'Please type DELETE to confirm',
+      DELETE: 'DELETE',
       'Type of bet — e.g. Moneyline, Spread, Over/Under': 'Type of bet — e.g. Moneyline, Spread, Over/Under',
       'Odds at time of bet — e.g. -110 or +150': 'Odds at time of bet — e.g. -110 or +150',
       'Profit if the bet wins, not including your stake': 'Profit if the bet wins, not including your stake',
@@ -351,7 +352,7 @@ const resources = {
       Pending: 'Pendiente',
       'Permanently delete all your betting data. This action cannot be undone.':
         'Eliminar permanentemente todos tus datos de apuestas. Esta acción no se puede deshacer.',
-      'Placed at': 'Fecha y hora',
+      'Placed at': 'Fecha',
       'Please enter a valid amount (e.g., 100 or 100.50)':
         'Por favor ingresa un monto válido (ej., 100 o 100.50)',
       'Please enter a valid date': 'Por favor ingresa una fecha válida',
@@ -359,7 +360,8 @@ const resources = {
       'Please enter a valid number with max 2 decimal places':
         'Por favor ingresa un número válido con máximo 2 decimales',
       'Please select a valid option': 'Por favor selecciona una opción válida',
-      'Please type DELETE to confirm': 'Por favor escribe DELETE para confirmar',
+      'Please type DELETE to confirm': 'Por favor escribe ELIMINAR para confirmar',
+      DELETE: 'ELIMINAR',
       'Type of bet — e.g. Moneyline, Spread, Over/Under': 'Tipo de apuesta — ej. Moneyline, Spread, Más/Menos',
       'Odds at time of bet — e.g. -110 or +150': 'Cuota al momento de apostar — ej. -110 o +150',
       'Profit if the bet wins, not including your stake': 'Ganancia si la apuesta gana, sin incluir tu monto apostado',

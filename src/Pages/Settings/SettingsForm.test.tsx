@@ -122,7 +122,7 @@ describe('SettingsForm', () => {
         wrapper: createWrapper(),
       })
 
-      const usernameInput = screen.getByLabelText('Username')
+      const usernameInput = screen.getByLabelText('Username', { exact: false })
       expect(usernameInput).toBeInTheDocument()
       expect(usernameInput).toHaveValue('TestUser')
       expect(usernameInput).toHaveAttribute('required')
@@ -202,7 +202,7 @@ describe('SettingsForm', () => {
         wrapper: createWrapper(),
       })
 
-      const usernameInput = screen.getByLabelText('Username') as HTMLInputElement
+      const usernameInput = screen.getByLabelText('Username', { exact: false }) as HTMLInputElement
       const languageSelect = screen.getByRole('combobox') as HTMLSelectElement
       const radios = screen.getAllByRole('radio')
       const lightRadio = radios.find(r => (r as HTMLInputElement).value === 'light') as HTMLInputElement
@@ -227,7 +227,7 @@ describe('SettingsForm', () => {
         wrapper: createWrapper(),
       })
 
-      const usernameInput = screen.getByLabelText('Username')
+      const usernameInput = screen.getByLabelText('Username', { exact: false })
       const saveButton = screen.getByRole('button', { name: 'Save Settings' })
 
       expect(saveButton).toBeDisabled()
@@ -246,7 +246,7 @@ describe('SettingsForm', () => {
         wrapper: createWrapper(),
       })
 
-      const usernameInput = screen.getByLabelText('Username')
+      const usernameInput = screen.getByLabelText('Username', { exact: false })
       const saveButton = screen.getByRole('button', { name: 'Save Settings' })
 
       // Initially button should be disabled (no changes)
@@ -278,7 +278,7 @@ describe('SettingsForm', () => {
         wrapper: createWrapper(),
       })
 
-      const usernameInput = screen.getByLabelText('Username')
+      const usernameInput = screen.getByLabelText('Username', { exact: false })
       await user.clear(usernameInput)
       await user.type(usernameInput, 'NewUsername')
 
@@ -304,7 +304,7 @@ describe('SettingsForm', () => {
         wrapper: createWrapper(),
       })
 
-      const usernameInput = screen.getByLabelText('Username')
+      const usernameInput = screen.getByLabelText('Username', { exact: false })
       await user.clear(usernameInput)
       await user.type(usernameInput, 'NewUsername')
 
@@ -330,7 +330,7 @@ describe('SettingsForm', () => {
         wrapper: createWrapper(),
       })
 
-      const usernameInput = screen.getByLabelText('Username')
+      const usernameInput = screen.getByLabelText('Username', { exact: false })
       const saveButton = screen.getByRole('button', { name: 'Save Settings' })
 
       expect(saveButton).toBeDisabled()
@@ -385,7 +385,7 @@ describe('SettingsForm', () => {
         wrapper: createWrapper(),
       })
 
-      const usernameInput = screen.getByLabelText('Username')
+      const usernameInput = screen.getByLabelText('Username', { exact: false })
       const saveButton = screen.getByRole('button', { name: 'Save Settings' })
 
       // Change and then change back to original value
@@ -416,7 +416,7 @@ describe('SettingsForm', () => {
         wrapper: createWrapper(),
       })
 
-      const usernameInput = screen.getByLabelText('Username')
+      const usernameInput = screen.getByLabelText('Username', { exact: false })
       const languageSelect = screen.getByRole('combobox')
       const darkRadio = screen.getByRole('radio', { name: 'Dark' })
 
@@ -442,7 +442,7 @@ describe('SettingsForm', () => {
         wrapper: createWrapper(),
       })
 
-      const usernameInput = screen.getByLabelText('Username')
+      const usernameInput = screen.getByLabelText('Username', { exact: false })
       await user.clear(usernameInput)
       await user.type(usernameInput, 'NewUsername')
 
@@ -467,7 +467,7 @@ describe('SettingsForm', () => {
         wrapper: createWrapper(),
       })
 
-      const usernameInput = screen.getByLabelText('Username')
+      const usernameInput = screen.getByLabelText('Username', { exact: false })
       await user.clear(usernameInput)
       await user.type(usernameInput, 'NewUsername')
 
@@ -490,7 +490,7 @@ describe('SettingsForm', () => {
         wrapper: createWrapper(),
       })
 
-      const usernameInput = screen.getByLabelText('Username')
+      const usernameInput = screen.getByLabelText('Username', { exact: false })
       await user.clear(usernameInput)
       await user.type(usernameInput, 'NewUsername')
 
@@ -518,7 +518,7 @@ describe('SettingsForm', () => {
         wrapper: createWrapper(),
       })
 
-      const usernameInput = screen.getByLabelText('Username')
+      const usernameInput = screen.getByLabelText('Username', { exact: false })
       await user.clear(usernameInput)
       await user.type(usernameInput, 'NewUsername')
 
@@ -540,7 +540,7 @@ describe('SettingsForm', () => {
         wrapper: createWrapper(),
       })
 
-      const usernameInput = screen.getByLabelText('Username')
+      const usernameInput = screen.getByLabelText('Username', { exact: false })
       await user.clear(usernameInput)
       await user.type(usernameInput, 'NewUsername')
 
@@ -565,7 +565,7 @@ describe('SettingsForm', () => {
         wrapper: createWrapper(),
       })
 
-      const usernameInput = screen.getByLabelText('Username') as HTMLInputElement
+      const usernameInput = screen.getByLabelText('Username', { exact: false }) as HTMLInputElement
       const languageSelect = screen.getByRole('combobox') as HTMLSelectElement
       const darkRadio = screen.getByRole('radio', { name: 'Dark' })
 

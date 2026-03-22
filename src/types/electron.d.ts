@@ -30,6 +30,17 @@ export interface ParlayLeg {
   created_at: string
 }
 
+export interface UpdateBetData {
+  outcome: 'win' | 'loss' | 'pending' | 'push' | 'cashout'
+  netGain: string
+  cashout?: string
+  market?: string
+  selection?: string
+  betAmount?: string
+  quota?: string
+  notes?: string
+}
+
 export interface BetFilters {
   monthKey?: string
   isArchived?: boolean
@@ -88,6 +99,7 @@ export interface BankrollSnapshot {
 export interface ElectronAPI {
   database: {
     createBet: (betData: unknown) => Promise<DatabaseResponse<BetRecord>>
+    updateBet: (betId: string, updates: UpdateBetData) => Promise<DatabaseResponse<BetRecord>>
     getBets: (filters?: BetFilters) => Promise<DatabaseResponse<BetRecord[]>>
     getBetById: (betId: string) => Promise<DatabaseResponse<BetRecord>>
     getCurrentMonthKey: () => Promise<DatabaseResponse<string>>

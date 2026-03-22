@@ -1,8 +1,11 @@
 import { type MouseEvent } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { useT } from 'src/hooks/useT'
 import { getBetById } from 'src/services/database'
+import { formatShortDate } from 'src/utils/formatters'
 import { BETS_QC_KEY } from 'src/queryKeys'
+import BetDetailResolveForm from './BetDetailResolveForm'
 import './helpers/BetDetailModal.css'
 
 interface BetDetailModalProps {
@@ -13,6 +16,8 @@ interface BetDetailModalProps {
 
 const BetDetailModal = ({ isOpen, onClose, betId }: BetDetailModalProps) => {
   const _T = useT()
+  const { i18n } = useTranslation()
+  const language = i18n.language
 
   const { data: bet, isLoading } = useQuery({
     queryKey: [BETS_QC_KEY, 'detail', betId],
@@ -55,6 +60,13 @@ const BetDetailModal = ({ isOpen, onClose, betId }: BetDetailModalProps) => {
 
         {!isLoading && bet && (
           <>
+            <div className="bet-detail-section">
+              <div className="bet-detail-summary-row">
+                <span className="bet-detail-summary-label">{_T('Placed at')}</span>
+                <span className="bet-detail-summary-value">{formatShortDate(bet.placed_at, language)}</span>
+              </div>
+            </div>
+
             {isParlay && (
               <div className="bet-detail-section">
                 <h3 className="bet-detail-section-title">{_T('Parlay Legs')}</h3>
@@ -78,12 +90,7 @@ const BetDetailModal = ({ isOpen, onClose, betId }: BetDetailModalProps) => {
             )}
 
             <div className="bet-detail-section">
-              <h3 className="bet-detail-section-title">{_T('Notes')}</h3>
-              {bet.notes ? (
-                <div className="bet-detail-notes">{bet.notes}</div>
-              ) : (
-                <p className="bet-detail-no-notes">{_T('No notes for this bet.')}</p>
-              )}
+              <BetDetailResolveForm key={bet.id} bet={bet} onSuccess={onClose} />
             </div>
           </>
         )}
@@ -93,4 +100,3 @@ const BetDetailModal = ({ isOpen, onClose, betId }: BetDetailModalProps) => {
 }
 
 export default BetDetailModal
-

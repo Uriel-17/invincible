@@ -8,6 +8,7 @@ const {
   closeDatabase,
   testDatabase,
   createBet,
+  updateBet,
   getBets,
   getBetById,
   getCurrentMonthKey,
@@ -38,6 +39,19 @@ function registerIPCHandlers() {
       return { success: true, data: result }
     } catch (error) {
       console.error('❌ IPC: Error creating bet:', error.message)
+      return { success: false, error: error.message }
+    }
+  })
+
+  // Update an existing bet's outcome and financials
+  ipcMain.handle('db:updateBet', async (event, betId, updates) => {
+    try {
+      console.log('✏️ IPC: Updating bet...', betId, updates)
+      const result = updateBet(betId, updates)
+      console.log('✅ IPC: Bet updated successfully')
+      return { success: true, data: result }
+    } catch (error) {
+      console.error('❌ IPC: Error updating bet:', error.message)
       return { success: false, error: error.message }
     }
   })

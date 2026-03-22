@@ -118,7 +118,7 @@ function createTables() {
       id TEXT PRIMARY KEY,
       month_key TEXT NOT NULL,
       timestamp TEXT NOT NULL DEFAULT (datetime('now')),
-      amount REAL NOT NULL CHECK (amount >= 0),
+      amount REAL NOT NULL,
       change_amount REAL NOT NULL,
       change_reason TEXT NOT NULL CHECK (change_reason IN ('initial', 'bet_win', 'bet_loss', 'bet_cashout', 'manual_adjustment', 'month_start')),
       bet_id TEXT,
@@ -296,6 +296,67 @@ function createBet(betData) {
     return getBetById(betId)
   } catch (error) {
     console.error('❌ Error creating bet:', error.message)
+    throw error
+  }
+}
+
+/**
+ * Update an existing bet's outcome, net gain, and cashout amount
+ * @param {string} betId - Bet ID to update
+ * @param {Object} updates - { outcome, netGain, cashout? }
+ * @returns {Object} Updated bet record
+ */
+function updateBet(betId, updates) {
+  try {
+    const existing = db.prepare('SELECT * FROM bets WHERE id = ?').get(betId)
+    if (!existing) throw new Error(`Bet not found: ${betId}`)
+
+    const newOutcome = updates.outcome
+    const newNetGain = parseFloat(updates.netGain)
+    const newCashout = newOutcome === 'cashout' && updates.cashout ? parseFloat(updates.cashout) : null
+
+    const transaction = db.transaction(() => {
+      db.prepare(`
+        UPDATE bets
+        SET outcome = ?, net_gain = ?, cashout_amount = ?,
+            market = ?, selection = ?, bet_amount = ?, quota = ?, notes = ?,
+            updated_at = datetime('now')
+        WHERE id = ?
+      `).run(
+        newOutcome, newNetGain, newCashout,
+        updates.market ?? existing.market,
+        updates.selection ?? existing.selection,
+        updates.betAmount != null ? parseFloat(updates.betAmount) : existing.bet_amount,
+        updates.quota ?? existing.quota,
+        updates.notes !== undefined ? (updates.notes || null) : existing.notes,
+        betId
+      )
+    })
+
+    transaction()
+
+    // Upsert bankroll snapshot: remove old, create fresh if settled
+    db.prepare('DELETE FROM bankroll_snapshots WHERE bet_id = ?').run(betId)
+
+    if (['win', 'loss', 'cashout'].includes(newOutcome)) {
+      const currentBankroll = getCurrentBankroll()
+      const changeReasonMap = { win: 'bet_win', loss: 'bet_loss', cashout: 'bet_cashout' }
+      createBankrollSnapshot({
+        amount: currentBankroll,
+        changeAmount: newNetGain,
+        changeReason: changeReasonMap[newOutcome],
+        monthKey: existing.month_key,
+        betId: betId,
+        timestamp: existing.placed_at
+      })
+    }
+
+    updateMonthlyStatistics(existing.month_key)
+
+    console.log(`✅ Bet updated: ${betId} → ${newOutcome}`)
+    return getBetById(betId)
+  } catch (error) {
+    console.error('❌ Error updating bet:', error.message)
     throw error
   }
 }
@@ -763,6 +824,7 @@ module.exports = {
   closeDatabase,
   testDatabase,
   createBet,
+  updateBet,
   getBets,
   getBetById,
   getCurrentMonthKey,

@@ -66,7 +66,11 @@
 
 .clear-data-input:focus {
   outline: none;
-  border-color: rgb(var(--danger));
+}
+
+.clear-data-input:focus-visible {
+  outline: 2px solid rgb(var(--info));
+  outline-offset: 2px;
 }
 
 .clear-data-input:disabled {
