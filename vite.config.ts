@@ -5,6 +5,7 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [tanstackRouter(), react()],
+  base: './',
   resolve: {
     alias: {
       'src': path.resolve(__dirname, './src'),
