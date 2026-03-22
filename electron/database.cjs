@@ -121,7 +121,7 @@ function createTables() {
       id TEXT PRIMARY KEY,
       month_key TEXT NOT NULL,
       timestamp TEXT NOT NULL DEFAULT (datetime('now')),
-      amount REAL NOT NULL CHECK (amount >= 0),
+      amount REAL NOT NULL,
       change_amount REAL NOT NULL,
       change_reason TEXT NOT NULL CHECK (change_reason IN ('initial', 'bet_win', 'bet_loss', 'bet_cashout', 'manual_adjustment', 'month_start')),
       bet_id TEXT,
