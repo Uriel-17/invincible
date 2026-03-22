@@ -6,8 +6,8 @@ import { useSaveSettings } from 'src/hooks/useSaveSettings';
 import { useBankroll } from 'src/hooks/useBankroll';
 import type { SettingsData } from 'src/hooks/useSettings';
 import TextField from 'src/Components/Form/TextField';
-import { getUsernameValidation } from './settingsFieldValidations';
-import type { PreferencesSectionProps, SettingsActionsProps, SettingsFormProps, UserInformationSectionProps } from './types';
+import { getUsernameValidation } from './helpers/settingsFieldValidations';
+import type { PreferencesSectionProps, SettingsActionsProps, SettingsFormProps, UserInformationSectionProps } from './helpers/types';
 
 const SettingsForm = ({ initialData }: SettingsFormProps) => {
   const _T = useT();

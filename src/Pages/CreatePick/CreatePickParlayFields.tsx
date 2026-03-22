@@ -13,7 +13,7 @@ import {
   getLegDescriptionValidation,
   getLegMarketValidation,
   getLegQuotaValidation,
-} from './fieldValidations'
+} from './helpers/fieldValidations'
 
 const CreatePickParlayFields = () => {
   const _T = useT()

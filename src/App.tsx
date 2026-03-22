@@ -1,6 +1,6 @@
 import './App.css';
-import WelcomePage from './Pages/WelcomePage';
-import Header from './Components/Header';
+import WelcomePage from './Pages/Welcome/WelcomePage';
+import Header from './Components/Header/Header';
 
 const App = () => {
   return (

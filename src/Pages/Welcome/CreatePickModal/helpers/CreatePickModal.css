@@ -1,0 +1,131 @@
+.create-pick-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(8px);
+  z-index: 60;
+  padding: 24px;
+}
+
+.create-pick-dialog {
+  width: min(720px, 92vw);
+  max-height: 90vh;
+  overflow: auto;
+  border-radius: 18px;
+  border: 1px solid rgb(var(--border));
+  background-color: rgb(var(--surface));
+  color: rgb(var(--text));
+  padding: 24px;
+  box-shadow: 0 24px 50px rgba(15, 23, 42, 0.2);
+}
+
+.create-pick-header h2 {
+  margin: 0 0 6px;
+  font-size: 1.4rem;
+}
+
+.create-pick-header p {
+  margin: 0 0 18px;
+  color: rgb(var(--muted));
+}
+
+.create-pick-form {
+  display: grid;
+  gap: 14px;
+}
+
+.create-pick-field {
+  display: grid;
+  gap: 6px;
+  font-size: 0.95rem;
+}
+
+.create-pick-field input,
+.create-pick-field select {
+  border-radius: 12px;
+  border: 1px solid rgb(var(--border));
+  padding: 10px 12px;
+  background-color: rgb(var(--surface-2));
+  color: rgb(var(--text));
+  font-family: inherit;
+}
+
+.create-pick-error {
+  color: rgb(var(--danger));
+  font-size: 0.8rem;
+}
+
+.create-pick-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.create-pick-button {
+  border-radius: 999px;
+  border: 1px solid rgb(var(--border));
+  padding: 8px 16px;
+  background-color: rgb(var(--surface));
+  color: rgb(var(--text));
+  cursor: pointer;
+}
+
+.create-pick-button-ghost {
+  background-color: transparent;
+}
+
+.create-pick-button-link {
+  border: none;
+  background: none;
+  padding: 0;
+  color: rgb(var(--info));
+}
+
+.create-pick-button-primary {
+  background-color: rgb(var(--primary));
+  border-color: rgb(var(--primary));
+  color: rgb(255 255 255);
+}
+
+.create-pick-button-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: rgb(var(--muted));
+  border-color: rgb(var(--muted));
+}
+
+.create-pick-button:focus-visible,
+.create-pick-field input:focus-visible,
+.create-pick-field select:focus-visible {
+  outline: 2px solid rgb(var(--info));
+  outline-offset: 2px;
+}
+
+.create-pick-legs {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px dashed rgb(var(--border));
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.dark .create-pick-legs {
+  background-color: rgba(18, 28, 45, 0.4);
+}
+
+.create-pick-legs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+}
+
+.create-pick-leg {
+  display: grid;
+  gap: 10px;
+}

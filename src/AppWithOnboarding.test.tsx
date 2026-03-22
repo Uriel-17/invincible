@@ -24,11 +24,11 @@ vi.mock('@tanstack/react-router', () => ({
   RouterProvider: ({ router }: { router: { toString: () => string } }) => <div data-testid="router-provider">Router: {router.toString()}</div>,
 }))
 
-vi.mock('./Components/LanguageSelectionModal', () => ({
+vi.mock('./Components/LanguageSelectionModal/LanguageSelectionModal', () => ({
   default: ({ isOpen }: { isOpen: boolean }) => isOpen ? <div data-testid="language-modal">Language Modal</div> : null,
 }))
 
-vi.mock('./Components/OnboardingModal', () => ({
+vi.mock('./Components/OnboardingModal/OnboardingModal', () => ({
   default: ({ isOpen }: { isOpen: boolean }) => isOpen ? <div data-testid="onboarding-modal">Onboarding Modal</div> : null,
 }))
 
