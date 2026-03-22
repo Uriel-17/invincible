@@ -339,6 +339,11 @@ function createWindow() {
 
 app.setName('Invincible')
 
+// Use a separate userData path in development so dev data doesn't mix with production
+if (!app.isPackaged) {
+  app.setPath('userData', path.join(app.getPath('userData'), '-dev'))
+}
+
 // This method will be called when Electron has finished initialization
 app.whenReady().then(() => {
   // Initialize database first
