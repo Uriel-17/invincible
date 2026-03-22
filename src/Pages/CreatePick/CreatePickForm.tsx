@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import type { CreatePickFormProps } from 'src/types/pages'
 import type { CreateBetFormValues } from 'src/types/bets'
@@ -22,10 +21,6 @@ const CreatePickForm = ({ onSubmit, actions }: CreatePickFormProps) => {
       legs: [{ description: '', quota: '', market: '' }],
     },
   })
-
-  useEffect(() => {
-    methods.reset()
-  }, [methods])
 
   return (
     <FormProvider {...methods}>
