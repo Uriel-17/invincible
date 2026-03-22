@@ -124,7 +124,7 @@ const DashboardPage = () => {
               <>
                 <div className="dashboard-stats-item">
                   <span className="dashboard-stats-label">{_T('Bankroll')}</span>
-                  <span className="dashboard-stats-value dashboard-stats-value--bankroll">
+                  <span className={`dashboard-stats-value dashboard-stats-value--bankroll ${bankroll > 0 ? 'dashboard-stats-value--bankroll-positive' : bankroll < 0 ? 'dashboard-stats-value--bankroll-negative' : ''}`}>
                     {formatCurrency(bankroll, language)}
                   </span>
                 </div>

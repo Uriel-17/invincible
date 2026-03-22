@@ -109,8 +109,15 @@
 }
 
 .dashboard-stats-value--bankroll {
-  color: rgb(var(--primary));
   font-size: 1.25rem;
+}
+
+.dashboard-stats-value--bankroll-positive {
+  color: rgb(var(--primary));
+}
+
+.dashboard-stats-value--bankroll-negative {
+  color: rgb(var(--danger));
 }
 
 .dashboard-stats-value--wins {
