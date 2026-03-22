@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { TableVirtuoso } from 'react-virtuoso'
 import { useTranslation } from 'react-i18next'
 import { useT } from 'src/hooks/useT'
@@ -27,6 +27,30 @@ const DashboardBetsTable = ({ bets, onOpenBetDetail }: DashboardBetsTableProps) 
   const visibleBets = useMemo(
     () => sortBets({ bets: filterBets({ bets, search, outcome: outcomeFilter }), sortKey, sortDir }),
     [bets, search, outcomeFilter, sortKey, sortDir],
+  )
+
+  const renderHeader = useCallback(
+    () => (
+      <DashboardBetsTableHeaderRow
+        sortKey={sortKey}
+        sortDir={sortDir}
+        setSortKey={setSortKey}
+        setSortDir={setSortDir}
+      />
+    ),
+    [sortKey, sortDir],
+  )
+
+  const renderRow = useCallback(
+    (index: number, bet: BetRecord) => (
+      <DashboardBetsTableRow
+        bet={bet}
+        isLastRow={index === visibleBets.length - 1}
+        language={language}
+        onOpenBetDetail={onOpenBetDetail}
+      />
+    ),
+    [visibleBets.length, language, onOpenBetDetail],
   )
 
   if (bets.length === 0) {
@@ -64,22 +88,8 @@ const DashboardBetsTable = ({ bets, onOpenBetDetail }: DashboardBetsTableProps) 
         overscan={176}
         computeItemKey={(_, bet) => bet.id}
         components={TABLE_COMPONENTS}
-        fixedHeaderContent={() => (
-          <DashboardBetsTableHeaderRow
-            sortKey={sortKey}
-            sortDir={sortDir}
-            setSortKey={setSortKey}
-            setSortDir={setSortDir}
-          />
-        )}
-        itemContent={(index, bet) => (
-          <DashboardBetsTableRow
-            bet={bet}
-            isLastRow={index === visibleBets.length - 1}
-            language={language}
-            onOpenBetDetail={onOpenBetDetail}
-          />
-        )}
+        fixedHeaderContent={renderHeader}
+        itemContent={renderRow}
       />
       {visibleBets.length === 0 && (
         <div className="dashboard-bets-empty">{t('No bets match your search.')}</div>

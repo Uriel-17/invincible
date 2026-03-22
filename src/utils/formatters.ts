@@ -48,7 +48,7 @@ export function formatROI(roi: number): string {
  */
 export function formatShortDate(dateString: string, language: string = 'en'): string {
   const date = new Date(dateString)
-  const locale = language === 'es' ? 'es-ES' : 'en-US'
+  const locale = language === 'es' ? 'es-MX' : 'en-US'
 
   return date.toLocaleDateString(locale, {
     month: 'short',

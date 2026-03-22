@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import {
   Line,
   XAxis,
@@ -48,10 +49,11 @@ interface CustomTooltipProps {
   active?: boolean
   payload?: { payload: ChartDataPoint }[]
   language: string
+  t: (key: string) => string
   getChangeReasonLabel: (reason: string) => string
 }
 
-const CustomTooltip = ({ active, payload, language, getChangeReasonLabel }: CustomTooltipProps) => {
+const CustomTooltip = ({ active, payload, language, t, getChangeReasonLabel }: CustomTooltipProps) => {
   if (!active || !payload || !payload.length) {
     return null
   }
@@ -67,10 +69,10 @@ const CustomTooltip = ({ active, payload, language, getChangeReasonLabel }: Cust
         {dataPoint.formattedDate}
       </p>
       <p className="bankroll-chart-tooltip-bankroll">
-        <strong>Bankroll:</strong> {formatCurrency(dataPoint.amount, language)}
+        <strong>{t('Bankroll')}:</strong> {formatCurrency(dataPoint.amount, language)}
       </p>
       <p className={`bankroll-chart-tooltip-change ${changeClass}`}>
-        <strong>{language === 'es' ? 'Cambio' : 'Change'}:</strong>{' '}
+        <strong>{t('Change')}:</strong>{' '}
         {dataPoint.change_amount >= 0 ? '+' : ''}
         {formatCurrency(dataPoint.change_amount, language)}
       </p>
@@ -90,26 +92,29 @@ const BankrollChart = ({ data }: BankrollChartProps) => {
     return _T(CHANGE_REASON_LABEL_KEYS[reason] || reason)
   }
 
-  const chartData: ChartDataPoint[] = data.map((snapshot) => ({
-    timestamp: new Date(snapshot.timestamp).getTime(),
-    amount: snapshot.amount,
-    change_reason: snapshot.change_reason,
-    change_amount: snapshot.change_amount,
-    formattedDate: new Date(snapshot.timestamp).toLocaleDateString(
-      language === 'es' ? 'es-ES' : 'en-US',
-      {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      }
-    ),
-  }))
+  const chartData: ChartDataPoint[] = useMemo(
+    () => data.map((snapshot) => ({
+      timestamp: new Date(snapshot.timestamp).getTime(),
+      amount: snapshot.amount,
+      change_reason: snapshot.change_reason,
+      change_amount: snapshot.change_amount,
+      formattedDate: new Date(snapshot.timestamp).toLocaleDateString(
+        language === 'es' ? 'es-MX' : 'en-US',
+        {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+        }
+      ),
+    })),
+    [data, language],
+  )
 
   const formatYAxis = (value: number): string => formatCurrency(value, language)
 
   const formatXAxis = (timestamp: number): string => {
     return new Date(timestamp).toLocaleDateString(
-      language === 'es' ? 'es-ES' : 'en-US',
+      language === 'es' ? 'es-MX' : 'en-US',
       { month: 'short', day: 'numeric' }
     )
   }
@@ -138,7 +143,7 @@ const BankrollChart = ({ data }: BankrollChartProps) => {
             stroke="rgb(var(--muted))"
             style={{ fontSize: '12px' }}
           />
-          <Tooltip content={<CustomTooltip language={language} getChangeReasonLabel={getChangeReasonLabel} />} />
+          <Tooltip content={<CustomTooltip language={language} t={_T} getChangeReasonLabel={getChangeReasonLabel} />} />
           <Line
             type="monotone"
             dataKey="amount"
