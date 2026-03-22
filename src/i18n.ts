@@ -106,6 +106,11 @@ const resources = {
         'Please enter a valid number with max 2 decimal places',
       'Please select a valid option': 'Please select a valid option',
       'Please type DELETE to confirm': 'Please type DELETE to confirm',
+      'Type of bet — e.g. Moneyline, Spread, Over/Under': 'Type of bet — e.g. Moneyline, Spread, Over/Under',
+      'Odds at time of bet — e.g. -110 or +150': 'Odds at time of bet — e.g. -110 or +150',
+      'Profit if the bet wins, not including your stake': 'Profit if the bet wins, not including your stake',
+      'Amount the sportsbook paid you when you cashed out early': 'Amount the sportsbook paid you when you cashed out early',
+      'What you won or lost — negative for a loss, e.g. -50': 'What you won or lost — negative for a loss, e.g. -50',
       'Potential Gains': 'Potential Gains',
       Preferences: 'Preferences',
       'Potential gains must be a valid number':
@@ -355,6 +360,11 @@ const resources = {
         'Por favor ingresa un número válido con máximo 2 decimales',
       'Please select a valid option': 'Por favor selecciona una opción válida',
       'Please type DELETE to confirm': 'Por favor escribe DELETE para confirmar',
+      'Type of bet — e.g. Moneyline, Spread, Over/Under': 'Tipo de apuesta — ej. Moneyline, Spread, Más/Menos',
+      'Odds at time of bet — e.g. -110 or +150': 'Cuota al momento de apostar — ej. -110 o +150',
+      'Profit if the bet wins, not including your stake': 'Ganancia si la apuesta gana, sin incluir tu monto apostado',
+      'Amount the sportsbook paid you when you cashed out early': 'Monto que la casa de apuestas te pagó al retirar anticipadamente',
+      'What you won or lost — negative for a loss, e.g. -50': 'Lo que ganaste o perdiste — negativo si perdiste, ej. -50',
       'Potential Gains': 'Ganancias Potenciales',
       Preferences: 'Preferencias',
       'Potential gains must be a valid number':

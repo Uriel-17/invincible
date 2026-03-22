@@ -323,7 +323,7 @@ function createWindow() {
   // Load React app
   // In development: Load from Vite dev server
   // In production: Load from built files
-  const isDev = process.env.NODE_ENV === 'development'
+  const isDev = !app.isPackaged
   
   if (isDev) {
     mainWindow.loadURL('http://localhost:5173') // Vite default port
@@ -338,6 +338,11 @@ function createWindow() {
 }
 
 app.setName('Invincible')
+
+// Use a separate userData path in development so dev data doesn't mix with production
+if (!app.isPackaged) {
+  app.setPath('userData', path.join(app.getPath('userData'), '-dev'))
+}
 
 // This method will be called when Electron has finished initialization
 app.whenReady().then(() => {
