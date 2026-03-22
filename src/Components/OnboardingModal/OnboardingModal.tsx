@@ -67,7 +67,7 @@ const OnboardingModal = ({ isOpen, onBack }: OnboardingModalProps) => {
               type="button"
               className="onboarding-back-button"
               onClick={onBack}
-              aria-label="Go back to language selection"
+              aria-label={_T('Go back to language selection')}
             >
               <ArrowLeftIcon />
             </button>

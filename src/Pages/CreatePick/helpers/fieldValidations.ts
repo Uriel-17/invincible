@@ -33,6 +33,10 @@ export const getBetAmountValidation = (): FieldValidationConfig => ({
   requiredMessage: t('This field is required.'),
   pattern: /^\d+(\.\d+)?$/,
   patternMessage: t('Bet amount must be a valid number'),
+  min: 0.01,
+  minMessage: t('Bet amount must be a positive number greater than 0'),
+  max: 1_000_000,
+  maxMessage: t('Amount cannot exceed 1,000,000'),
 })
 
 /**
@@ -58,6 +62,8 @@ export const getPotentialGainsValidation = (): FieldValidationConfig => ({
   requiredMessage: t('This field is required.'),
   pattern: /^-?\d+(\.\d+)?$/,
   patternMessage: t('Potential gains must be a valid number'),
+  max: 1_000_000,
+  maxMessage: t('Amount cannot exceed 1,000,000'),
 })
 
 /**
@@ -70,6 +76,10 @@ export const getNetGainValidation = (): FieldValidationConfig => ({
   requiredMessage: t('This field is required.'),
   pattern: /^-?\d+(\.\d+)?$/,
   patternMessage: t('Net gain must be a valid number'),
+  min: -1_000_000,
+  minMessage: t('Minimum value is {{value}}', { value: '-1,000,000' }),
+  max: 1_000_000,
+  maxMessage: t('Amount cannot exceed 1,000,000'),
 })
 
 /**
@@ -82,6 +92,10 @@ export const getCashoutValidation = (): FieldValidationConfig => ({
   requiredMessage: t('This field is required.'),
   pattern: /^\d+(\.\d+)?$/,
   patternMessage: t('Cashout amount must be a valid number'),
+  min: 0.01,
+  minMessage: t('Cashout amount must be a positive number'),
+  max: 1_000_000,
+  maxMessage: t('Amount cannot exceed 1,000,000'),
 })
 
 /**

@@ -23,6 +23,8 @@ export const getUsernameValidation = (): FieldValidationConfig => ({
   requiredMessage: t('Username is required'),
   minLength: 2,
   minLengthMessage: t('Username must be at least 2 characters'),
+  maxLength: 50,
+  maxLengthMessage: t('Username must be at most 50 characters'),
 })
 
 export const getStartingBankrollValidation = (): FieldValidationConfig => ({
@@ -34,5 +36,7 @@ export const getStartingBankrollValidation = (): FieldValidationConfig => ({
   patternMessage: t('Please enter a valid number'),
   min: 0.01,
   minMessage: t('Starting bankroll must be greater than 0'),
+  max: 1_000_000,
+  maxMessage: t('Amount cannot exceed 1,000,000'),
 })
 
