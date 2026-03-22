@@ -12,7 +12,7 @@ const AddFundsBtn = () => {
       <div className="header-btn-wrapper">
         <button
           type="button"
-          className="header-btn header-btn-primary"
+          className="header-btn header-btn-secondary"
           onClick={() => setIsModalOpen(true)}
         >
           {_T('Add Funds')}
@@ -28,4 +28,3 @@ const AddFundsBtn = () => {
 }
 
 export default AddFundsBtn
-

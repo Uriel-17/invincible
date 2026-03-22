@@ -1,6 +1,6 @@
 import { useT } from 'src/hooks/useT'
 import { useFormContext } from 'react-hook-form'
-import type { CreatePickFormValues } from 'src/Pages/types'
+import type { CreateBetFormValues } from 'src/types/bets'
 import TextField from 'src/Components/Form/TextField'
 import {
   getBetAmountValidation,
@@ -15,7 +15,7 @@ import {
 
 const CreatePickSingleFields = () => {
   const _T = useT()
-  const { watch } = useFormContext<CreatePickFormValues>()
+  const { watch } = useFormContext<CreateBetFormValues>()
   const outcome = watch('outcome')
 
   return (

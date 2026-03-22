@@ -676,6 +676,35 @@ function isFirstLaunch() {
 }
 
 /**
+ * Get bankroll history from snapshots
+ * @returns {Array} Array of bankroll snapshot records ordered by timestamp
+ */
+function getBankrollHistory() {
+  try {
+    const snapshots = db.prepare(`
+      SELECT
+        id,
+        month_key,
+        timestamp,
+        amount,
+        change_amount,
+        change_reason,
+        bet_id,
+        notes,
+        created_at
+      FROM bankroll_snapshots
+      ORDER BY timestamp ASC
+    `).all()
+
+    console.log(`✅ Retrieved ${snapshots.length} bankroll snapshots`)
+    return snapshots
+  } catch (error) {
+    console.error('❌ Error getting bankroll history:', error.message)
+    throw error
+  }
+}
+
+/**
  * Clear all betting data (bets, parlay legs, bankroll snapshots, monthly archives)
  * Keeps user_settings table intact
  * @returns {Object} { success: boolean, deletedRecords: number }
@@ -741,6 +770,7 @@ module.exports = {
   recalculateAllStatistics,
   createBankrollSnapshot,
   getCurrentBankroll,
+  getBankrollHistory,
   getUserSetting,
   setUserSetting,
   isFirstLaunch,

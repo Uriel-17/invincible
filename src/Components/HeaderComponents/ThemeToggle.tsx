@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { MoonIcon, SunIcon } from '@radix-ui/react-icons'
 import { useT } from 'src/hooks/useT'
+import './Styles/HeaderButtons.css'
 
 const ThemeToggle = () => {
   const _T = useT()
@@ -23,18 +24,15 @@ const ThemeToggle = () => {
   }, [isDark])
 
   return (
-    <div className="theme-toggle">
-      <SunIcon className="theme-icon" />
-      <label className="switch">
-        <input
-          type="checkbox"
-          checked={isDark}
-          onChange={(event) => setIsDark(event.target.checked)}
-          aria-label={_T('Toggle dark mode')}
-        />
-        <span className="slider" />
-      </label>
-      <MoonIcon className="theme-icon" />
+    <div className="header-btn-wrapper">
+      <button
+        type="button"
+        className="header-btn header-btn-secondary header-btn-icon"
+        onClick={() => setIsDark(d => !d)}
+        aria-label={_T('Toggle dark mode')}
+      >
+        {isDark ? <SunIcon /> : <MoonIcon />}
+      </button>
     </div>
   )
 }

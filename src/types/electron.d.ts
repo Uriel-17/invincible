@@ -73,6 +73,18 @@ export interface MonthlyStatistics {
   endingBankroll: number
 }
 
+export interface BankrollSnapshot {
+  id: string
+  month_key: string
+  timestamp: string
+  amount: number
+  change_amount: number
+  change_reason: 'initial' | 'bet_win' | 'bet_loss' | 'bet_cashout' | 'manual_adjustment' | 'month_start'
+  bet_id: string | null
+  notes: string | null
+  created_at: string
+}
+
 export interface ElectronAPI {
   database: {
     createBet: (betData: unknown) => Promise<DatabaseResponse<BetRecord>>
@@ -85,6 +97,7 @@ export interface ElectronAPI {
     initializeUser: (userData: InitializeUserData) => Promise<DatabaseResponse<void>>
     recalculateAllStatistics: () => Promise<DatabaseResponse<RecalculateStatisticsResult>>
     getCurrentBankroll: () => Promise<DatabaseResponse<number>>
+    getBankrollHistory: () => Promise<DatabaseResponse<BankrollSnapshot[]>>
     updateMonthlyStatistics: (monthKey: string) => Promise<DatabaseResponse<MonthlyStatistics>>
     addFunds: (amount: number) => Promise<DatabaseResponse<void>>
     clearAllData: () => Promise<DatabaseResponse<ClearAllDataResult>>

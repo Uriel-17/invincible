@@ -18,6 +18,7 @@ const {
   updateMonthlyStatistics,
   recalculateAllStatistics,
   getCurrentBankroll,
+  getBankrollHistory,
   clearAllData
 } = require('./database.cjs')
 
@@ -137,6 +138,19 @@ function registerIPCHandlers() {
       return { success: true, data: result }
     } catch (error) {
       console.error('❌ IPC: Error getting current bankroll:', error.message)
+      return { success: false, error: error.message }
+    }
+  })
+
+  // Get bankroll history
+  ipcMain.handle('db:getBankrollHistory', async () => {
+    try {
+      console.log('📊 IPC: Getting bankroll history...')
+      const result = getBankrollHistory()
+      console.log(`✅ IPC: Retrieved ${result.length} bankroll snapshots`)
+      return { success: true, data: result }
+    } catch (error) {
+      console.error('❌ IPC: Error getting bankroll history:', error.message)
       return { success: false, error: error.message }
     }
   })

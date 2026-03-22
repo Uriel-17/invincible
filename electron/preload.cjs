@@ -78,6 +78,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
     getCurrentBankroll: () => ipcRenderer.invoke('db:getCurrentBankroll'),
 
     /**
+     * Get bankroll history from snapshots
+     * @returns {Promise<{success: boolean, data?: Array, error?: string}>}
+     */
+    getBankrollHistory: () => ipcRenderer.invoke('db:getBankrollHistory'),
+
+    /**
      * Update monthly statistics for a given month
      * @param {string} monthKey - Month key in format "YYYY-MM"
      * @returns {Promise<{success: boolean, data?: any, error?: string}>}
