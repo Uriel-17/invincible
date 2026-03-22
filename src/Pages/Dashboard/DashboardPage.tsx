@@ -187,8 +187,6 @@ const DashboardPage = () => {
           {bets ? (
             <DashboardBetsTable
               bets={bets}
-              language={language}
-              translate={_T}
               onOpenBetDetail={handleOpenBetDetail}
             />
           ) : (

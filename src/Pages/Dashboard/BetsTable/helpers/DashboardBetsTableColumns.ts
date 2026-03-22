@@ -1,5 +1,15 @@
 export type SortKey = 'placed_at' | 'quota' | 'outcome' | 'bet_amount' | 'net_gain'
 export type SortDir = 'asc' | 'desc'
+export type OutcomeFilter = 'all' | 'win' | 'loss' | 'pending' | 'cashout' | 'push'
+
+export const OUTCOME_PILLS: { labelKey: string; value: OutcomeFilter }[] = [
+  { labelKey: 'All', value: 'all' },
+  { labelKey: 'Win', value: 'win' },
+  { labelKey: 'Loss', value: 'loss' },
+  { labelKey: 'Pending', value: 'pending' },
+  { labelKey: 'Cashout', value: 'cashout' },
+  { labelKey: 'Push', value: 'push' },
+]
 
 export interface BetsColumn {
   label: string
